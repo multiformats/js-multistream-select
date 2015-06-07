@@ -34,8 +34,6 @@ function MultiStream (duplexStream) {
       lpm.read(duplexStream, function (buffer) {
         var msg = buffer.toString()
 
-        console.log(msg)
-
         if (msg.indexOf('/multistream') > -1) {
           if (msg === PROTOCOLID) {
             compatible = true
