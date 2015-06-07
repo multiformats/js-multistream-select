@@ -1,3 +1,7 @@
+// WIP
+// 1. Ensure that both can communicat
+// 2. Write this in the form of a lab test where the latest go-multistream binary gets pulled and run againsts node-multistream
+
 var tcp = require('net')
 var lpm = require('length-prefixed-message')
 
