@@ -4,7 +4,6 @@ var lpm = require('length-prefixed-message')
 var client = tcp.connect({port: 8765}, connected)
 
 function connected () {
-
   console.log('connected to server!')
 
   lpm.read(client, function (msgBuffer) {

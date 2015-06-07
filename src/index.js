@@ -87,7 +87,6 @@ function MultiStream (duplexStream) {
 
     lpm.write(ds, new Buffer(PROTOCOLID))
     lpm.read(ds, function (buffer) {
-
       if (buffer.toString() === 'OK-supported') {
         supported = true
         return callback(null, ds)
