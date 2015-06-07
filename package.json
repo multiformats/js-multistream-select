@@ -6,10 +6,10 @@
   "scripts": {
     "codestyle": "node ./node_modules/.bin/standard --format",
     "test": "node ./node_modules/.bin/lab tests/*-test.js",
-    "test-cov": "node ./node_modules/.bin/lab -t 100 tests/*-test.js",
+    "test-cov": "node ./node_modules/.bin/lab -t 100 tests/*-test.js"
   },
   "precommit": [
-    "codestyle",
+    "codestyle"
   ],
   "keywords": [
     "node",
