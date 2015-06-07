@@ -1,0 +1,37 @@
+{
+  "name": "node-multistream",
+  "version": "0.0.0",
+  "description": "Implementation of multistream spec https://github.com/ipfs/specs/blob/wire/protocol/network/wire.md#multistream",
+  "main": "src/index.js",
+  "scripts": {
+    "codestyle": "node ./node_modules/.bin/standard --format",
+    "test": "node ./node_modules/.bin/lab tests/*-test.js",
+    "test-cov": "node ./node_modules/.bin/lab -t 100 tests/*-test.js",
+  },
+  "precommit": [
+    "codestyle",
+  ],
+  "keywords": [
+    "node",
+    "stream",
+    "multistream",
+    "protocol",
+    "ipfs",
+    "ipn",
+    "protocol",
+    "protocol",
+    "labs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "length-prefixed-message": "^3.0.3",
+    "through2": "^0.6.5"
+  },
+  "devDependencies": {
+    "code": "^1.4.0",
+    "lab": "^5.9.0",
+    "pre-commit": "^1.0.7",
+    "standard": "^4.0.1"
+  }
+}
