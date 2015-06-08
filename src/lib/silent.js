@@ -17,7 +17,7 @@ function Silent () {
   self.handle = function handle (duplexStream, callback) {
     self.duplexStream = duplexStream
     lpm.read(duplexStream, function (msgBuffer) {
-      var msg = msgBuffer.toString()
+      var msg = msgBuffer.toString().slice(0, -1)
 
       if (msg === PROTOCOLID) {
         callback()
@@ -30,7 +30,7 @@ function Silent () {
 
   self.addHandler = function addHandler (protocol, callback) {
     lpm.read(self.duplexStream, function (msgBuffer) {
-      var msg = msgBuffer.toString()
+      var msg = msgBuffer.toString().slice(0, -1)
       if (msg === protocol) {
         return callback(null, self.duplexStream)
       } else {

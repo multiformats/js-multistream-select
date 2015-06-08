@@ -20,12 +20,12 @@ function Interactive () {
     self.duplexStream = duplexStream
 
     lpm.read(duplexStream, function (msgBuffer) {
-      var msg = msgBuffer.toString()
+      var msg = msgBuffer.toString().slice(0, -1)
       if (msg === PROTOCOLID) {
-        lpm.write(duplexStream, new Buffer(PROTOCOLID)) // Sending the ACK
+        lpm.write(duplexStream, new Buffer(PROTOCOLID + '\n')) // Sending the ACK
         callback()
       } else {
-        lpm.write(duplexStream, new Buffer('na'))
+        lpm.write(duplexStream, new Buffer('na' + '\n'))
       // TODO: multistream/version not supported, propose a new one.
       // So far we only have one version.
       }
@@ -33,19 +33,19 @@ function Interactive () {
   }
 
   self.ls = function ls (callback) {
-    lpm.write(self.duplexStream, new Buffer('ls'))
+    lpm.write(self.duplexStream, new Buffer('ls' + '\n'))
     lpm.read(self.duplexStream, function (msgBuffer) {
-      callback(null, msgBuffer.toString())
+      callback(null, msgBuffer.toString().slice(0, -1))
     })
   }
 
   self.select = function select (protocol, callback) {
-    lpm.write(self.duplexStream, new Buffer(protocol))
+    lpm.write(self.duplexStream, new Buffer(protocol + '\n'))
     lpm.read(self.duplexStream, function (msgBuffer) {
-      if (msgBuffer.toString() === protocol) {
+      if (msgBuffer.toString().slice(0, -1) === protocol) {
         return callback(null, self.duplexStream)
       }
-      if (msgBuffer.toString() === 'na') {
+      if (msgBuffer.toString().slice(0, -1) === 'na') {
         return callback(new Error(protocol + ' not supported'))
       }
     })

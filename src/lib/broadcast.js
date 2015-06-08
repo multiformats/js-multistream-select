@@ -16,11 +16,11 @@ function Broadcast () {
 
   self.handle = function handle (duplexStream, callback) {
     self.duplexStream = duplexStream
-    lpm.write(self.duplexStream, new Buffer(PROTOCOLID))
+    lpm.write(self.duplexStream, new Buffer(PROTOCOLID + '\n'))
   }
 
   self.broadcast = function broadcast (protocol, callback) {
-    lpm.write(self.duplexStream, new Buffer(protocol))
+    lpm.write(self.duplexStream, new Buffer(protocol + '\n'))
     callback(self.duplexStream)
   }
 }

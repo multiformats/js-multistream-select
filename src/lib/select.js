@@ -23,12 +23,12 @@ function Select () {
   this.handle = handle
 
   function handle (duplexStream) {
-    lpm.write(duplexStream, new Buffer(PROTOCOLID))
+    lpm.write(duplexStream, new Buffer(PROTOCOLID + '\n'))
     interactive()
 
     function interactive () {
       lpm.read(duplexStream, function (buffer) {
-        var msg = buffer.toString()
+        var msg = buffer.toString().slice(0, -1)
 
         if (msg === PROTOCOLID) { // ACK
           return interactive()
@@ -42,15 +42,15 @@ function Select () {
         }
 
         if (msg === 'ls') {
-          lpm.write(duplexStream, new Buffer(JSON.stringify(Object.keys(handlers))))
+          lpm.write(duplexStream, new Buffer(JSON.stringify(Object.keys(handlers)) + '\n'))
           return interactive()
         }
 
         if (handlers[msg]) {
-          lpm.write(duplexStream, new Buffer(msg))
+          lpm.write(duplexStream, new Buffer(msg + '\n'))
           return handlers[msg](duplexStream)
         } else {
-          lpm.write(duplexStream, new Buffer('na'))
+          lpm.write(duplexStream, new Buffer('na' + '\n'))
           return interactive()
         }
       })

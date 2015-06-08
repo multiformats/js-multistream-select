@@ -11,12 +11,12 @@ function connected () {
   console.log('connected to server!')
 
   lpm.read(client, function (msgBuffer) {
-    console.log('1- ', msgBuffer.toString())
+    console.log('1-', msgBuffer.toString().slice(0, -1))
 
-    lpm.write(client, new Buffer('/cats'))
+    lpm.write(client, new Buffer('/cats' + '\n'))
 
     client.on('data', function (data) {
-      console.log('2- got something: ', data.toString())
+      console.log('2-', data.toString())
     })
 
   })
