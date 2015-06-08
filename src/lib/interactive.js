@@ -26,8 +26,8 @@ function Interactive () {
         callback()
       } else {
         lpm.write(duplexStream, new Buffer('na'))
-        // TODO: multistream/version not supported, propose a new one.
-        // So far we only have one version.
+      // TODO: multistream/version not supported, propose a new one.
+      // So far we only have one version.
       }
     })
   }
