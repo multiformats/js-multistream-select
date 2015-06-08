@@ -6,10 +6,12 @@
   "scripts": {
     "codestyle": "node ./node_modules/.bin/standard --format",
     "test": "node ./node_modules/.bin/lab tests/*-test.js",
-    "coverage": "node ./node_modules/.bin/lab -t 84 tests/*-test.js"
+    "coverage": "node ./node_modules/.bin/lab -t 85 tests/*-test.js"
   },
   "precommit": [
-    "codestyle"
+    "codestyle",
+    "test",
+    "coverage"
   ],
   "keywords": [
     "node",
