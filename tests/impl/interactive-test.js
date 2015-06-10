@@ -9,7 +9,7 @@ var after = lab.after
 var expect = Code.expect
 
 var tcp = require('net')
-var MultiStream = require('../src/')
+var MultiStream = require('../../src/')
 
 experiment('Node.js Implementation: ', function () {
   var msS
@@ -39,7 +39,7 @@ experiment('Node.js Implementation: ', function () {
   test('attach a duplex stream to Select MultiStream (tcp server)', function (done) {
     tcp.createServer(function (socket) {
       msS.handle(socket)
-    }).listen(8124)
+    }).listen(8010)
     done()
   })
 
@@ -54,7 +54,7 @@ experiment('Node.js Implementation: ', function () {
   })
 
   test('ls', function (done) {
-    var socket = tcp.connect({port: 8124}, connected)
+    var socket = tcp.connect({port: 8010}, connected)
 
     function connected () {
       msI.handle(socket, function () {
