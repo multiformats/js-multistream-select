@@ -1,1 +1,1 @@
-module.exports = 'multistream/1.0.0'
+module.exports = '/multistream/1.0.0'
