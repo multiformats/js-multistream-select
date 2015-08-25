@@ -1,11 +1,11 @@
-node-multistream-select
-=======================
+node-multistream
+================
 
-[[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)![Build Status](https://travis-ci.org/diasdavid/node-multistream.svg)](https://travis-ci.org/diasdavid/node-multistream)[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io) [[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs) ![Build Status](https://travis-ci.org/diasdavid/node-multistream.svg?style=flat-square)](https://travis-ci.org/diasdavid/node-multistream) ![](https://img.shields.io/badge/coverage-85-yellow.svg?style=flat-square) [![Dependency Status](https://david-dm.org/diasdavid/node-multistream.svg?style=flat-square)](https://david-dm.org/diasdavid/node-multistream) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 
-> Node.js implementation of the multistream/multistream-select protocol, as described in https://github.com/ipfs/specs/blob/wire/protocol/network/wire.md#protocol-multiplexing
+> Node.js implementation of the multistream, as described in https://github.com/jbenet/multistream
 
-**Note:** On npm, `node-multistream-select` can be found as [`multistream-select`](https://www.npmjs.com/package/multistream-select)
+**Note:** On npm, `node-multistream` can be found as [`multistream-select`](https://www.npmjs.com/package/multistream-select)
 
 ## How does it work
 
