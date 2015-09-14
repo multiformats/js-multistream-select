@@ -27,6 +27,7 @@
     "protocol",
     "labs"
   ],
+  "engines" : { "node" : "^4.0.0" },
   "author": "",
   "license": "MIT",
   "dependencies": {
