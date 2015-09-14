@@ -1,6 +1,6 @@
 {
   "name": "multistream-select",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Implementation of multistream spec https://github.com/ipfs/specs/blob/wire/protocol/network/wire.md#multistream",
   "main": "src/index.js",
   "scripts": {
@@ -27,7 +27,9 @@
     "protocol",
     "labs"
   ],
-  "engines" : { "node" : "^4.0.0" },
+  "engines": {
+    "node": "^4.0.0"
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {
