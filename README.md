@@ -1,11 +1,11 @@
-node-multistream
+js-multistream
 ================
 
-[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io) [[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs) ![Build Status](https://travis-ci.org/diasdavid/node-multistream.svg?style=flat-square)](https://travis-ci.org/diasdavid/node-multistream) ![](https://img.shields.io/badge/coverage-85-yellow.svg?style=flat-square) [![Dependency Status](https://david-dm.org/diasdavid/node-multistream.svg?style=flat-square)](https://david-dm.org/diasdavid/node-multistream) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io) [[![](https://img.shields.io/badge/freejs-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs) ![Build Status](https://travis-ci.org/diasdavid/js-multistream.svg?style=flat-square)](https://travis-ci.org/diasdavid/js-multistream) ![](https://img.shields.io/badge/coverage-85-yellow.svg?style=flat-square) [![Dependency Status](https://david-dm.org/diasdavid/js-multistream.svg?style=flat-square)](https://david-dm.org/diasdavid/js-multistream) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 
-> Node.js implementation of the multistream, as described in https://github.com/jbenet/multistream
+> JavaScript implementation of the multistream, as described in https://github.com/jbenet/multistream
 
-**Note:** On npm, `node-multistream` can be found as [`multistream-select`](https://www.npmjs.com/package/multistream-select)
+**Note:** On npm, `js-multistream` can be found as [`multistream-select`](https://www.npmjs.com/package/multistream-select)
 
 ## How does it work
 
@@ -47,14 +47,14 @@ This mode also packs a `ls` option, so that the callee can list the protocols it
 ### silent - broadcast
 
 Reference to the examples on the examples folder:
-- https://github.com/diasdavid/node-multistream/blob/master/examples/tcp-peer-silent.js
-- https://github.com/diasdavid/node-multistream/blob/master/examples/tcp-peer-broadcast.js
+- https://github.com/diasdavid/js-multistream/blob/master/examples/tcp-peer-silent.js
+- https://github.com/diasdavid/js-multistream/blob/master/examples/tcp-peer-broadcast.js
 
 ### interactive - select
 
 Reference to the examples on the examples folder:
-- https://github.com/diasdavid/node-multistream/blob/master/examples/tcp-interactive.js
-- https://github.com/diasdavid/node-multistream/blob/master/examples/tcp-select.js
+- https://github.com/diasdavid/js-multistream/blob/master/examples/tcp-interactive.js
+- https://github.com/diasdavid/js-multistream/blob/master/examples/tcp-select.js
 
 ## Other impl
 
