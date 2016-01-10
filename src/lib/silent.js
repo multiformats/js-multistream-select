@@ -23,7 +23,7 @@ function Silent () {
         callback()
       } else {
         duplexStream.end()
-        callback(new Error('Received non supported MultiStream version' + msg))
+        callback(new Error('Received non supported MultiStream version ' + msg))
       }
     })
   }

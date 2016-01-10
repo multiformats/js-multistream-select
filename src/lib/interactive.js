@@ -48,6 +48,7 @@ function Interactive () {
       if (msgBuffer.toString().slice(0, -1) === 'na') {
         return callback(new Error(protocol + ' not supported'))
       }
+    // todo: function doesn't bark if response has not been recognized effectively locking socket
     })
   }
 }
