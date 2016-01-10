@@ -102,7 +102,6 @@ experiment('Node.js Implementation: ', function () {
     var acc = new MultiStream.Silent()
     tcp.createServer(function (socket) {
       acc.handle(socket, function (err) {
-        console.log(err.message);
         expect(err.message).to.equal('Received non supported MultiStream version /garbage/1.0.0')
         done()
       })
