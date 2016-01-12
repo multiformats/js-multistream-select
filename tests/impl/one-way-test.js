@@ -1,6 +1,7 @@
 var Lab = require('lab')
 var Code = require('code')
 var lab = exports.lab = Lab.script()
+var lpm = require('length-prefixed-message')
 
 var experiment = lab.experiment
 var test = lab.test
@@ -29,10 +30,38 @@ experiment('Node.js Implementation: ', function () {
     done()
   })
 
+  test('create a Broadcast MultiStream via utility function', function (done) {
+    expect(MultiStream.Broadcast.createBroadcast()).to.be.an.instanceof(MultiStream.Broadcast)
+    done()
+  })
+
+  test('throw an error if Broadcast function is misused', function (done) {
+    try {
+      MultiStream.Broadcast()
+    } catch (e) {
+      expect(e.message).to.equal('Broadcast must be called with new, or used with Broadcast')
+      done()
+    }
+  })
+
   test('create a Silent MultiStream()', function (done) {
     msS = new MultiStream.Silent()
     expect(msS).to.be.an.instanceof(MultiStream.Silent)
     done()
+  })
+
+  test('create a Silent MultiStream via utility function', function (done) {
+    expect(MultiStream.Silent.createSilent()).to.be.an.instanceof(MultiStream.Silent)
+    done()
+  })
+
+  test('throw an error if Silent function is misused', function (done) {
+    try {
+      MultiStream.Silent()
+    } catch (e) {
+      expect(e.message).to.equal('Silent must be called with new, or used with Silent')
+      done()
+    }
   })
 
   test('attach a stream to Broadcast MultiStream (tcp server)', function (done) {
@@ -66,6 +95,21 @@ experiment('Node.js Implementation: ', function () {
       ds.write('hey, how is it going?')
     })
 
+  })
+
+  test('closing socket for unsupported protocol', function (done) {
+    var acc = new MultiStream.Silent()
+    tcp.createServer(function (socket) {
+      acc.handle(socket, function (err) {
+        expect(err.message).to.equal('Received non supported MultiStream version /garbage/1.0.0')
+        socket.on('end', done)
+
+      })
+    }).listen(8021)
+
+    var socket = tcp.connect({port: 8021}, function tcpConnectionOpen () {
+      lpm.write(socket, '/garbage/1.0.0\n')
+    })
   })
 
 })

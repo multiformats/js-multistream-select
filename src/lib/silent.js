@@ -23,7 +23,7 @@ function Silent () {
         callback()
       } else {
         duplexStream.end()
-        callback(new Error('Received non supported MultiStream version' + msg))
+        callback(new Error('Received non supported MultiStream version ' + msg))
       }
     })
   }
@@ -34,7 +34,6 @@ function Silent () {
       if (msg === protocol) {
         return callback(null, self.duplexStream)
       } else {
-        self.duplexStream.end()
         callback(new Error('Received non supported Protocol or Version: ' + msg))
       }
     })
