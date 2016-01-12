@@ -103,29 +103,13 @@ experiment('Node.js Implementation: ', function () {
     tcp.createServer(function (socket) {
       acc.handle(socket, function (err) {
         expect(err.message).to.equal('Received non supported MultiStream version /garbage/1.0.0')
-        done()
+        socket.on('end', done);
+
       })
     }).listen(8021)
 
     var socket = tcp.connect({port: 8021}, function tcpConnectionOpen () {
       lpm.write(socket, '/garbage/1.0.0\n')
-    })
-  })
-
-  test('closing socket for unsupported handler', function (done) {
-    var acc = new MultiStream.Silent()
-    tcp.createServer(function (socket) {
-      acc.handle(socket, function () {
-        acc.addHandler('/none/1.2.3', function (err) {
-          expect(err.message).to.equal('Received non supported Protocol or Version: /none/1.0.0')
-          done()
-        })
-      })
-    }).listen(8022)
-
-    var socket = tcp.connect({port: 8022}, function tcpConnectionOpen () {
-      lpm.write(socket, PROTOCOLID + '\n')
-      lpm.write(socket, '/none/1.0.0\n')
     })
   })
 

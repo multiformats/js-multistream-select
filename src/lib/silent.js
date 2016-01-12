@@ -34,7 +34,6 @@ function Silent () {
       if (msg === protocol) {
         return callback(null, self.duplexStream)
       } else {
-        self.duplexStream.end()
         callback(new Error('Received non supported Protocol or Version: ' + msg))
       }
     })
