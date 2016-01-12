@@ -2,7 +2,6 @@ var Lab = require('lab')
 var Code = require('code')
 var lab = exports.lab = Lab.script()
 var lpm = require('length-prefixed-message')
-var PROTOCOLID = require('../../src/lib/protocol-id')
 
 var experiment = lab.experiment
 var test = lab.test
@@ -103,7 +102,7 @@ experiment('Node.js Implementation: ', function () {
     tcp.createServer(function (socket) {
       acc.handle(socket, function (err) {
         expect(err.message).to.equal('Received non supported MultiStream version /garbage/1.0.0')
-        socket.on('end', done);
+        socket.on('end', done)
 
       })
     }).listen(8021)
