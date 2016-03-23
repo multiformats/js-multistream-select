@@ -1,3 +1,5 @@
+'use strict'
+
 var lpm = require('length-prefixed-message')
 var PROTOCOLID = require('./protocol-id')
 
