@@ -37,7 +37,7 @@
   "devDependencies": {
     "buffertools": "^2.1.2",
     "chai": "^3.5.0",
-    "dignified.js": "github:dignifiedquire/dignified.js",
+    "dignified.js": "^1.0.0",
     "diff-buf": "^1.0.1",
     "diff-utility": "0.0.6",
     "duplex-transform": "^0.1.4",
