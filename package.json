@@ -2,14 +2,13 @@
   "name": "multistream-select",
   "version": "0.6.3",
   "description": "Implementation of multistream spec https://github.com/ipfs/specs/blob/wire/protocol/network/wire.md#multistream",
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "jsnext:main": "src/index.js",
   "scripts": {
-    "lint": "standard",
-    "test": "npm run test-impl && npm run test-comp",
-    "test-impl": "node ./node_modules/.bin/lab tests/impl/*-test.js",
-    "test-comp": "node ./node_modules/.bin/lab tests/comp/*-test.js",
-    "gen-test-spec": "node ./node_modules/.bin/lab tests/spec/*-test.js",
-    "coverage": "node ./node_modules/.bin/lab -t 85 tests/impl/*-test.js"
+    "lint": "dignified-lint",
+    "test": "dignified-test node",
+    "build": "dignified-build",
+    "release": "dignified-release"
   },
   "pre-commit": [
     "lint",
@@ -29,7 +28,7 @@
   "engines": {
     "node": "^4.2.0"
   },
-  "author": "",
+  "author": "David Dias <daviddias@ipfs.io>",
   "license": "MIT",
   "dependencies": {
     "length-prefixed-message": "^3.0.3",
@@ -37,12 +36,11 @@
   },
   "devDependencies": {
     "buffertools": "^2.1.2",
-    "code": "^1.4.0",
+    "chai": "^3.5.0",
+    "dignified.js": "^1.0.0",
     "diff-buf": "^1.0.1",
     "diff-utility": "0.0.6",
     "duplex-transform": "^0.1.4",
-    "lab": "^5.9.0",
-    "pre-commit": "^1.0.7",
-    "standard": "^4.0.1"
+    "pre-commit": "^1.0.7"
   }
 }

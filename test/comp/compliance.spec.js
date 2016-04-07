@@ -1,28 +1,17 @@
-var Lab = require('lab')
-var Code = require('code')
-var lab = exports.lab = Lab.script()
+/* eslint-env mocha */
+'use strict'
 
-var experiment = lab.experiment
-var test = lab.test
-var before = lab.before
-var after = lab.after
-var expect = Code.expect
-
+var expect = require('chai').expect
+var path = require('path')
 var tcp = require('net')
 var MultiStream = require('../../src/')
 var fs = require('fs')
 var buffertools = require('buffertools')
 
-experiment('Compliance Tests: ', {timeout: false}, function () {
-  before(function (done) {
-    done()
-  })
+describe('Compliance Tests: ', function () {
+  this.timeout(60000)
 
-  after(function (done) {
-    done()
-  })
-
-  test('Select', function (done) {
+  it('Select', function (done) {
     var ms = new MultiStream.Select()
     ms.addHandler('/dogs/0.1.0', function (ds) {})
     ms.addHandler('/cats/1.2.11', function (ds) {})
@@ -34,29 +23,27 @@ experiment('Compliance Tests: ', {timeout: false}, function () {
     var inject = tcp.connect({port: 9000})
 
     inject.on('connect', function () {
-      var input = fs.createReadStream('./tests/spec/pristine/select.in')
+      var input = fs.createReadStream('./test/spec/pristine/select.in')
       input.pipe(inject)
       setTimeout(function () {
         // Compare both pristine and test output to validate the test
-        var fileA = fs.readFileSync('./tests/spec/pristine/select.out')
-        var fileB = fs.readFileSync(__dirname + '/select-test.out')
+        var fileA = fs.readFileSync('./test/spec/pristine/select.out')
+        var fileB = fs.readFileSync(path.join(__dirname, '/select-test.out'))
         var result = buffertools.equals(fileA, fileB)
         expect(result).to.equal(true)
         done()
       }, 500)
 
-      inject.pipe(fs.createWriteStream(__dirname + '/select-test.out'))
+      inject.pipe(fs.createWriteStream(path.join(__dirname, '/select-test.out')))
     })
-
   })
 
-  test('Interactive', function (done) {
+  it('Interactive', function (done) {
     var ms = new MultiStream.Interactive()
 
     tcp.createServer(function (socket) {
-      fs.createReadStream('./tests/spec/pristine/interactive.in').pipe(socket)
-      socket.pipe(fs.createWriteStream(__dirname + '/interactive-test.out'))
-
+      fs.createReadStream('./test/spec/pristine/interactive.in').pipe(socket)
+      socket.pipe(fs.createWriteStream(path.join(__dirname, '/interactive-test.out')))
     }).listen(9001)
 
     var socket = tcp.connect({port: 9001})
@@ -76,23 +63,22 @@ experiment('Compliance Tests: ', {timeout: false}, function () {
 
         setTimeout(function () {
           // Compare both pristine and test output to validate the test
-          var fileA = fs.readFileSync('./tests/spec/pristine/interactive.out')
-          var fileB = fs.readFileSync(__dirname + '/interactive-test.out')
+          var fileA = fs.readFileSync('./test/spec/pristine/interactive.out')
+          var fileB = fs.readFileSync(path.join(__dirname, '/interactive-test.out'))
           var result = buffertools.equals(fileA, fileB)
           expect(result).to.equal(true)
           done()
         }, 500)
-
       })
     })
   })
 
-  test('Silent', function (done) {
+  it('Silent', function (done) {
     var ms = new MultiStream.Silent()
 
     tcp.createServer(function (socket) {
-      fs.createReadStream('./tests/spec/pristine/silent.in').pipe(socket)
-      socket.pipe(fs.createWriteStream(__dirname + '/silent-test.out'))
+      fs.createReadStream('./test/spec/pristine/silent.in').pipe(socket)
+      socket.pipe(fs.createWriteStream(path.join(__dirname, '/silent-test.out')))
     }).listen(9002)
 
     var socket = tcp.connect({port: 9002})
@@ -101,19 +87,17 @@ experiment('Compliance Tests: ', {timeout: false}, function () {
       ms.handle(socket, function () {
         setTimeout(function () {
           // Compare both pristine and test output to validate the test
-          var fileA = fs.readFileSync('./tests/spec/pristine/silent.out')
-          var fileB = fs.readFileSync(__dirname + '/silent-test.out')
+          var fileA = fs.readFileSync('./test/spec/pristine/silent.out')
+          var fileB = fs.readFileSync(path.join(__dirname, '/silent-test.out'))
           var result = buffertools.equals(fileA, fileB)
           expect(result).to.equal(true)
           done()
         }, 500)
-
       })
     })
-
   })
 
-  test('BroadCast', function (done) {
+  it('BroadCast', function (done) {
     var ms = new MultiStream.Broadcast()
 
     tcp.createServer(function (socket) {
@@ -126,20 +110,18 @@ experiment('Compliance Tests: ', {timeout: false}, function () {
     var socket = tcp.connect({port: 9003})
 
     socket.on('connect', function () {
-      var input = fs.createReadStream('./tests/spec/pristine/broadcast.in')
+      var input = fs.createReadStream('./test/spec/pristine/broadcast.in')
       input.pipe(socket)
       setTimeout(function () {
         // Compare both pristine and test output to validate the test
-        var fileA = fs.readFileSync('./tests/spec/pristine/broadcast.out')
-        var fileB = fs.readFileSync(__dirname + '/broadcast-test.out')
+        var fileA = fs.readFileSync('./test/spec/pristine/broadcast.out')
+        var fileB = fs.readFileSync(path.join(__dirname, '/broadcast-test.out'))
         var result = buffertools.equals(fileA, fileB)
         expect(result).to.equal(true)
         done()
       }, 500)
 
-      socket.pipe(fs.createWriteStream(__dirname + '/broadcast-test.out'))
+      socket.pipe(fs.createWriteStream(path.join(__dirname, '/broadcast-test.out')))
     })
-
   })
-
 })
