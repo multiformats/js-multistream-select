@@ -1,3 +1,5 @@
+'use strict'
+
 exports.Interactive = require('./lib/interactive')
 exports.Select = require('./lib/select')
 

@@ -1,3 +1,5 @@
+'use strict'
+
 var tcp = require('net')
 var Interactive = require('../src').Interactive
 

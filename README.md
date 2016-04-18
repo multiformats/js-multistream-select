@@ -1,16 +1,53 @@
 js-multistream
-================
+==============
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
-[[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
-[![Build Status](https://travis-ci.org/diasdavid/js-multistream.svg?style=flat-square)](https://travis-ci.org/diasdavid/js-multistream)](https://travis-ci.org/diasdavid/js-multistream/)
-![](https://img.shields.io/badge/coverage-85-yellow.svg?style=flat-square)
-[![Dependency Status](https://david-dm.org/diasdavid/js-multistream.svg?style=flat-square)](https://david-dm.org/diasdavid/js-multistream)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+[![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
+[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
+[![Coverage Status](https://coveralls.io/repos/github/diasdavid/js-multistream/badge.svg?branch=master)](https://coveralls.io/github/diasdavid/js-multistream?branch=master)
+[![Travis CI](https://travis-ci.org/diasdavid/js-multistream.svg?branch=master)](https://travis-ci.org/diasdavid/js-multistream)
+[![Circle CI](https://circleci.com/gh/diasdavid/js-multistream.svg?style=svg)](https://circleci.com/gh/diasdavid/js-multistream)
+[![Dependency Status](https://david-dm.org/diasdavid/js-multistream.svg?style=flat-square)](https://david-dm.org/diasdavid/js-multistream) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 
-> JavaScript implementation of the multistream, as described in https://github.com/jbenet/multistream
+> JavaScript implementation of [multistream](https://github.com/jbenet/multistream).
 
-**Note:** On npm, `js-multistream` can be found as [`multistream-select`](https://www.npmjs.com/package/multistream-select)
+## Installation
+
+### npm
+
+```sh
+> npm i multistream-select
+```
+
+## Setup
+
+### Node.js
+
+```js
+const multistream = require('multistream-select')
+```
+
+### Browser: Browserify, Webpack, other bundlers
+
+The code published to npm that gets loaded on require is in fact a ES5
+transpiled version with the right shims added. This means that you can require
+it and use with your favourite bundler without having to adjust asset management
+process.
+
+```js
+const multistream = require('multistream-select')
+```
+
+### Browser: `<script>` Tag
+
+Loading this module through a script tag will make the `Multistream` obj available in
+the global namespace.
+
+```html
+<script src="https://npmcdn.com/multistream-select/dist/index.min.js"></script>
+<!-- OR -->
+<script src="https://npmcdn.com/multistream-select/dist/index.js"></script>
+```
 
 ## How does it work
 

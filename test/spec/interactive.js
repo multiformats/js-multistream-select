@@ -1,60 +1,46 @@
-var Lab = require('lab')
-var Code = require('code')
-var lab = exports.lab = Lab.script()
+/* eslint-env mocha */
+'use strict'
 
-var experiment = lab.experiment
-var test = lab.test
-var before = lab.before
-var after = lab.after
-var expect = Code.expect
-
+var expect = require('chai').expect
 var tcp = require('net')
 var MultiStream = require('../../src/')
+var capture = require('./capture')
 
-experiment('Node.js Implementation: ', function () {
+describe('Spec: interactive', function () {
   var msS
   var msI
   var dogsDS
 
-  before(function (done) {
-    done()
+  before(function () {
+    capture(8124, 8125, 'interactive', 'select')
   })
 
-  after(function (done) {
-    done()
-  })
-
-  test('create a Select MultiStream', function (done) {
+  it('create a Select MultiStream', function () {
     msS = new MultiStream.Select()
     expect(msS).to.be.an.instanceof(MultiStream.Select)
-    done()
   })
 
-  test('create a Interactive MultiStream()', function (done) {
+  it('create a Interactive MultiStream()', function () {
     msI = new MultiStream.Interactive()
     expect(msI).to.be.an.instanceof(MultiStream.Interactive)
-    done()
   })
 
-  test('attach a duplex stream to Select MultiStream (tcp server)', function (done) {
+  it('attach a duplex stream to Select MultiStream (tcp server)', function () {
     tcp.createServer(function (socket) {
       msS.handle(socket)
-    }).listen(8010)
-    done()
+    }).listen(8125)
   })
 
-  test('register two handlers', function (done) {
+  it('register two handlers', function () {
     msS.addHandler('/dogs/0.1.0', function (ds) {
       dogsDS = ds
     })
 
     msS.addHandler('/cats/1.2.11', function (ds) {})
-
-    done()
   })
 
-  test('ls', function (done) {
-    var socket = tcp.connect({port: 8010}, connected)
+  it('ls', function (done) {
+    var socket = tcp.connect({port: 8124}, connected)
 
     function connected () {
       msI.handle(socket, function () {
@@ -69,17 +55,16 @@ experiment('Node.js Implementation: ', function () {
         })
       })
     }
-
   })
 
-  test('select one non existing protocol->handler', function (done) {
+  it('select one non existing protocol->handler', function (done) {
     msI.select('/mouse/1.1.0', function (err, ds) {
       expect(err).to.be.an.instanceof(Error)
       done()
     })
   })
 
-  test('select one of the protocol->handler', function (done) {
+  it('select one of the protocol->handler', function (done) {
     msI.select('/dogs/0.1.0', function (err, ds) {
       if (err) {
         return console.log(err)

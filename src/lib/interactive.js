@@ -1,3 +1,5 @@
+'use strict'
+
 var lpm = require('length-prefixed-message')
 var PROTOCOLID = require('./protocol-id')
 
@@ -26,8 +28,8 @@ function Interactive () {
         callback()
       } else {
         lpm.write(duplexStream, new Buffer('na' + '\n'))
-      // TODO: multistream/version not supported, propose a new one.
-      // So far we only have one version.
+        // TODO: multistream/version not supported, propose a new one.
+        // So far we only have one version.
       }
     })
   }
