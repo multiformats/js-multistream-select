@@ -44,5 +44,11 @@
     "length-prefixed-message": "^3.0.3",
     "pre-commit": "^1.1.2",
     "stream-pair": "^1.0.3"
-  }
+  },
+  "contributors": [
+    "David Dias <daviddias.p@gmail.com>",
+    "David Dias <mail@daviddias.me>",
+    "Richard Littauer <richard.littauer@gmail.com>",
+    "dignifiedquire <dignifiedquire@gmail.com>"
+  ]
 }
