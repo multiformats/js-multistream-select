@@ -1,6 +1,6 @@
 {
   "name": "multistream-select",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Implementation of multistream spec https://github.com/ipfs/specs/blob/wire/protocol/network/wire.md#multistream",
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
