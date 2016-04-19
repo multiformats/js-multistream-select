@@ -35,13 +35,13 @@
   "author": "David Dias <daviddias@ipfs.io>",
   "license": "MIT",
   "dependencies": {
-    "babel-runtime": "^6.6.1"
+    "babel-runtime": "^6.6.1",
+    "length-prefixed-message": "^3.0.3"
   },
   "devDependencies": {
     "aegir": "^2.1.1",
     "bl": "^1.1.2",
     "chai": "^3.5.0",
-    "length-prefixed-message": "^3.0.3",
     "pre-commit": "^1.1.2",
     "stream-pair": "^1.0.3"
   },
