@@ -79,7 +79,6 @@ describe('Implmentation: interactive', function () {
       msI.handle(dialer, () => {
         msI.ls((err, ls) => {
           expect(err).to.not.exist
-          ls = JSON.parse(ls)
           expect(ls[0]).to.equal('/dogs/0.1.0')
           expect(ls[1]).to.equal('/cats/1.2.11')
           done()

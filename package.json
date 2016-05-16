@@ -30,16 +30,18 @@
     "labs"
   ],
   "engines": {
-    "node": "^4.2.0"
+    "node": "^4.4.0"
   },
   "author": "David Dias <daviddias@ipfs.io>",
   "license": "MIT",
   "dependencies": {
+    "async": "^2.0.0-rc.4",
     "babel-runtime": "^6.6.1",
-    "length-prefixed-message": "^3.0.3"
+    "length-prefixed-message": "^3.0.3",
+    "varint": "^4.0.0"
   },
   "devDependencies": {
-    "aegir": "^2.1.1",
+    "aegir": "^3.0.2",
     "bl": "^1.1.2",
     "chai": "^3.5.0",
     "pre-commit": "^1.1.2",
