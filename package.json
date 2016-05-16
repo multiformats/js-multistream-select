@@ -1,7 +1,7 @@
 {
   "name": "multistream-select",
   "version": "0.6.5",
-  "description": "Implementation of multistream spec https://github.com/ipfs/specs/blob/wire/protocol/network/wire.md#multistream",
+  "description": "JavaScript implementation of the multistream spec",
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
   "scripts": {
@@ -35,13 +35,15 @@
   "author": "David Dias <daviddias@ipfs.io>",
   "license": "MIT",
   "dependencies": {
-    "async": "^2.0.0-rc.4",
     "babel-runtime": "^6.6.1",
     "length-prefixed-message": "^3.0.3",
+    "lodash.range": "^3.1.5",
+    "run-series": "^1.1.4",
     "varint": "^4.0.0"
   },
   "devDependencies": {
     "aegir": "^3.0.2",
+    "run-parallel": "^1.1.6",
     "bl": "^1.1.2",
     "chai": "^3.5.0",
     "pre-commit": "^1.1.2",

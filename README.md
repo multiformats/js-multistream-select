@@ -1,5 +1,5 @@
-js-multistream
-==============
+multistream implementation in JavaScript
+========================================
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
@@ -40,7 +40,7 @@ const multistream = require('multistream-select')
 
 ### Browser: `<script>` Tag
 
-Loading this module through a script tag will make the `Multistream` obj available in
+Loading this module through a script tag will make the `MultistreamSelect` obj available in
 the global namespace.
 
 ```html
@@ -49,24 +49,15 @@ the global namespace.
 <script src="https://npmcdn.com/multistream-select/dist/index.js"></script>
 ```
 
-## How does it work
+## What is multistream
 
-Two modes of operation:
-- silent - broadcast - For one-way style of communications (for when you need a push like MultiStream
-- interactive - select - When you want to suport more than one Protocol in your MultiStream at the same time, where the receiver "selects" the right handler for a specific stream, while the sender "interactively" picks the protocol it wants to use throw `req-ack` and/or `ls` for protocol listing
+tl;dr: multistream is protocol multiplexing per connection/stream. [Full spec here](https://github.com/jbenet/multistream)
 
-### silent - broadcast
+multistream-select has currently one mode of operation:
 
-The sender doesn't have a confirmation of message reception. Both the dialing endpoint or the caller endpoint can act as the "broadcaster" while the other acts as silent
+- normal - handshake on a protocol on a given stream
 
-```
-# Establis a connection through your desired transport
-< /multistream-select/0.3.0            # let's speak multistream-select/0.3.0
-< /pfs/QmBBQ.../time/0.1.2.            # i'm going to speak time/0.1.2
-< 2015-06-07 14:32:11
-```
-
-### interactive - select
+#### Normal mode
 
 The caller will send "interactive" messages, expecting for some acknowledgement from the callee, which will "select" the handler for the desired and supported protocol
 
@@ -84,20 +75,51 @@ The caller will send "interactive" messages, expecting for some acknowledgement 
 
 This mode also packs a `ls` option, so that the callee can list the protocols it currently supports
 
+
 ## Usage/Examples
 
-### silent - broadcast
+### Attach multistream to a connection (socket)
 
-Reference to the examples on the examples folder:
-- https://github.com/diasdavid/js-multistream/blob/master/examples/tcp-peer-silent.js
-- https://github.com/diasdavid/js-multistream/blob/master/examples/tcp-peer-broadcast.js
+```JavaScript
+const Multistream = require('multistream-select')
 
-### interactive - select
+const ms = new Multistream(conn, <isListener>, callback])
+```
 
-Reference to the examples on the examples folder:
-- https://github.com/diasdavid/js-multistream/blob/master/examples/tcp-interactive.js
-- https://github.com/diasdavid/js-multistream/blob/master/examples/tcp-select.js
+ms will be a dialer or listener multistream, depending on the `isListener` flag, which can be `true` or `false`.
 
-## Other impl
+### Handling a protocol
+
+This function is only available in Listener mode
+
+```JavaScript
+ms.addHandler(<protocol>, <handlerFunc>)
+```
+
+- `protocol` is a string identifying the protocol.
+- `handlerFunc` is a function of type `function (conn)` that will be called if there is a handshake performed on `protocol`.
+
+### Selecting a protocol
+
+This function is only available in Dialer mode
+
+```JavaScript
+ms.select(<protocol>, <callback>)
+```
+
+- `protocol` is a string of the protocol that we want to handshake.
+- `callback` is a function of type `function (err, conn)` where `err` is an error object that gets passed if something wrong happend (e.g: if the protocol selected is not supported by the other end) and conn is the connection handshaked with the other end. 
+
+### Listing the available protocols
+
+This function is only available in Dialer mode
+
+```JavaScript
+ms.ls(<callback>)
+```
+
+`callback` is a function of type `function (err, protocols)` where `err` is an error object that gets passed if something wrong happend and `protocols` is an array of the supported protocols in the other end.
+
+## Other implementations of multistream
 
 - [go-multistream](https://github.com/whyrusleeping/go-multistream)
