@@ -2,6 +2,7 @@
 
 var lpm = require('length-prefixed-message')
 var PROTOCOLID = require('./protocol-id')
+var varint = require('varint')
 
 exports = module.exports = Select
 exports.createSelect = createSelect
@@ -44,7 +45,22 @@ function Select () {
         }
 
         if (msg === 'ls') {
-          lpm.write(duplexStream, new Buffer(JSON.stringify(Object.keys(handlers)) + '\n'))
+          var protos = Object.keys(handlers)
+          var nProtos = protos.length
+          let size = 0 // total size of the list of protocols, including varint and newline
+          protos.forEach((proto) => {
+            var p = new Buffer(proto + '\n')
+            var el = varint.encodingLength(p.length)
+            size += el
+          })
+
+          var nProtoVI = new Buffer(varint.encode(nProtos))
+          var sizeVI = new Buffer(varint.encode(size))
+          var buf = Buffer.concat([nProtoVI, sizeVI, new Buffer('\n')])
+          lpm.write(duplexStream, buf)
+          protos.forEach((proto) => {
+            lpm.write(duplexStream, new Buffer(proto + '\n'))
+          })
           return interactive()
         }
 

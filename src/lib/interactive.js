@@ -2,6 +2,8 @@
 
 var lpm = require('length-prefixed-message')
 var PROTOCOLID = require('./protocol-id')
+var async = require('async')
+var varint = require('varint')
 
 exports = module.exports = Interactive
 exports.createInteractive = createInteractive
@@ -35,9 +37,21 @@ function Interactive () {
   }
 
   self.ls = function ls (callback) {
+
     lpm.write(self.duplexStream, new Buffer('ls' + '\n'))
+    let protos = []
     lpm.read(self.duplexStream, function (msgBuffer) {
-      callback(null, msgBuffer.toString().slice(0, -1))
+      var size = varint.decode(msgBuffer)
+      var nProtos = varint.decode(msgBuffer, varint.decode.bytes)
+
+      async.times(nProtos, (n, next) => {
+        lpm.read(self.duplexStream, function (msgBuffer) {
+          protos.push(msgBuffer.toString().slice(0, -1))
+          next()
+        })
+      }, (err) => {
+        callback(null, protos)
+      })
     })
   }
 
