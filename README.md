@@ -83,7 +83,11 @@ This mode also packs a `ls` option, so that the callee can list the protocols it
 ```JavaScript
 const Multistream = require('multistream-select')
 
-const ms = new Multistream(<isListener>)
+const ms = new multistream.Listener()
+// or 
+const ms = new multistream.Dialer()
+
+// apply the multistream to the conn
 ms.handle(conn, callback)
 ```
 

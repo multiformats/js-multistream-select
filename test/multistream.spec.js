@@ -4,7 +4,7 @@
 
 const expect = require('chai').expect
 const streamPair = require('stream-pair')
-const Multistream = require('../src/')
+const multistream = require('../src')
 const parallel = require('run-parallel')
 const series = require('run-series')
 const bl = require('bl')
@@ -17,12 +17,12 @@ describe('multistream normal mode', function () {
 
     parallel([
       (cb) => {
-        const msl = new Multistream(true)
+        const msl = new multistream.Listener()
         expect(msl).to.exist
         msl.handle(listenerConn, cb)
       },
       (cb) => {
-        const msd = new Multistream(false)
+        const msd = new multistream.Dialer()
         expect(msd).to.exist
         msd.handle(dialerConn, cb)
       }
@@ -40,12 +40,12 @@ describe('multistream normal mode', function () {
       (next) => {
         parallel([
           (cb) => {
-            msl = new Multistream(true)
+            msl = new multistream.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new Multistream(false)
+            msd = new multistream.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -83,12 +83,12 @@ describe('multistream normal mode', function () {
       (next) => {
         parallel([
           (cb) => {
-            msl = new Multistream(true)
+            msl = new multistream.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new Multistream(false)
+            msd = new multistream.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -114,12 +114,12 @@ describe('multistream normal mode', function () {
       (next) => {
         parallel([
           (cb) => {
-            msl = new Multistream(true)
+            msl = new multistream.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new Multistream(false)
+            msd = new multistream.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -157,45 +157,6 @@ describe('multistream normal mode', function () {
     ], done)
   })
 
-  it('fail on select in a listener and addHandler on a dialer', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
-
-    let msl
-    let msd
-    series([
-      (next) => {
-        parallel([
-          (cb) => {
-            msl = new Multistream(true)
-            expect(msl).to.exist
-            msl.handle(listenerConn, cb)
-          },
-          (cb) => {
-            msd = new Multistream(false)
-            expect(msd).to.exist
-            msd.handle(dialerConn, cb)
-          }
-        ], next)
-      },
-      (next) => {
-        try {
-          msd.addHandler('/monkey/1.0.0', (conn) => {})
-        } catch (err) {
-          expect(err).to.exist
-          next()
-        }
-      },
-      (next) => {
-        msl.select('/monkey/1.0.0', (err, conn) => {
-          expect(err).to.exist
-          next()
-        })
-      }
-    ], done)
-  })
-
   it('handler must be a function', (done) => {
     const sp = streamPair.create()
     const dialerConn = sp
@@ -207,12 +168,12 @@ describe('multistream normal mode', function () {
       (next) => {
         parallel([
           (cb) => {
-            msl = new Multistream(true)
+            msl = new multistream.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new Multistream(false)
+            msd = new multistream.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -229,31 +190,6 @@ describe('multistream normal mode', function () {
     ], done)
   })
 
-  it('isListener defaults to false', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
-
-    let msl
-    let msd
-    series([
-      (next) => {
-        parallel([
-          (cb) => {
-            msl = new Multistream(true)
-            expect(msl).to.exist
-            msl.handle(listenerConn, cb)
-          },
-          (cb) => {
-            msd = new Multistream()
-            expect(msd).to.exist
-            msd.handle(dialerConn, cb)
-          }
-        ], next)
-      }
-    ], done)
-  })
-
   it('racing condition resistent', (done) => {
     const sp = streamPair.create()
     const dialerConn = sp
@@ -265,7 +201,7 @@ describe('multistream normal mode', function () {
       (cb) => {
         series([
           (next) => {
-            msl = new Multistream(true)
+            msl = new multistream.Listener()
             expect(msl).to.exist
             setTimeout(() => {
               msl.handle(listenerConn, next)
@@ -280,7 +216,7 @@ describe('multistream normal mode', function () {
         ], cb)
       },
       (cb) => {
-        msd = new Multistream(false)
+        msd = new multistream.Dialer()
         msd.handle(dialerConn, (err) => {
           expect(err).to.not.exist
           msd.select('/monkey/1.0.0', (err, conn) => {
