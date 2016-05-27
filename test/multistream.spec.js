@@ -72,6 +72,59 @@ describe('multistream normal mode', function () {
     ], done)
   })
 
+  it('handle and select a protocol, respecting pause and resume ', (done) => {
+    const sp = streamPair.create()
+    const dialerConn = sp
+    const listenerConn = sp.other
+    let handled = false
+    let msl
+    let msd
+    series([
+      (next) => {
+        parallel([
+          (cb) => {
+            msl = new multistream.Listener()
+            expect(msl).to.exist
+            msl.handle(listenerConn, cb)
+          },
+          (cb) => {
+            msd = new multistream.Dialer()
+            expect(msd).to.exist
+            msd.handle(dialerConn, cb)
+          }
+        ], next)
+      },
+      (next) => {
+        dialerConn.cork()
+        listenerConn.pause()
+
+        msl.addHandler('/monkey/1.0.0', (conn) => {
+          handled = true
+          conn.pipe(conn)
+        })
+        next()
+      },
+      (next) => {
+        msd.select('/monkey/1.0.0', (err, conn) => {
+          expect(err).to.not.exist
+          conn.pipe(bl((err, data) => {
+            expect(err).to.not.exist
+            expect(data.toString()).to.equal('banana')
+            expect(handled).to.be.eql(true)
+            next()
+          }))
+          conn.write('banana')
+          conn.end()
+        })
+        setTimeout(() => {
+          expect(handled).to.be.eql(false)
+          dialerConn.uncork()
+          listenerConn.resume()
+        }, 100)
+      }
+    ], done)
+  })
+
   it('select non existing proto', (done) => {
     const sp = streamPair.create()
     const dialerConn = sp

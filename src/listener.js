@@ -1,6 +1,6 @@
 'use strict'
 
-const lpm = require('length-prefixed-message')
+const lps = require('length-prefixed-stream')
 const PROTOCOL_ID = require('./protocol-id')
 const varint = require('varint')
 
@@ -12,28 +12,30 @@ function Listener () {
   }
 
   const handlers = {}
+  const encode = lps.encode()
+  const decode = lps.decode()
   let conn
 
   // perform the multistream handshake
   this.handle = (_conn, callback) => {
-    lpm.write(_conn, new Buffer(PROTOCOL_ID + '\n'))
-    listenerMultistreamHandshakeCheck()
+    encode.pipe(_conn)
+    _conn.pipe(decode)
 
-    function listenerMultistreamHandshakeCheck () {
-      lpm.read(_conn, (buffer) => {
-        const msg = buffer.toString().slice(0, -1)
-        if (msg === PROTOCOL_ID) {
-          conn = _conn
-          lpm.read(conn, incMsg)
-          callback()
-        } else {
-          // TODO This would be where we try to support other versions
-          // of multistream (backwards compatible). Currently we have
-          // just one, so this never happens.
-          return callback(new Error('not supported version of multistream'))
-        }
-      })
-    }
+    encode.write(new Buffer(PROTOCOL_ID + '\n'))
+
+    decode.once('data', (buffer) => {
+      const msg = buffer.toString().slice(0, -1)
+      if (msg === PROTOCOL_ID) {
+        conn = _conn
+        decode.once('data', incMsg)
+        callback()
+      } else {
+        // TODO This would be where we try to support other versions
+        // of multistream (backwards compatible). Currently we have
+        // just one, so this never happens.
+        return callback(new Error('not supported version of multistream'))
+      }
+    })
 
     function incMsg (msgBuffer) {
       const msg = msgBuffer.toString().slice(0, -1)
@@ -51,23 +53,22 @@ function Listener () {
         var nProtoVI = new Buffer(varint.encode(nProtos))
         var sizeVI = new Buffer(varint.encode(size))
         var buf = Buffer.concat([nProtoVI, sizeVI, new Buffer('\n')])
-        lpm.write(conn, buf)
+        encode.write(buf)
         protos.forEach((proto) => {
-          lpm.write(conn, new Buffer(proto + '\n'))
+          encode.write(new Buffer(proto + '\n'))
         })
       }
 
       if (handlers[msg]) {
         // Protocol supported, ACK back
-        lpm.write(conn, new Buffer(msg + '\n'))
+        encode.write(new Buffer(msg + '\n'))
         return handlers[msg](conn)
       } else {
         // Protocol not supported, wait for new handshake
-        lpm.write(conn, new Buffer('na' + '\n'))
+        encode.write(new Buffer('na' + '\n'))
       }
 
-      // continue listening
-      lpm.read(conn, incMsg)
+      decode.once('data', incMsg)
     }
   }
 
