@@ -1,10 +1,10 @@
 'use strict'
 
-const lpm = require('length-prefixed-message')
+const lps = require('length-prefixed-stream')
 const PROTOCOL_ID = require('./protocol-id')
 const varint = require('varint')
 const range = require('lodash.range')
-const parallel = require('run-parallel')
+const series = require('run-series')
 
 exports = module.exports = Dialer
 
@@ -12,14 +12,20 @@ function Dialer () {
   if (!(this instanceof Dialer)) {
     return new Dialer()
   }
+
+  const encode = lps.encode()
+  const decode = lps.decode()
   let conn
 
   // perform the multistream handshake
   this.handle = (_conn, callback) => {
-    lpm.read(_conn, (buffer) => {
+    encode.pipe(_conn)
+    _conn.pipe(decode)
+
+    decode.once('data', (buffer) => {
       const msg = buffer.toString().slice(0, -1)
       if (msg === PROTOCOL_ID) {
-        lpm.write(_conn, new Buffer(PROTOCOL_ID + '\n'))
+        encode.write(new Buffer(PROTOCOL_ID + '\n'))
         conn = _conn
         callback()
       } else {
@@ -33,8 +39,8 @@ function Dialer () {
       return callback(new Error('multistream handshake has not finalized yet'))
     }
 
-    lpm.write(conn, new Buffer(protocol + '\n'))
-    lpm.read(conn, function (msgBuffer) {
+    encode.write(new Buffer(protocol + '\n'))
+    decode.once('data', function (msgBuffer) {
       const msg = msgBuffer.toString().slice(0, -1)
       if (msg === protocol) {
         return callback(null, conn)
@@ -46,14 +52,14 @@ function Dialer () {
   }
 
   this.ls = (callback) => {
-    lpm.write(conn, new Buffer('ls' + '\n'))
+    encode.write(new Buffer('ls' + '\n'))
     let protos = []
-    lpm.read(conn, function (msgBuffer) {
+    decode.once('data', function (msgBuffer) {
       const size = varint.decode(msgBuffer) // eslint-disable-line
       const nProtos = varint.decode(msgBuffer, varint.decode.bytes)
 
-      times(nProtos, (n, next) => {
-        lpm.read(conn, function (msgBuffer) {
+      timesSeries(nProtos, (n, next) => {
+        decode.once('data', function (msgBuffer) {
           protos.push(msgBuffer.toString().slice(0, -1))
           next()
         })
@@ -67,6 +73,6 @@ function Dialer () {
   }
 }
 
-function times (i, work, callback) {
-  parallel(range(i).map((i) => (callback) => work(i, callback)), callback)
+function timesSeries (i, work, callback) {
+  series(range(i).map((i) => (callback) => work(i, callback)), callback)
 }

@@ -16,6 +16,10 @@
     "coverage": "aegir-coverage",
     "coverage-publish": "aegir-coverage publish"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diasdavid/js-multistream.git"
+  },
   "pre-commit": [
     "lint",
     "test"
@@ -38,7 +42,7 @@
   "license": "MIT",
   "dependencies": {
     "babel-runtime": "^6.6.1",
-    "length-prefixed-message": "^3.0.3",
+    "length-prefixed-stream": "^1.5.0",
     "lodash.range": "^3.1.5",
     "run-series": "^1.1.4",
     "varint": "^4.0.0"
