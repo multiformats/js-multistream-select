@@ -2,13 +2,38 @@
 
 const Rx = require('rxjs/Rx')
 const PROTOCOL_ID = require('./protocol-id')
-const varint = require('varint')
+const varint = require('./varint')
+const mMsg = require('./m-msg')
 
 module.exports = class Listener {
-  handle (observer) {
-    const varObserver = createVarint(observer)
+  constructor () {
+    this.handlers = {}
+  }
 
-    varObserver
+  _ls () {
+    const protos = Object.keys(this.handlers)
+    const nProtos = protos.length
+    // total size of the list of protocols,
+    // including varint and newline
+    const size = protos.reduce((size, proto) => {
+      const p = mMsg(proto)
+      const el = varint.encodingLength(p.length)
+      return size + el
+    }, 0)
+
+    const header = Buffer.concat([
+      new Buffer(varint.encode(nProtos)),
+      new Buffer(varint.encode(size)),
+      new Buffer('\n')
+    ])
+
+    return [header].concat(protos.map(mMsg))
+  }
+
+  handle (observer) {
+    const varObserver = varint.create(observer)
+
+    const messages = varObserver
       .first()
       .mergeMap((msg) => {
         if (msg === PROTOCOL_ID) {
@@ -21,46 +46,46 @@ module.exports = class Listener {
           new Error('not supported version of multistream')
         )
       })
+     .map((msg) => msg.toString().slice(0, -1))
 
-    varObserver.next(new Buffer(PROTOCOL_ID + '\n'))
+    varObserver.next(mMsg(PROTOCOL_ID))
 
-    function incMsg (msgBuffer) {
-      const msg = msgBuffer.toString().slice(0, -1)
+    const isLs = (msg) => msg === 'ls'
+    const isHandler = (msg) => Boolean(this.handlers[msg])
+    const isUnkwon = (msg) => !isLs(msg) && !isHandler(msg)
 
-      if (msg === 'ls') {
-        const protos = Object.keys(handlers)
-        const nProtos = protos.length
-        // total size of the list of protocols, including varint and newline
-        const size = protos.reduce((size, proto) => {
-          var p = new Buffer(proto + '\n')
-          var el = varint.encodingLength(p.length)
-          return size + el
-        }, 0)
+    const res = new Rx.Subject()
+    messages
+      .mergeMap((msg) => {
+        if (isLs(msg)) {
+          this.ls().forEach((line) => {
+            varObserver.next(line)
+          })
+        }
 
-        var nProtoVI = new Buffer(varint.encode(nProtos))
-        var sizeVI = new Buffer(varint.encode(size))
-        var buf = Buffer.concat([nProtoVI, sizeVI, new Buffer('\n')])
-        encode.write(buf)
-        protos.forEach((proto) => {
-          encode.write(new Buffer(proto + '\n'))
-        })
-      }
+        if (isHandler(msg)) {
+          // Protocol supported, ACK back
+          varObserver.next(mMsg(msg))
+          const handler = this.handlers[msg]
+          handler.subscribe(messages.skip(1))
+          varObserver.subscribe(handler)
+          res.next(handler)
+        }
 
-      if (handlers[msg]) {
-        // Protocol supported, ACK back
-        encode.write(new Buffer(msg + '\n'))
-        return handlers[msg](conn)
-      } else {
-        // Protocol not supported, wait for new handshake
-        encode.write(new Buffer('na' + '\n'))
-      }
+        if (isUnkwon(msg)) {
+          // Protocol not supported, wait for new handshake
+          varObserver.next(mMsg('na'))
+        }
 
-      decode.once('data', incMsg)
-    }
+        return messages.skip(1)
+      })
+      .retry()
   }
 
   // be ready for a given `protocol`
-  select (protocol) {
+  addHandler (protocol) {
+    this.handlers[protocol] = new Rx.Subject()
 
+    return this.handlers[protocol]
   }
 }

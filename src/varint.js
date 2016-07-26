@@ -10,28 +10,68 @@ exports.encode = function encode (msg) {
 }
 
 // [_, 1, _, 0, 3, 2, _, 3, 3]
-
-exports.create = function createVarint (observer) {
-  const bytes = observer.mergeMap((msg) => {
+function toBytes (observer) {
+  return observer.mergeMap((msg) => {
     if (msg.length === 1) {
       return Rx.Observable.of(msg)
     }
 
     return Rx.Observable.from(msg.toJSON().data)
   })
+}
 
-  const delimiter = bytes.filter((byte) => !(byte & 0x80))
+class MsgState {
+  constructor () {
+    this.parsingLength = true
+    this.lengthBytes = []
+    this.messageBytes = []
+    this.length = null
+  }
 
-  // len|___len|___len|___len
-  const res = bytes
-          .bufferWhen(delimiter)
-          .bufferCount(2)
-          .expand(([len, msg]) => {
-            const parsedLen = varint.decode(len)
-            return Rx.Observable
-              .of(msg.slice(parsedLen))
-              .concat(rest.skip(2))
-          })
+  get ready () {
+    return this.length === this.messageBytes.length
+  }
+
+  get message () {
+    return new Buffer(this.messageBytes)
+  }
+
+  get parsingMessage () {
+    return !this.parsingLength
+  }
+
+  add (byte) {
+    if (this.parsingLength) {
+      this.lengthBytes.push(byte)
+      const len = varint.decode(this.lengthBytes)
+      if (len) {
+        this.length = len
+        this.parsingLength = false
+      }
+      return this
+    }
+
+    if (this.ready) {
+      const state = new MsgState()
+      state.add(byte)
+      return state
+    }
+
+    if (this.parsingMessage) {
+      this.messageBytes.push(byte)
+      return this
+    }
+  }
+}
+
+exports.create = function createVarint (observer) {
+  const res = toBytes(observer)
+          .scan(
+            (state, byte) => state.add(byte),
+            new MsgState()
+          )
+          .filter((state) => state.ready)
+          .map((state) => state.message)
 
   res.next = (msg) => {
     observer.next(exports.encode(msg))

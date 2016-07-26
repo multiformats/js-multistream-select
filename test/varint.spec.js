@@ -6,8 +6,8 @@ const Rx = require('rxjs/Rx')
 
 const varint = require('../src/varint')
 
-describe.only('varint', () => {
-  it('works', (done) => {
+describe('varint', () => {
+  it('reads', (done) => {
     const source = Rx.Observable.from([
       varint.encode(new Buffer('hello')),
       varint.encode(new Buffer('world'))
@@ -22,5 +22,24 @@ describe.only('varint', () => {
         ])
         done()
       }, done)
+  })
+
+  it('writes', (done) => {
+    const target = new Rx.Subject()
+    const encoded = varint.create(target)
+
+    target
+      .toArray()
+      .subscribe((msgs) => {
+        expect(msgs).be.eql([
+          varint.encode(new Buffer('hello')),
+          varint.encode(new Buffer('world'))
+        ])
+        done()
+      }, done)
+
+    encoded.next(new Buffer('hello'))
+    encoded.next(new Buffer('world'))
+    encoded.complete()
   })
 })

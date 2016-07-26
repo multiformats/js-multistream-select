@@ -50,10 +50,11 @@
   },
   "devDependencies": {
     "aegir": "^4.0.0",
-    "run-parallel": "^1.1.6",
     "bl": "^1.1.2",
     "chai": "^3.5.0",
     "pre-commit": "^1.1.2",
+    "run-parallel": "^1.1.6",
+    "rxjs.node": "^0.2.0",
     "stream-pair": "^1.0.3"
   },
   "contributors": [

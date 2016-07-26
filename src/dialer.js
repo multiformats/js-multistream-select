@@ -1,78 +1,70 @@
 'use strict'
 
-const lps = require('length-prefixed-stream')
-const PROTOCOL_ID = require('./protocol-id')
+const Rx = require('rxjs/Rx')
 const varint = require('varint')
-const range = require('lodash.range')
-const series = require('run-series')
 
-exports = module.exports = Dialer
+const PROTOCOL_ID = require('./protocol-id')
+const varintObserver = require('./varint').create
+const mMsg = require('./m-msg')
 
-function Dialer () {
-  if (!(this instanceof Dialer)) {
-    return new Dialer()
-  }
-
-  const encode = lps.encode()
-  const decode = lps.decode()
-  let conn
-
+module.exports = class Dialer {
   // perform the multistream handshake
-  this.handle = (_conn, callback) => {
-    encode.pipe(_conn)
-    _conn.pipe(decode)
+  handle (observer) {
+    this.conn = varintObserver(observer)
 
-    decode.once('data', (buffer) => {
-      const msg = buffer.toString().slice(0, -1)
-      if (msg === PROTOCOL_ID) {
-        encode.write(new Buffer(PROTOCOL_ID + '\n'))
-        conn = _conn
-        callback()
-      } else {
-        callback(new Error('Incompatible multistream'))
-      }
-    })
+    this.messages = this.conn
+      .first()
+      .mergeMap((msg) => {
+        if (msg === PROTOCOL_ID) {
+          this.conn.next(mMsg(PROTOCOL_ID))
+          return this.conn.skip(1)
+        }
+
+        return Rx.Observable.throw(new Error('Incompatible multistream'))
+      })
+      .map((msg) => msg.toString().slice(0, -1))
   }
 
-  this.select = (protocol, callback) => {
-    if (!conn) {
-      return callback(new Error('multistream handshake has not finalized yet'))
+  select (protocol) {
+    const res = new Rx.Subject()
+    if (!this.conn) {
+      return Rx.Observable.throw(new Error('Handshake not completed'))
     }
 
-    encode.write(new Buffer(protocol + '\n'))
-    decode.once('data', function (msgBuffer) {
-      const msg = msgBuffer.toString().slice(0, -1)
-      if (msg === protocol) {
-        return callback(null, conn)
-      }
-      if (msg === 'na') {
-        return callback(new Error(protocol + ' not supported'))
-      }
-    })
-  }
+    this.conn.next(mMsg(protocol))
 
-  this.ls = (callback) => {
-    encode.write(new Buffer('ls' + '\n'))
-    let protos = []
-    decode.once('data', function (msgBuffer) {
-      const size = varint.decode(msgBuffer) // eslint-disable-line
-      const nProtos = varint.decode(msgBuffer, varint.decode.bytes)
-
-      timesSeries(nProtos, (n, next) => {
-        decode.once('data', function (msgBuffer) {
-          protos.push(msgBuffer.toString().slice(0, -1))
-          next()
-        })
-      }, (err) => {
-        if (err) {
-          return callback(err)
+    this.messages
+      .first()
+      .mergeMap((msg) => {
+        if (msg === protocol) {
+          return this.messages.skip(1)
         }
-        callback(null, protos)
-      })
-    })
-  }
-}
 
-function timesSeries (i, work, callback) {
-  series(range(i).map((i) => (callback) => work(i, callback)), callback)
+        if (msg === 'na') {
+          return Rx.Observable.throw(
+            new Error(`${protocol} not supported`)
+          )
+        }
+
+        return Rx.Observable.throw(
+          new Error('Unkown message type')
+        )
+      })
+      .subscribe(res)
+
+    this.conn.subscribe(res)
+
+    return res
+  }
+
+  ls () {
+    this.conn.next(mMsg('ls'))
+    return this.messages
+      .first()
+      .mergeMap((msg) => {
+        const size = varint.decode(msg) // eslint-disable-line
+        const nProtos = varint.decode(msg, varint.decode.bytes)
+        return this.messages.skip(1).take(nProtos)
+      })
+  }
 }

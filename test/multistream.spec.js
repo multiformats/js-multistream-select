@@ -11,7 +11,7 @@ const node = require('rxjs.node')
 const multistream = require('../src')
 
 describe('multistream normal mode', function () {
-  it('handle and select a protocol', (done) => {
+  it.only('handle and select a protocol', (done) => {
     const sp = streamPair.create()
     const dialerConn = node.fromStream(sp)
     const listenerConn = node.fromStream(sp.other)
@@ -22,16 +22,24 @@ describe('multistream normal mode', function () {
     const msd = new multistream.Dialer()
     msd.handle(dialerConn)
 
-    msl.select('/monkey/1.0.0')
+    msl.addHandler('/monkey/1.0.0')
       .subscribe((conn) => {
-        conn.subscribe((msg) => conn.next(msg.toString() + '!'))
+        console.log('got conn')
+        conn.subscribe((msg) => {
+          console.log('replay', msg)
+          conn.next(msg.toString() + '!')
+        })
       })
 
     msd.select('/monkey/1.0.0')
       .subscribe((conn) => {
+        console.log('got conn select')
         conn.subscribe((msg) => {
+          console.log('got msg', msg)
           expect(msg.toString()).to.be.eql('banana!')
+          done()
         })
+        console.log('writing')
         conn.next('banana')
       })
   })
