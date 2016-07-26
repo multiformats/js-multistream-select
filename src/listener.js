@@ -1,41 +1,28 @@
 'use strict'
 
-const lps = require('length-prefixed-stream')
+const Rx = require('rxjs/Rx')
 const PROTOCOL_ID = require('./protocol-id')
 const varint = require('varint')
 
-exports = module.exports = Listener
+module.exports = class Listener {
+  handle (observer) {
+    const varObserver = createVarint(observer)
 
-function Listener () {
-  if (!(this instanceof Listener)) {
-    return new Listener()
-  }
-
-  const handlers = {}
-  const encode = lps.encode()
-  const decode = lps.decode()
-  let conn
-
-  // perform the multistream handshake
-  this.handle = (_conn, callback) => {
-    encode.pipe(_conn)
-    _conn.pipe(decode)
-
-    encode.write(new Buffer(PROTOCOL_ID + '\n'))
-
-    decode.once('data', (buffer) => {
-      const msg = buffer.toString().slice(0, -1)
-      if (msg === PROTOCOL_ID) {
-        conn = _conn
-        decode.once('data', incMsg)
-        callback()
-      } else {
+    varObserver
+      .first()
+      .mergeMap((msg) => {
+        if (msg === PROTOCOL_ID) {
+          return varObserver.skip(1)
+        }
         // TODO This would be where we try to support other versions
         // of multistream (backwards compatible). Currently we have
         // just one, so this never happens.
-        return callback(new Error('not supported version of multistream'))
-      }
-    })
+        return Rx.Observable.throw(
+          new Error('not supported version of multistream')
+        )
+      })
+
+    varObserver.next(new Buffer(PROTOCOL_ID + '\n'))
 
     function incMsg (msgBuffer) {
       const msg = msgBuffer.toString().slice(0, -1)
@@ -73,11 +60,7 @@ function Listener () {
   }
 
   // be ready for a given `protocol`
-  this.addHandler = (protocol, handlerFunc) => {
-    if ((typeof handlerFunc !== 'function')) {
-      throw new Error('handler function must be a function')
-    }
+  select (protocol) {
 
-    handlers[protocol] = handlerFunc
   }
 }

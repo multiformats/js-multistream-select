@@ -1,75 +1,39 @@
 /* eslint-env mocha */
-
 'use strict'
 
 const expect = require('chai').expect
 const streamPair = require('stream-pair')
-const multistream = require('../src')
 const parallel = require('run-parallel')
 const series = require('run-series')
 const bl = require('bl')
+const node = require('rxjs.node')
+
+const multistream = require('../src')
 
 describe('multistream normal mode', function () {
-  it('performs multistream handshake', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
-
-    parallel([
-      (cb) => {
-        const msl = new multistream.Listener()
-        expect(msl).to.exist
-        msl.handle(listenerConn, cb)
-      },
-      (cb) => {
-        const msd = new multistream.Dialer()
-        expect(msd).to.exist
-        msd.handle(dialerConn, cb)
-      }
-    ], done)
-  })
-
   it('handle and select a protocol', (done) => {
     const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
+    const dialerConn = node.fromStream(sp)
+    const listenerConn = node.fromStream(sp.other)
 
-    let msl
-    let msd
-    series([
-      (next) => {
-        parallel([
-          (cb) => {
-            msl = new multistream.Listener()
-            expect(msl).to.exist
-            msl.handle(listenerConn, cb)
-          },
-          (cb) => {
-            msd = new multistream.Dialer()
-            expect(msd).to.exist
-            msd.handle(dialerConn, cb)
-          }
-        ], next)
-      },
-      (next) => {
-        msl.addHandler('/monkey/1.0.0', (conn) => {
-          conn.pipe(conn)
+    const msl = new multistream.Listener()
+    msl.handle(listenerConn)
+
+    const msd = new multistream.Dialer()
+    msd.handle(dialerConn)
+
+    msl.select('/monkey/1.0.0')
+      .subscribe((conn) => {
+        conn.subscribe((msg) => conn.next(msg.toString() + '!'))
+      })
+
+    msd.select('/monkey/1.0.0')
+      .subscribe((conn) => {
+        conn.subscribe((msg) => {
+          expect(msg.toString()).to.be.eql('banana!')
         })
-        next()
-      },
-      (next) => {
-        msd.select('/monkey/1.0.0', (err, conn) => {
-          expect(err).to.not.exist
-          conn.pipe(bl((err, data) => {
-            expect(err).to.not.exist
-            expect(data.toString()).to.equal('banana')
-            next()
-          }))
-          conn.write('banana')
-          conn.end()
-        })
-      }
-    ], done)
+        conn.next('banana')
+      })
   })
 
   it('handle and select a protocol, respecting pause and resume ', (done) => {

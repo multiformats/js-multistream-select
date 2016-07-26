@@ -45,10 +45,11 @@
     "length-prefixed-stream": "^1.5.0",
     "lodash.range": "^3.1.5",
     "run-series": "^1.1.4",
+    "rxjs": "^5.0.0-beta.10",
     "varint": "^4.0.0"
   },
   "devDependencies": {
-    "aegir": "^3.1.0",
+    "aegir": "^4.0.0",
     "run-parallel": "^1.1.6",
     "bl": "^1.1.2",
     "chai": "^3.5.0",
