@@ -1,6 +1,9 @@
 'use strict'
 
 const Rx = require('rxjs/Rx')
+const debug = require('debug')
+const log = debug('multistream:listener')
+
 const PROTOCOL_ID = require('./protocol-id')
 const varint = require('./varint')
 const mMsg = require('./m-msg')
@@ -31,12 +34,14 @@ module.exports = class Listener {
   }
 
   handle (observer) {
+    log('adding handler')
     const varObserver = varint.create(observer)
 
     const messages = varObserver
       .first()
       .mergeMap((msg) => {
         if (msg === PROTOCOL_ID) {
+          log('ack multistream')
           return varObserver.skip(1)
         }
         // TODO This would be where we try to support other versions
@@ -48,6 +53,7 @@ module.exports = class Listener {
       })
      .map((msg) => msg.toString().slice(0, -1))
 
+    log('sending multistream')
     varObserver.next(mMsg(PROTOCOL_ID))
 
     const isLs = (msg) => msg === 'ls'
@@ -58,6 +64,7 @@ module.exports = class Listener {
     messages
       .mergeMap((msg) => {
         if (isLs(msg)) {
+          log('sending ls')
           this.ls().forEach((line) => {
             varObserver.next(line)
           })
@@ -73,13 +80,15 @@ module.exports = class Listener {
         }
 
         if (isUnkwon(msg)) {
+          log('unkown protocol: %s', msg)
           // Protocol not supported, wait for new handshake
           varObserver.next(mMsg('na'))
         }
 
         return messages.skip(1)
       })
-      .retry()
+
+    varObserver.subscribe()
   }
 
   // be ready for a given `protocol`

@@ -5,7 +5,7 @@ const varint = require('varint')
 exports.encode = function encode (msg) {
   return Buffer.concat([
     new Buffer(varint.encode(msg.length)),
-    msg
+    Buffer.isBuffer(msg) ? msg : new Buffer (msg)
   ])
 }
 

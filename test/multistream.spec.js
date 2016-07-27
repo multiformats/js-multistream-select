@@ -16,6 +16,12 @@ describe('multistream normal mode', function () {
     const dialerConn = node.fromStream(sp)
     const listenerConn = node.fromStream(sp.other)
 
+    sp.on('data', (chunk) => {
+      console.log('dialer: ', chunk.toString())
+    })
+    sp.other.on('data', (chunk) => {
+      console.log('listener: ', chunk.toString())
+    })
     const msl = new multistream.Listener()
     msl.handle(listenerConn)
 
@@ -31,17 +37,16 @@ describe('multistream normal mode', function () {
         })
       })
 
-    msd.select('/monkey/1.0.0')
-      .subscribe((conn) => {
-        console.log('got conn select')
-        conn.subscribe((msg) => {
-          console.log('got msg', msg)
-          expect(msg.toString()).to.be.eql('banana!')
-          done()
-        })
-        console.log('writing')
-        conn.next('banana')
+    const m2 = msd.select('/monkey/1.0.0')
+
+    m2
+      .subscribe((msg) => {
+        console.log('got msg', msg)
+        expect(msg.toString()).to.be.eql('banana!')
+        done()
       })
+    console.log('writing')
+    m2.next('banana')
   })
 
   it('handle and select a protocol, respecting pause and resume ', (done) => {
