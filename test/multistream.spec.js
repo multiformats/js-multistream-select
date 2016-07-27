@@ -9,6 +9,8 @@ const bl = require('bl')
 const node = require('rxjs.node')
 
 const multistream = require('../src')
+const Dialer = multistream.Dialer
+const Listener = multistream.Listener
 
 describe('multistream normal mode', function () {
   it.only('handle and select a protocol', (done) => {
@@ -22,31 +24,29 @@ describe('multistream normal mode', function () {
     sp.other.on('data', (chunk) => {
       console.log('listener: ', chunk.toString())
     })
-    const msl = new multistream.Listener()
-    msl.handle(listenerConn)
 
-    const msd = new multistream.Dialer()
-    msd.handle(dialerConn)
+    const dialer = new Dialer(dialerConn)
+    const listener = new Listener(listenerConn)
 
-    msl.addHandler('/monkey/1.0.0')
+    listener.addHandler('/monkey/1.0.0')
       .subscribe((conn) => {
         console.log('got conn')
+
         conn.subscribe((msg) => {
           console.log('replay', msg)
           conn.next(msg.toString() + '!')
+          // conn.unsubscribe()
         })
       })
 
-    const m2 = msd.select('/monkey/1.0.0')
+    const monkey = dialer.select('/monkey/1.0.0')
+    monkey.next('banana')
 
-    m2
-      .subscribe((msg) => {
-        console.log('got msg', msg)
-        expect(msg.toString()).to.be.eql('banana!')
-        done()
-      })
-    console.log('writing')
-    m2.next('banana')
+    monkey.subscribe((msg) => {
+      console.log('msg', msg)
+      //expect(msg.toString()).to.be.eql('banana!')
+      //done()
+    }, done)
   })
 
   it('handle and select a protocol, respecting pause and resume ', (done) => {

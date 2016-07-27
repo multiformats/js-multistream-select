@@ -9,8 +9,12 @@ const varint = require('./varint')
 const mMsg = require('./m-msg')
 
 module.exports = class Listener {
-  constructor () {
+  constructor (observer) {
+    this.conn = varint.create(observer)
+
     this.handlers = {}
+
+    this._setupHandshake()
   }
 
   _ls () {
@@ -33,62 +37,56 @@ module.exports = class Listener {
     return [header].concat(protos.map(mMsg))
   }
 
-  handle (observer) {
-    log('adding handler')
-    const varObserver = varint.create(observer)
+  _setupHandshake () {
+    log('initiating multistream')
+    this.conn.next(mMsg(PROTOCOL_ID))
 
-    const messages = varObserver
+    const isLs = (msg) => msg === 'ls'
+    const isHandler = (msg) => Boolean(this.handlers[msg])
+    const isUnknown = (msg) => !isLs(msg) && !isHandler(msg)
+
+    const shake = this.conn
+      .map((msg) => msg.toString().slice(0, -1))
       .first()
       .mergeMap((msg) => {
+        log('message', msg)
         if (msg === PROTOCOL_ID) {
           log('ack multistream')
-          return varObserver.skip(1)
+          return this.conn
         }
-        // TODO This would be where we try to support other versions
-        // of multistream (backwards compatible). Currently we have
+        // TODO: This would be where we try to support
+        // other versions of multistream (backwards
+        // compatible). Currently we have
         // just one, so this never happens.
         return Rx.Observable.throw(
           new Error('not supported version of multistream')
         )
       })
-     .map((msg) => msg.toString().slice(0, -1))
+      .map((msg) => msg.toString().slice(0, -1))
+      .subscribe((msg) => {
+        log('processing msg', msg)
 
-    log('sending multistream')
-    varObserver.next(mMsg(PROTOCOL_ID))
-
-    const isLs = (msg) => msg === 'ls'
-    const isHandler = (msg) => Boolean(this.handlers[msg])
-    const isUnkwon = (msg) => !isLs(msg) && !isHandler(msg)
-
-    const res = new Rx.Subject()
-    messages
-      .mergeMap((msg) => {
         if (isLs(msg)) {
           log('sending ls')
           this.ls().forEach((line) => {
-            varObserver.next(line)
+            this.conn.next(line)
           })
         }
 
         if (isHandler(msg)) {
+          log('ack: %s', msg)
           // Protocol supported, ACK back
-          varObserver.next(mMsg(msg))
-          const handler = this.handlers[msg]
-          handler.subscribe(messages.skip(1))
-          varObserver.subscribe(handler)
-          res.next(handler)
+          this.conn.next(mMsg(msg))
+          this.handlers[msg].next(this.conn)
+          shake.unsubscribe()
         }
 
-        if (isUnkwon(msg)) {
+        if (isUnknown(msg)) {
           log('unkown protocol: %s', msg)
           // Protocol not supported, wait for new handshake
-          varObserver.next(mMsg('na'))
+          this.conn.next(mMsg('na'))
         }
-
-        return messages.skip(1)
       })
-
-    varObserver.subscribe()
   }
 
   // be ready for a given `protocol`

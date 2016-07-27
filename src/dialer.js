@@ -10,41 +10,50 @@ const varintObserver = require('./varint').create
 const mMsg = require('./m-msg')
 
 module.exports = class Dialer {
-  // perform the multistream handshake
-  handle (observer) {
-    log('adding handler')
-
+  constructor (observer) {
     this.conn = varintObserver(observer)
       .map((msg) => msg.toString().slice(0, -1))
 
-    this.messages = this.conn
+    this._setupHandshake()
+    this._handshakeObserver = new Rx.Subject()
+  }
+
+  // perform the multistream handshake
+  _setupHandshake () {
+    this.conn
       .first()
       .mergeMap((msg) => {
         if (msg === PROTOCOL_ID) {
           log('ack multistream')
           this.conn.next(mMsg(PROTOCOL_ID))
-          return this.conn.skip(1)
+          this._handshakeObserver.next()
+          return this.conn
         }
-
-        return Rx.Observable.throw(new Error('Incompatible multistream'))
+        const err = new Error('Incompatible multistream')
+        this._handshakeObserver.error(err)
+        return Rx.Observable.throw(err)
       })
+      .subscribe()
   }
 
   select (protocol) {
-    log('selecting: %s', protocol)
+    const res = new Rx.ReplaySubject()
 
-    if (!this.conn) {
-      return Rx.Observable.throw(new Error('Handshake not completed'))
-    }
-
-    this.conn.next(mMsg(protocol))
-
-    const res = this.messages
+    const shake = this._handshakeObserver
+      .mergeMap(() => {
+        log('selecting %s', protocol)
+        this.conn.next(mMsg(protocol))
+        return this.conn
+      })
       .first()
       .mergeMap((msg) => {
+        log('processing msg', msg)
         if (msg === protocol) {
-          log('ack protocol: %s', protocol)
-          return this.messages.skip(1)
+          log('ack: %s', protocol)
+          res.subscribe(this.conn)
+          this.conn.subscribe(res)
+          shake.unsubscribe()
+          return Rx.Observable.empty()
         }
 
         if (msg === 'na') {
@@ -59,8 +68,8 @@ module.exports = class Dialer {
           new Error('Unkown message type')
         )
       })
+      .subscribe()
 
-    this.conn.subscribe(res)
     return res
   }
 

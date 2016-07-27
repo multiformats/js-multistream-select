@@ -74,6 +74,7 @@ exports.create = function createVarint (observer) {
           .map((state) => state.message)
 
   res.next = (msg) => {
+    console.log('writing', msg)
     observer.next(exports.encode(msg))
   }
 
