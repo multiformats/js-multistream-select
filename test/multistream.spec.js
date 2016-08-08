@@ -3,17 +3,17 @@
 'use strict'
 
 const expect = require('chai').expect
-const streamPair = require('stream-pair')
+const pull = require('pull-stream')
+const pair = require('pull-pair/duplex')
 const multistream = require('../src')
 const parallel = require('run-parallel')
 const series = require('run-series')
-const bl = require('bl')
 
 describe('multistream normal mode', function () {
   it('performs multistream handshake', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
+    const p = pair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
 
     parallel([
       (cb) => {
@@ -30,9 +30,9 @@ describe('multistream normal mode', function () {
   })
 
   it('handle and select a protocol', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
+    const p = pair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
 
     let msl
     let msd
@@ -53,82 +53,36 @@ describe('multistream normal mode', function () {
       },
       (next) => {
         msl.addHandler('/monkey/1.0.0', (conn) => {
-          conn.pipe(conn)
+          pull(conn, conn)
         })
         next()
       },
       (next) => {
         msd.select('/monkey/1.0.0', (err, conn) => {
           expect(err).to.not.exist
-          conn.pipe(bl((err, data) => {
-            expect(err).to.not.exist
-            expect(data.toString()).to.equal('banana')
-            next()
-          }))
-          conn.write('banana')
-          conn.end()
-        })
-      }
-    ], done)
-  })
 
-  it('handle and select a protocol, respecting pause and resume ', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
-    let handled = false
-    let msl
-    let msd
-    series([
-      (next) => {
-        parallel([
-          (cb) => {
-            msl = new multistream.Listener()
-            expect(msl).to.exist
-            msl.handle(listenerConn, cb)
-          },
-          (cb) => {
-            msd = new multistream.Dialer()
-            expect(msd).to.exist
-            msd.handle(dialerConn, cb)
-          }
-        ], next)
-      },
-      (next) => {
-        dialerConn.cork()
-        listenerConn.pause()
-
-        msl.addHandler('/monkey/1.0.0', (conn) => {
-          handled = true
-          conn.pipe(conn)
+          pull(
+            pull.values(['banana']),
+            conn,
+            pull.collect((err, data) => {
+              expect(err).to.not.exist
+              expect(
+                data
+              ).to.be.eql(
+                ['banana']
+              )
+              next()
+            })
+          )
         })
-        next()
-      },
-      (next) => {
-        msd.select('/monkey/1.0.0', (err, conn) => {
-          expect(err).to.not.exist
-          conn.pipe(bl((err, data) => {
-            expect(err).to.not.exist
-            expect(data.toString()).to.equal('banana')
-            expect(handled).to.be.eql(true)
-            next()
-          }))
-          conn.write('banana')
-          conn.end()
-        })
-        setTimeout(() => {
-          expect(handled).to.be.eql(false)
-          dialerConn.uncork()
-          listenerConn.resume()
-        }, 100)
       }
     ], done)
   })
 
   it('select non existing proto', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
+    const p = pair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
 
     let msl
     let msd
@@ -157,9 +111,9 @@ describe('multistream normal mode', function () {
   })
 
   it('ls', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
+    const p = pair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
 
     let msl
     let msd
@@ -180,19 +134,19 @@ describe('multistream normal mode', function () {
       },
       (next) => {
         msl.addHandler('/monkey/1.0.0', (conn) => {
-          conn.pipe(conn)
+          pull(conn, conn)
         })
         next()
       },
       (next) => {
         msl.addHandler('/giraffe/2.0.0', (conn) => {
-          conn.pipe(conn)
+          pull(conn, conn)
         })
         next()
       },
       (next) => {
         msl.addHandler('/elephant/2.5.0', (conn) => {
-          conn.pipe(conn)
+          pull(conn, conn)
         })
         next()
       },
@@ -211,9 +165,9 @@ describe('multistream normal mode', function () {
   })
 
   it('handler must be a function', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
+    const p = pair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
 
     let msl
     let msd
@@ -233,20 +187,20 @@ describe('multistream normal mode', function () {
         ], next)
       },
       (next) => {
-        try {
-          msd.addHandler('/monkey/1.0.0', 'potato')
-        } catch (err) {
-          expect(err).to.exist
-          next()
-        }
+        expect(
+          () => msl.addHandler('/monkey/1.0.0', 'potato')
+        ).to.throw(
+          /must be a function/
+        )
+        next()
       }
     ], done)
   })
 
   it('racing condition resistent', (done) => {
-    const sp = streamPair.create()
-    const dialerConn = sp
-    const listenerConn = sp.other
+    const p = pair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
 
     let msl
     let msd
@@ -262,7 +216,7 @@ describe('multistream normal mode', function () {
           },
           (next) => {
             msl.addHandler('/monkey/1.0.0', (conn) => {
-              conn.pipe(conn)
+              pull(conn, conn)
             })
             next()
           }
@@ -274,13 +228,20 @@ describe('multistream normal mode', function () {
           expect(err).to.not.exist
           msd.select('/monkey/1.0.0', (err, conn) => {
             expect(err).to.not.exist
-            conn.pipe(bl((err, data) => {
-              expect(err).to.not.exist
-              expect(data.toString()).to.equal('banana')
-              cb()
-            }))
-            conn.write('banana')
-            conn.end()
+
+            pull(
+              pull.values(['banana']),
+              conn,
+              pull.collect((err, data) => {
+                expect(err).to.not.exist
+                expect(
+                  data
+                ).to.be.eql(
+                  ['banana']
+                )
+                cb()
+              })
+            )
           })
         })
       }
