@@ -3,6 +3,7 @@
 const lp = require('pull-length-prefixed')
 const varint = require('varint')
 const pull = require('pull-stream')
+const Connection = require('interface-connection').Connection
 const debug = require('debug')
 const log = debug('libp2p:multistream:dialer')
 
@@ -15,7 +16,7 @@ module.exports = class Dialer {
   }
 
   // perform the multistream handshake
-  handle (conn, cb) {
+  handle (rawConn, cb) {
     log('handling connection')
     const ms = agreement.dial(PROTOCOL_ID, (err, conn) => {
       if (err) {
@@ -23,10 +24,11 @@ module.exports = class Dialer {
       }
       log('handshake success')
 
-      this.conn = conn
+      this.conn = new Connection(conn, rawConn)
+
       cb()
     })
-    pull(conn, ms, conn)
+    pull(rawConn, ms, rawConn)
   }
 
   select (protocol, cb) {
@@ -40,8 +42,7 @@ module.exports = class Dialer {
         return cb(err)
       }
       // TODO: handle 'na'
-
-      cb(null, conn)
+      cb(null, new Connection(conn, this.conn))
     })
 
     pull(this.conn, stream, this.conn)

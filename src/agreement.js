@@ -3,12 +3,13 @@
 const handshake = require('pull-handshake')
 const lp = require('pull-length-prefixed')
 const pull = require('pull-stream')
+const Connection = require('interface-connection').Connection
 const debug = require('debug')
 const log = debug('libp2p:multistream:agreement')
 log.error = debug('libp2p:multistream:agreement:error')
 
 exports.dial = (header, cb) => {
-  const stream = handshake(cb)
+  const stream = handshake({timeout: 60 * 1000}, cb)
   const shake = stream.handshake
 
   log('writing header %s', header)
@@ -28,12 +29,12 @@ exports.dial = (header, cb) => {
   return stream
 }
 
-exports.listen = (handlersMap, defaultHandler) => {
+exports.listen = (rawConn, handlersMap, defaultHandler) => {
   const cb = (err) => {
     // TODO: pass errors somewhere
     log.error(err)
   }
-  const stream = handshake(cb)
+  const stream = handshake({timeout: 60 * 1000}, cb)
   const shake = stream.handshake
 
   lp.decodeFromReader(shake, (err, data) => {
@@ -45,8 +46,7 @@ exports.listen = (handlersMap, defaultHandler) => {
     if (key) {
       log('ack: %s', protocol)
       writeEncoded(shake, data, cb)
-
-      handlersMap[key](shake.rest())
+      handlersMap[key](new Connection(shake.rest(), rawConn))
     } else {
       log('unkown protocol: %s', protocol)
       defaultHandler(protocol, shake.rest())

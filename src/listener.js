@@ -21,11 +21,10 @@ module.exports = class Listener {
   // perform the multistream handshake
   handle (conn, cb) {
     log('handling connection')
-    const ms = agreement.listen({
+    const ms = agreement.listen(conn, {
       [PROTOCOL_ID]: (conn) => {
         log('handshake success')
-
-        const msgHandler = agreement.listen(this.handlers, (protocol, conn) => {
+        const msgHandler = agreement.listen(conn, this.handlers, (protocol, conn) => {
           log('unkown protocol: %s', protocol)
           pull(
             pull.values([new Buffer('na')]),
