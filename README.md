@@ -1,7 +1,7 @@
-multistream implementation in JavaScript
-========================================
+# js-multistream
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
+[![](https://img.shields.io/badge/project-multiformats-blue.svg?style=flat-square)](http://github.com/multiformats/multiformats)
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 [![Coverage Status](https://coveralls.io/repos/github/diasdavid/js-multistream/badge.svg?branch=master)](https://coveralls.io/github/diasdavid/js-multistream?branch=master)
@@ -9,53 +9,37 @@ multistream implementation in JavaScript
 [![Circle CI](https://circleci.com/gh/diasdavid/js-multistream.svg?style=svg)](https://circleci.com/gh/diasdavid/js-multistream)
 [![Dependency Status](https://david-dm.org/diasdavid/js-multistream.svg?style=flat-square)](https://david-dm.org/diasdavid/js-multistream) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 
-> JavaScript implementation of [multistream](https://github.com/jbenet/multistream).
+> JavaScript implementation of [multistream](https://github.com/multiformats/multistream).
 
-## Installation
+## Table of Contents
 
-### npm
+- [Background](#background)
+  - [What is multistream](#what-is-multistream)
+    - [Normal mode](#normal-mode)
+- [Install](#install)
+  - [npm](#npm)
+  - [Setup](#setup)
+    - [Node.js](#nodejs)
+    - [Browser: Browserify, Webpack, other bundlers](#browser-browserify-webpack-other-bundlers)
+    - [Browser: `<script>` Tag](#browser-script-tag)
+- [Usage](#usage)
+  - [Attach multistream to a connection (socket)](#attach-multistream-to-a-connection-socket)
+  - [Handling a protocol](#handling-a-protocol)
+  - [Selecting a protocol](#selecting-a-protocol)
+  - [Listing the available protocols](#listing-the-available-protocols)
+- [Maintainers](#maintainers)
+- [Contribute](#contribute)
+- [License](#license)
 
-```sh
-> npm i multistream-select
-```
+## Background
 
-## Setup
-
-### Node.js
-
-```js
-const multistream = require('multistream-select')
-```
-
-### Browser: Browserify, Webpack, other bundlers
-
-The code published to npm that gets loaded on require is in fact a ES5
-transpiled version with the right shims added. This means that you can require
-it and use with your favourite bundler without having to adjust asset management
-process.
-
-```js
-const multistream = require('multistream-select')
-```
-
-### Browser: `<script>` Tag
-
-Loading this module through a script tag will make the `MultistreamSelect` obj available in
-the global namespace.
-
-```html
-<script src="https://npmcdn.com/multistream-select/dist/index.min.js"></script>
-<!-- OR -->
-<script src="https://npmcdn.com/multistream-select/dist/index.js"></script>
-```
-
-## What is multistream
+### What is multistream
 
 tl;dr: multistream is protocol multiplexing per connection/stream. [Full spec here](https://github.com/jbenet/multistream)
 
 multistream-select has currently one mode of operation:
 
-- normal - handshake on a protocol on a given stream
+- `normal` - handshake on a protocol on a given stream
 
 #### Normal mode
 
@@ -75,8 +59,45 @@ The caller will send "interactive" messages, expecting for some acknowledgement 
 
 This mode also packs a `ls` option, so that the callee can list the protocols it currently supports
 
+## Install
 
-## Usage/Examples
+### npm
+
+```sh
+> npm i multistream-select
+```
+
+### Setup
+
+#### Node.js
+
+```js
+const multistream = require('multistream-select')
+```
+
+#### Browser: Browserify, Webpack, other bundlers
+
+The code published to npm that gets loaded on require is in fact a ES5
+transpiled version with the right shims added. This means that you can require
+it and use with your favourite bundler without having to adjust asset management
+process.
+
+```js
+const multistream = require('multistream-select')
+```
+
+#### Browser: `<script>` Tag
+
+Loading this module through a script tag will make the `MultistreamSelect` obj available in
+the global namespace.
+
+```html
+<script src="https://npmcdn.com/multistream-select/dist/index.min.js"></script>
+<!-- OR -->
+<script src="https://npmcdn.com/multistream-select/dist/index.js"></script>
+```
+
+## Usage
 
 ### Attach multistream to a connection (socket)
 
@@ -125,6 +146,19 @@ ms.ls(<callback>)
 
 `callback` is a function of type `function (err, protocols)` where `err` is an error object that gets passed if something wrong happend and `protocols` is an array of the supported protocols in the other end.
 
-## Other implementations of multistream
+## Maintainers
 
-- [go-multistream](https://github.com/whyrusleeping/go-multistream)
+Captain: [@diasdavid](https://github.com/diasdavid).
+
+## Contribute
+
+Contributions welcome. Please check out [the issues](https://github.com/multiformats/js-multistream/issues).
+
+Check out our [contributing document](https://github.com/multiformats/multiformats/blob/master/contributing.md) for more information on how we work, and about contributing in general. Please be aware that all interactions related to multiformats are subject to the IPFS [Code of Conduct](https://github.com/ipfs/community/blob/master/code-of-conduct.md).
+
+Small note: If editing the Readme, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+
+## License
+
+[MIT](LICENSE) © David Dias
+
