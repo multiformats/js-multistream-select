@@ -8,8 +8,8 @@ const assert = require('assert')
 const debug = require('debug')
 const log = debug('libp2p:multistream:listener')
 
-const PROTOCOL_ID = require('./protocol-id')
-const agreement = require('./agreement')
+const PROTOCOL_ID = require('./constants').PROTOCOL_ID
+const agrmt = require('./agreement')
 
 module.exports = class Listener {
   constructor () {
@@ -19,27 +19,32 @@ module.exports = class Listener {
   }
 
   // perform the multistream handshake
-  handle (conn, cb) {
+  handle (conn, callback) {
     log('handling connection')
-    const ms = agreement.listen(conn, {
+
+    // TODO, change this for a select step
+    const msHandler = {
       [PROTOCOL_ID]: (conn) => {
-        log('handshake success')
-        const msgHandler = agreement.listen(conn, this.handlers, (protocol, conn) => {
-          log('unkown protocol: %s', protocol)
-          pull(
-            pull.values([new Buffer('na')]),
-            conn
-          )
-        })
-        pull(conn, msgHandler, conn)
+        log('multistream handshake success')
 
-        cb()
+        const handlerSelector = agrmt.handlerSelector(conn, this.handlers)
+
+        pull(
+          conn,
+          handlerSelector,
+          conn
+        )
+
+        callback()
       }
-    }, () => {
-      cb(new Error('unkown protocol'))
-    })
+    }
 
-    pull(conn, ms, conn)
+    const handlerSelector = agrmt.handlerSelector(conn, msHandler)
+
+    pull(
+      conn,
+      handlerSelector,
+      conn)
   }
 
   // be ready for a given `protocol`
@@ -49,13 +54,13 @@ module.exports = class Listener {
     assert(isFunction(handler), 'handler must be a function')
 
     if (this.handlers[protocol]) {
-      // TODO: Do we want to handle this better?
       log('overwriting handler for %s', protocol)
     }
 
     this.handlers[protocol] = handler
   }
 
+  // inner function - handler for `ls`
   _ls (conn) {
     const protos = Object.keys(this.handlers)
       .filter((key) => key !== 'ls')

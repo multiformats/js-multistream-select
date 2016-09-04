@@ -8,37 +8,47 @@ const debug = require('debug')
 const log = debug('multistream:agreement')
 log.error = debug('multistream:agreement:error')
 
-exports.dial = (header, cb) => {
-  const stream = handshake({timeout: 60 * 1000}, cb)
+exports.select = (multicodec, callback) => {
+  const stream = handshake({
+    timeout: 60 * 1000
+  }, callback)
+
   const shake = stream.handshake
 
-  log('writing header %s', header)
-  writeEncoded(shake, new Buffer(header + '\n'), cb)
+  log('writing multicodec %s', multicodec)
+  writeEncoded(shake, new Buffer(multicodec + '\n'), callback)
 
   lp.decodeFromReader(shake, (err, data) => {
-    if (err) return cb(err)
+    if (err) {
+      return callback(err)
+    }
     const protocol = data.toString().slice(0, -1)
-    if (protocol !== header) {
-      cb(new Error(`Unkown header: "${protocol}"`))
+
+    if (protocol !== multicodec) {
+      callback(new Error(`"${multicodec}" not supported`))
     }
 
-    log('header ack')
-    cb(null, shake.rest())
+    log('multicodec ack')
+    callback(null, shake.rest())
   })
 
   return stream
 }
 
-exports.listen = (rawConn, handlersMap, defaultHandler) => {
+exports.handlerSelector = (rawConn, handlersMap) => {
   const cb = (err) => {
-    // TODO: pass errors somewhere
+    // incoming erros are irrelevant for the app
     log.error(err)
   }
-  const stream = handshake({timeout: 60 * 1000}, cb)
+  const stream = handshake({
+    timeout: 60 * 1000
+  }, cb)
   const shake = stream.handshake
 
   lp.decodeFromReader(shake, (err, data) => {
-    if (err) return cb(err)
+    if (err) {
+      return cb(err)
+    }
     log('received: %s', data.toString())
     const protocol = data.toString().slice(0, -1)
     const [key] = Object.keys(handlersMap).filter((id) => id === protocol)
@@ -49,7 +59,10 @@ exports.listen = (rawConn, handlersMap, defaultHandler) => {
       handlersMap[key](new Connection(shake.rest(), rawConn))
     } else {
       log('unkown protocol: %s', protocol)
-      defaultHandler(protocol, shake.rest())
+      pull(
+        pull.values([new Buffer('na')]),
+        shake.rest()
+      )
     }
   })
 
