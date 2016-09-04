@@ -31,7 +31,7 @@ describe('multistream dialer', () => {
   })
 })
 describe('multistream listener', () => {
-  it.skip('sends the multistream multicodec', (done) => {
+  it('sends the multistream multicodec', (done) => {
     const p = pair()
     const dialerConn = p[0]
     const listenerConn = p[1]

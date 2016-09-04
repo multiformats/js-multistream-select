@@ -37,12 +37,14 @@ exports.select = (multicodec, callback) => {
 
 exports.handlerSelector = (rawConn, handlersMap) => {
   const cb = (err) => {
-    // incoming erros are irrelevant for the app
+    // incoming errors are irrelevant for the app
     log.error(err)
   }
+
   const stream = handshake({
     timeout: 60 * 1000
   }, cb)
+
   const shake = stream.handshake
 
   lp.decodeFromReader(shake, (err, data) => {
@@ -69,6 +71,7 @@ exports.handlerSelector = (rawConn, handlersMap) => {
   return stream
 }
 
+// prefixes a message with a varint
 function encode (msg, cb) {
   const values = Buffer.isBuffer(msg) ? [msg] : [new Buffer(msg)]
 
@@ -76,7 +79,9 @@ function encode (msg, cb) {
     pull.values(values),
     lp.encode(),
     pull.collect((err, encoded) => {
-      if (err) return cb(err)
+      if (err) {
+        return cb(err)
+      }
       cb(null, encoded[0])
     })
   )
@@ -84,7 +89,9 @@ function encode (msg, cb) {
 
 function writeEncoded (writer, msg, cb) {
   encode(msg, (err, msg) => {
-    if (err) return cb(err)
+    if (err) {
+      return cb(err)
+    }
     writer.write(msg)
   })
 }

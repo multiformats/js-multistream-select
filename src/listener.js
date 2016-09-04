@@ -7,6 +7,7 @@ const isFunction = require('lodash.isfunction')
 const assert = require('assert')
 const debug = require('debug')
 const log = debug('libp2p:multistream:listener')
+const Connection = require('interface-connection').Connection
 
 const PROTOCOL_ID = require('./constants').PROTOCOL_ID
 const agrmt = require('./agreement')
@@ -19,10 +20,10 @@ module.exports = class Listener {
   }
 
   // perform the multistream handshake
-  handle (conn, callback) {
+  handle (rawConn, callback) {
     log('handling connection')
 
-    // TODO, change this for a select step
+    /*
     const msHandler = {
       [PROTOCOL_ID]: (conn) => {
         log('multistream handshake success')
@@ -44,7 +45,33 @@ module.exports = class Listener {
     pull(
       conn,
       handlerSelector,
-      conn)
+      conn
+    )
+    */
+
+    const selectStream = agrmt.select(PROTOCOL_ID, (err, conn) => {
+      if (err) {
+        return callback(err)
+      }
+
+      const hsConn = new Connection(conn, rawConn)
+
+      const handlerSelector = agrmt.handlerSelector(hsConn, this.handlers)
+
+      pull(
+        hsConn,
+        handlerSelector,
+        hsConn
+      )
+
+      callback()
+    })
+
+    pull(
+      rawConn,
+      selectStream,
+      rawConn
+    )
   }
 
   // be ready for a given `protocol`
