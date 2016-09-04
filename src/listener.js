@@ -23,32 +23,6 @@ module.exports = class Listener {
   handle (rawConn, callback) {
     log('handling connection')
 
-    /*
-    const msHandler = {
-      [PROTOCOL_ID]: (conn) => {
-        log('multistream handshake success')
-
-        const handlerSelector = agrmt.handlerSelector(conn, this.handlers)
-
-        pull(
-          conn,
-          handlerSelector,
-          conn
-        )
-
-        callback()
-      }
-    }
-
-    const handlerSelector = agrmt.handlerSelector(conn, msHandler)
-
-    pull(
-      conn,
-      handlerSelector,
-      conn
-    )
-    */
-
     const selectStream = agrmt.select(PROTOCOL_ID, (err, conn) => {
       if (err) {
         return callback(err)

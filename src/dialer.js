@@ -39,6 +39,7 @@ module.exports = class Dialer {
 
     const selectStream = agrmt.select(protocol, (err, conn) => {
       if (err) {
+        this.conn = new Connection(conn, this.conn)
         return callback(err)
       }
       callback(null, new Connection(conn, this.conn))

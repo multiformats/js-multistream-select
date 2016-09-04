@@ -25,7 +25,7 @@ exports.select = (multicodec, callback) => {
     const protocol = data.toString().slice(0, -1)
 
     if (protocol !== multicodec) {
-      callback(new Error(`"${multicodec}" not supported`))
+      return callback(new Error(`"${multicodec}" not supported`), shake.rest())
     }
 
     log('multicodec ack')
@@ -47,26 +47,28 @@ exports.handlerSelector = (rawConn, handlersMap) => {
 
   const shake = stream.handshake
 
-  lp.decodeFromReader(shake, (err, data) => {
-    if (err) {
-      return cb(err)
-    }
-    log('received: %s', data.toString())
-    const protocol = data.toString().slice(0, -1)
-    const [key] = Object.keys(handlersMap).filter((id) => id === protocol)
+  next()
 
-    if (key) {
-      log('ack: %s', protocol)
-      writeEncoded(shake, data, cb)
-      handlersMap[key](new Connection(shake.rest(), rawConn))
-    } else {
-      log('unkown protocol: %s', protocol)
-      pull(
-        pull.values([new Buffer('na')]),
-        shake.rest()
-      )
-    }
-  })
+  function next () {
+    lp.decodeFromReader(shake, (err, data) => {
+      if (err) {
+        return cb(err)
+      }
+      log('received: %s', data.toString())
+      const protocol = data.toString().slice(0, -1)
+      const [key] = Object.keys(handlersMap).filter((id) => id === protocol)
+
+      if (key) {
+        log('ack: %s', protocol)
+        writeEncoded(shake, data, cb)
+        handlersMap[key](new Connection(shake.rest(), rawConn))
+      } else {
+        log('received multicodec of not supported protocol: %s', protocol)
+        writeEncoded(shake, new Buffer('na\n'))
+        next()
+      }
+    })
+  }
 
   return stream
 }

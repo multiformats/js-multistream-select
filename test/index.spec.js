@@ -152,6 +152,61 @@ describe('multistream handshake', () => {
     ], done)
   })
 
+  it('select a non existing proto and then select an existing proto', (done) => {
+    const p = pair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
+
+    let msl
+    let msd
+    series([
+      (next) => {
+        parallel([
+          (cb) => {
+            msl = new multistream.Listener()
+            expect(msl).to.exist
+            msl.handle(listenerConn, cb)
+          },
+          (cb) => {
+            msd = new multistream.Dialer()
+            expect(msd).to.exist
+            msd.handle(dialerConn, cb)
+          }
+        ], next)
+      },
+      (next) => {
+        msl.addHandler('/monkey/1.0.0', (conn) => {
+          pull(conn, conn)
+        })
+        next()
+      },
+      (next) => {
+        msd.select('/sadpanda/1.0.0', (err) => {
+          expect(err).to.exist
+          next()
+        })
+      },
+      (next) => {
+        msd.select('/monkey/1.0.0', (err, conn) => {
+          expect(err).to.not.exist
+          pull(
+            pull.values(['banana']),
+            conn,
+            pull.collect((err, data) => {
+              expect(err).to.not.exist
+              expect(
+                data
+              ).to.be.eql(
+                ['banana']
+              )
+              next()
+            })
+          )
+        })
+      }
+    ], done)
+  })
+
   it('ls', (done) => {
     const p = pair()
     const dialerConn = p[0]
