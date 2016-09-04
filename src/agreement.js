@@ -5,8 +5,8 @@ const lp = require('pull-length-prefixed')
 const pull = require('pull-stream')
 const Connection = require('interface-connection').Connection
 const debug = require('debug')
-const log = debug('libp2p:multistream:agreement')
-log.error = debug('libp2p:multistream:agreement:error')
+const log = debug('multistream:agreement')
+log.error = debug('multistream:agreement:error')
 
 exports.dial = (header, cb) => {
   const stream = handshake({timeout: 60 * 1000}, cb)

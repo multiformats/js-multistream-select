@@ -4,13 +4,55 @@
 
 const expect = require('chai').expect
 const pull = require('pull-stream')
+const lp = require('pull-length-prefixed')
 const pair = require('pull-pair/duplex')
 const multistream = require('../src')
 const parallel = require('run-parallel')
 const series = require('run-series')
 
-describe('multistream normal mode', function () {
-  it('performs multistream handshake', (done) => {
+describe('multistream dialer', () => {
+  it('sends the multistream multicodec', (done) => {
+    const p = pair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
+
+    pull(
+      listenerConn,
+      lp.decode(),
+      pull.drain((data) => {
+        expect(data.toString()).to.equal('/multistream/1.0.0\n')
+        done()
+      })
+    )
+
+    const msd = new multistream.Dialer()
+    expect(msd).to.exist
+    msd.handle(dialerConn, () => {})
+  })
+})
+describe('multistream listener', () => {
+  it('sends the multistream multicodec', (done) => {
+    const p = pair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
+
+    pull(
+      dialerConn,
+      lp.decode(),
+      pull.drain((data) => {
+        expect(data.toString()).to.equal('/multistream/1.0.0\n')
+        done()
+      })
+    )
+
+    const msl = new multistream.Listener()
+    expect(msl).to.exist
+    msl.handle(listenerConn, () => {})
+  })
+})
+
+describe('multistream handshake', () => {
+  it('performs the handshake handshake', (done) => {
     const p = pair()
     const dialerConn = p[0]
     const listenerConn = p[1]
