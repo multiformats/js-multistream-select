@@ -1,83 +1,93 @@
 'use strict'
 
-const lps = require('length-prefixed-stream')
-const PROTOCOL_ID = require('./protocol-id')
+const lp = require('pull-length-prefixed')
+const pull = require('pull-stream')
 const varint = require('varint')
+const isFunction = require('lodash.isfunction')
+const assert = require('assert')
+const debug = require('debug')
+const log = debug('libp2p:multistream:listener')
+const Connection = require('interface-connection').Connection
 
-exports = module.exports = Listener
+const PROTOCOL_ID = require('./constants').PROTOCOL_ID
+const agrmt = require('./agreement')
 
-function Listener () {
-  if (!(this instanceof Listener)) {
-    return new Listener()
+module.exports = class Listener {
+  constructor () {
+    this.handlers = {
+      ls: (conn) => this._ls(conn)
+    }
   }
 
-  const handlers = {}
-  const encode = lps.encode()
-  const decode = lps.decode()
-  let conn
-
   // perform the multistream handshake
-  this.handle = (_conn, callback) => {
-    encode.pipe(_conn)
-    _conn.pipe(decode)
+  handle (rawConn, callback) {
+    log('handling connection')
 
-    encode.write(new Buffer(PROTOCOL_ID + '\n'))
-
-    decode.once('data', (buffer) => {
-      const msg = buffer.toString().slice(0, -1)
-      if (msg === PROTOCOL_ID) {
-        conn = _conn
-        decode.once('data', incMsg)
-        callback()
-      } else {
-        // TODO This would be where we try to support other versions
-        // of multistream (backwards compatible). Currently we have
-        // just one, so this never happens.
-        return callback(new Error('not supported version of multistream'))
+    const selectStream = agrmt.select(PROTOCOL_ID, (err, conn) => {
+      if (err) {
+        return callback(err)
       }
+
+      const hsConn = new Connection(conn, rawConn)
+
+      const handlerSelector = agrmt.handlerSelector(hsConn, this.handlers)
+
+      pull(
+        hsConn,
+        handlerSelector,
+        hsConn
+      )
+
+      callback()
     })
 
-    function incMsg (msgBuffer) {
-      const msg = msgBuffer.toString().slice(0, -1)
-
-      if (msg === 'ls') {
-        const protos = Object.keys(handlers)
-        const nProtos = protos.length
-        // total size of the list of protocols, including varint and newline
-        const size = protos.reduce((size, proto) => {
-          var p = new Buffer(proto + '\n')
-          var el = varint.encodingLength(p.length)
-          return size + el
-        }, 0)
-
-        var nProtoVI = new Buffer(varint.encode(nProtos))
-        var sizeVI = new Buffer(varint.encode(size))
-        var buf = Buffer.concat([nProtoVI, sizeVI, new Buffer('\n')])
-        encode.write(buf)
-        protos.forEach((proto) => {
-          encode.write(new Buffer(proto + '\n'))
-        })
-      }
-
-      if (handlers[msg]) {
-        // Protocol supported, ACK back
-        encode.write(new Buffer(msg + '\n'))
-        return handlers[msg](conn)
-      } else {
-        // Protocol not supported, wait for new handshake
-        encode.write(new Buffer('na' + '\n'))
-      }
-
-      decode.once('data', incMsg)
-    }
+    pull(
+      rawConn,
+      selectStream,
+      rawConn
+    )
   }
 
   // be ready for a given `protocol`
-  this.addHandler = (protocol, handlerFunc) => {
-    if ((typeof handlerFunc !== 'function')) {
-      throw new Error('handler function must be a function')
+  addHandler (protocol, handler) {
+    log('handling %s', protocol)
+
+    assert(isFunction(handler), 'handler must be a function')
+
+    if (this.handlers[protocol]) {
+      log('overwriting handler for %s', protocol)
     }
 
-    handlers[protocol] = handlerFunc
+    this.handlers[protocol] = handler
+  }
+
+  // inner function - handler for `ls`
+  _ls (conn) {
+    const protos = Object.keys(this.handlers)
+      .filter((key) => key !== 'ls')
+    const nProtos = protos.length
+    // total size of the list of protocols, including varint and newline
+    const size = protos.reduce((size, proto) => {
+      const p = new Buffer(proto + '\n')
+      const el = varint.encodingLength(p.length)
+      return size + el
+    }, 0)
+
+    const buf = Buffer.concat([
+      new Buffer(varint.encode(nProtos)),
+      new Buffer(varint.encode(size)),
+      new Buffer('\n')
+    ])
+
+    const encodedProtos = protos.map((proto) => {
+      return new Buffer(proto + '\n')
+    })
+    const values = [buf].concat(encodedProtos)
+
+    pull(
+      pull.values(values),
+      lp.encode(),
+      conn
+    )
   }
 }

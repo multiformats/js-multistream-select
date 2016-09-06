@@ -1,78 +1,100 @@
 'use strict'
 
-const lps = require('length-prefixed-stream')
-const PROTOCOL_ID = require('./protocol-id')
+const lp = require('pull-length-prefixed')
 const varint = require('varint')
-const range = require('lodash.range')
-const series = require('run-series')
+const pull = require('pull-stream')
+const Connection = require('interface-connection').Connection
+const debug = require('debug')
+const log = debug('multistream:dialer')
 
-exports = module.exports = Dialer
+const PROTOCOL_ID = require('./constants').PROTOCOL_ID
+const agrmt = require('./agreement')
 
-function Dialer () {
-  if (!(this instanceof Dialer)) {
-    return new Dialer()
+module.exports = class Dialer {
+  constructor () {
+    this.conn = null
   }
-
-  const encode = lps.encode()
-  const decode = lps.decode()
-  let conn
 
   // perform the multistream handshake
-  this.handle = (_conn, callback) => {
-    encode.pipe(_conn)
-    _conn.pipe(decode)
-
-    decode.once('data', (buffer) => {
-      const msg = buffer.toString().slice(0, -1)
-      if (msg === PROTOCOL_ID) {
-        encode.write(new Buffer(PROTOCOL_ID + '\n'))
-        conn = _conn
-        callback()
-      } else {
-        callback(new Error('Incompatible multistream'))
+  handle (rawConn, callback) {
+    log('handling connection')
+    const ms = agrmt.select(PROTOCOL_ID, (err, conn) => {
+      if (err) {
+        return callback(err)
       }
+      log('handshake success')
+
+      this.conn = new Connection(conn, rawConn)
+
+      callback()
     })
+    pull(rawConn, ms, rawConn)
   }
 
-  this.select = (protocol, callback) => {
-    if (!conn) {
+  select (protocol, callback) {
+    log('dialer select %s', protocol)
+    if (!this.conn) {
       return callback(new Error('multistream handshake has not finalized yet'))
     }
 
-    encode.write(new Buffer(protocol + '\n'))
-    decode.once('data', function (msgBuffer) {
-      const msg = msgBuffer.toString().slice(0, -1)
-      if (msg === protocol) {
-        return callback(null, conn)
+    const selectStream = agrmt.select(protocol, (err, conn) => {
+      if (err) {
+        this.conn = new Connection(conn, this.conn)
+        return callback(err)
       }
-      if (msg === 'na') {
-        return callback(new Error(protocol + ' not supported'))
-      }
+      callback(null, new Connection(conn, this.conn))
     })
+
+    pull(
+      this.conn,
+      selectStream,
+      this.conn
+    )
   }
 
-  this.ls = (callback) => {
-    encode.write(new Buffer('ls' + '\n'))
-    let protos = []
-    decode.once('data', function (msgBuffer) {
-      const size = varint.decode(msgBuffer) // eslint-disable-line
-      const nProtos = varint.decode(msgBuffer, varint.decode.bytes)
+  ls (callback) {
+    const lsStream = agrmt.select('ls', (err, conn) => {
+      if (err) {
+        return callback(err)
+      }
 
-      timesSeries(nProtos, (n, next) => {
-        decode.once('data', function (msgBuffer) {
-          protos.push(msgBuffer.toString().slice(0, -1))
-          next()
+      pull(
+        conn,
+        lp.decode(),
+        collectLs(conn),
+        pull.map(stringify),
+        pull.collect((err, list) => {
+          if (err) {
+            return callback(err)
+          }
+          callback(null, list.slice(1))
         })
-      }, (err) => {
-        if (err) {
-          return callback(err)
-        }
-        callback(null, protos)
-      })
+      )
     })
+
+    pull(
+      this.conn,
+      lsStream,
+      this.conn
+    )
   }
 }
 
-function timesSeries (i, work, callback) {
-  series(range(i).map((i) => (callback) => work(i, callback)), callback)
+function stringify (buf) {
+  return buf.toString().slice(0, -1)
+}
+
+function collectLs (conn) {
+  let first = true
+  let counter = 0
+
+  return pull.take((msg) => {
+    if (first) {
+      varint.decode(msg)
+      counter = varint.decode(msg, varint.decode.bytes)
+      return true
+    }
+
+    return counter-- > 0
+  })
 }
