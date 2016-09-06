@@ -56,7 +56,8 @@ exports.handlerSelector = (rawConn, handlersMap) => {
       }
       log('received: %s', data.toString())
       const protocol = data.toString().slice(0, -1)
-      const [key] = Object.keys(handlersMap).filter((id) => id === protocol)
+      const result = Object.keys(handlersMap).filter((id) => id === protocol)
+      const key = result && result[0]
 
       if (key) {
         log('ack: %s', protocol)

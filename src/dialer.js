@@ -90,7 +90,7 @@ function collectLs (conn) {
 
   return pull.take((msg) => {
     if (first) {
-      const size = varint.decode(msg) // eslint-disable-line
+      varint.decode(msg)
       counter = varint.decode(msg, varint.decode.bytes)
       return true
     }
