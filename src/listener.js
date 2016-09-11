@@ -6,7 +6,7 @@ const varint = require('varint')
 const isFunction = require('lodash.isfunction')
 const assert = require('assert')
 const debug = require('debug')
-const log = debug('libp2p:multistream:listener')
+const log = debug('multistream:listener')
 const Connection = require('interface-connection').Connection
 
 const PROTOCOL_ID = require('./constants').PROTOCOL_ID
@@ -21,7 +21,8 @@ module.exports = class Listener {
 
   // perform the multistream handshake
   handle (rawConn, callback) {
-    log('handling connection')
+    const msThreadId = getRandomId()
+    log('(%s) listener handle conn', msThreadId)
 
     const selectStream = agrmt.select(PROTOCOL_ID, (err, conn) => {
       if (err) {
@@ -30,7 +31,8 @@ module.exports = class Listener {
 
       const hsConn = new Connection(conn, rawConn)
 
-      const handlerSelector = agrmt.handlerSelector(hsConn, this.handlers)
+      const handlerSelector =
+        agrmt.handlerSelector(hsConn, this.handlers, msThreadId)
 
       pull(
         hsConn,
@@ -39,7 +41,7 @@ module.exports = class Listener {
       )
 
       callback()
-    })
+    }, msThreadId)
 
     pull(
       rawConn,
@@ -50,7 +52,7 @@ module.exports = class Listener {
 
   // be ready for a given `protocol`
   addHandler (protocol, handler) {
-    log('handling %s', protocol)
+    log('adding handler: %s', protocol)
 
     assert(isFunction(handler), 'handler must be a function')
 
@@ -90,4 +92,8 @@ module.exports = class Listener {
       conn
     )
   }
+}
+
+function getRandomId () {
+  return ((~~(Math.random() * 1e9)).toString(36))
 }

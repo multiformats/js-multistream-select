@@ -8,14 +8,14 @@ const debug = require('debug')
 const log = debug('multistream:agreement')
 log.error = debug('multistream:agreement:error')
 
-exports.select = (multicodec, callback) => {
+exports.select = (multicodec, callback, msThreadId) => {
   const stream = handshake({
     timeout: 60 * 1000
   }, callback)
 
   const shake = stream.handshake
 
-  log('writing multicodec %s', multicodec)
+  log('(%s) writing multicodec %s', msThreadId, multicodec)
   writeEncoded(shake, new Buffer(multicodec + '\n'), callback)
 
   lp.decodeFromReader(shake, (err, data) => {
@@ -28,14 +28,14 @@ exports.select = (multicodec, callback) => {
       return callback(new Error(`"${multicodec}" not supported`), shake.rest())
     }
 
-    log('multicodec ack')
+    log('(%s) received ack: %s', msThreadId, protocol)
     callback(null, shake.rest())
   })
 
   return stream
 }
 
-exports.handlerSelector = (rawConn, handlersMap) => {
+exports.handlerSelector = (rawConn, handlersMap, msThreadId) => {
   const cb = (err) => {
     // incoming errors are irrelevant for the app
     log.error(err)
@@ -54,17 +54,18 @@ exports.handlerSelector = (rawConn, handlersMap) => {
       if (err) {
         return cb(err)
       }
-      log('received: %s', data.toString())
+      log('(%s) received: %s', msThreadId, data.toString())
       const protocol = data.toString().slice(0, -1)
       const result = Object.keys(handlersMap).filter((id) => id === protocol)
       const key = result && result[0]
 
       if (key) {
-        log('ack: %s', protocol)
+        log('(%s) send ack back of: %s', msThreadId, protocol)
         writeEncoded(shake, data, cb)
         handlersMap[key](new Connection(shake.rest(), rawConn))
       } else {
-        log('received multicodec of not supported protocol: %s', protocol)
+        log('(%s) not supported protocol: %s',
+            msThreadId, protocol)
         writeEncoded(shake, new Buffer('na\n'))
         next()
       }
