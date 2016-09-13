@@ -92,9 +92,9 @@ Loading this module through a script tag will make the `MultistreamSelect` obj a
 the global namespace.
 
 ```html
-<script src="https://npmcdn.com/multistream-select/dist/index.min.js"></script>
+<script src="https://unpkg.com/multistream-select/dist/index.min.js"></script>
 <!-- OR -->
-<script src="https://npmcdn.com/multistream-select/dist/index.js"></script>
+<script src="https://unpkg.com/multistream-select/dist/index.js"></script>
 ```
 
 ## Usage
