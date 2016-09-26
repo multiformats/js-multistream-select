@@ -1,15 +1,15 @@
-# js-multistream
+# js-multistream-select
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
 [![](https://img.shields.io/badge/project-multiformats-blue.svg?style=flat-square)](http://github.com/multiformats/multiformats)
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
-[![Coverage Status](https://coveralls.io/repos/github/diasdavid/js-multistream/badge.svg?branch=master)](https://coveralls.io/github/diasdavid/js-multistream?branch=master)
-[![Travis CI](https://travis-ci.org/diasdavid/js-multistream.svg?branch=master)](https://travis-ci.org/diasdavid/js-multistream)
-[![Circle CI](https://circleci.com/gh/diasdavid/js-multistream.svg?style=svg)](https://circleci.com/gh/diasdavid/js-multistream)
-[![Dependency Status](https://david-dm.org/diasdavid/js-multistream.svg?style=flat-square)](https://david-dm.org/diasdavid/js-multistream) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+[![Coverage Status](https://coveralls.io/repos/github/multiformats/js-multistream-select/badge.svg?branch=master)](https://coveralls.io/github/multiformats/js-multistream-select?branch=master)
+[![Travis CI](https://travis-ci.org/multiformats/js-multistream-select.svg?branch=master)](https://travis-ci.org/diasdavid/js-multistream)
+[![Circle CI](https://circleci.com/gh/multiformats/js-multistream-select.svg?style=svg)](https://circleci.com/gh/diasdavid/js-multistream)
+[![Dependency Status](https://david-dm.org/multiformats/js-multistream-select.svg?style=flat-square)](https://david-dm.org/diasdavid/js-multistream) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 
-> JavaScript implementation of [multistream](https://github.com/multiformats/multistream).
+> JavaScript implementation of [multistream-select](https://github.com/multiformats/multistream-select).
 
 ## Table of Contents
 
@@ -33,9 +33,9 @@
 
 ## Background
 
-### What is multistream
+### What is multistream-select
 
-tl;dr: multistream is protocol multiplexing per connection/stream. [Full spec here](https://github.com/jbenet/multistream)
+tl;dr: multistream-select is protocol multiplexing per connection/stream. [Full spec here](https://github.com/multiformats/multistream-select)
 
 multistream-select has currently one mode of operation:
 
