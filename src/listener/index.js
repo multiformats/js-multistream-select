@@ -1,12 +1,12 @@
 'use strict'
 
 const pull = require('pull-stream')
-const pullLP = require('pull-length-prefixed')
-const varint = require('varint')
 const isFunction = require('lodash.isfunction')
 const assert = require('assert')
 const select = require('../select')
 const selectHandler = require('./selectHandler')
+const lsHandler = require('./lsHandler')
+
 const util = require('./../util')
 const Connection = require('interface-connection').Connection
 
@@ -15,7 +15,7 @@ const PROTOCOL_ID = require('./../constants').PROTOCOL_ID
 module.exports = class Listener {
   constructor () {
     this.handlers = {
-      ls: (conn) => this._ls(conn)
+      ls: (conn) => lsHandler(this, conn)
     }
     this.log = util.log.listener()
   }
@@ -59,35 +59,5 @@ module.exports = class Listener {
     }
 
     this.handlers[protocol] = handler
-  }
-
-  // inner function - handler for `ls`
-  _ls (conn) {
-    const protos = Object.keys(this.handlers)
-      .filter((key) => key !== 'ls')
-    const nProtos = protos.length
-    // total size of the list of protocols, including varint and newline
-    const size = protos.reduce((size, proto) => {
-      const p = new Buffer(proto + '\n')
-      const el = varint.encodingLength(p.length)
-      return size + el
-    }, 0)
-
-    const buf = Buffer.concat([
-      new Buffer(varint.encode(nProtos)),
-      new Buffer(varint.encode(size)),
-      new Buffer('\n')
-    ])
-
-    const encodedProtos = protos.map((proto) => {
-      return new Buffer(proto + '\n')
-    })
-    const values = [buf].concat(encodedProtos)
-
-    pull(
-      pull.values(values),
-      pullLP.encode(),
-      conn
-    )
   }
 }
