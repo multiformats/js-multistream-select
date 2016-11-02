@@ -1,5 +1,4 @@
 'use strict'
 
-module.exports = {
-  PROTOCOL_ID: '/multistream/1.0.0'
-}
+exports = module.exports
+exports.PROTOCOL_ID = '/multistream/1.0.0'

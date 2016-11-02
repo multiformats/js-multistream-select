@@ -1,47 +1,46 @@
 'use strict'
 
-const lp = require('pull-length-prefixed')
 const pull = require('pull-stream')
+const pullLP = require('pull-length-prefixed')
 const varint = require('varint')
 const isFunction = require('lodash.isfunction')
 const assert = require('assert')
-const debug = require('debug')
-const log = debug('multistream:listener')
+const select = require('../select')
+const selectHandler = require('./selectHandler')
+const util = require('./../util')
 const Connection = require('interface-connection').Connection
 
-const PROTOCOL_ID = require('./constants').PROTOCOL_ID
-const agrmt = require('./agreement')
+const PROTOCOL_ID = require('./../constants').PROTOCOL_ID
 
 module.exports = class Listener {
   constructor () {
     this.handlers = {
       ls: (conn) => this._ls(conn)
     }
+    this.log = util.log.listener()
   }
 
   // perform the multistream handshake
   handle (rawConn, callback) {
-    const msThreadId = getRandomId()
-    log('(%s) listener handle conn', msThreadId)
+    this.log('listener handle conn')
 
-    const selectStream = agrmt.select(PROTOCOL_ID, (err, conn) => {
+    const selectStream = select(PROTOCOL_ID, (err, conn) => {
       if (err) {
         return callback(err)
       }
 
-      const hsConn = new Connection(conn, rawConn)
+      const shConn = new Connection(conn, rawConn)
 
-      const handlerSelector =
-        agrmt.handlerSelector(hsConn, this.handlers, msThreadId)
+      const sh = selectHandler(shConn, this.handlers, this.log)
 
       pull(
-        hsConn,
-        handlerSelector,
-        hsConn
+        shConn,
+        sh,
+        shConn
       )
 
       callback()
-    }, msThreadId)
+    }, this.log)
 
     pull(
       rawConn,
@@ -52,12 +51,11 @@ module.exports = class Listener {
 
   // be ready for a given `protocol`
   addHandler (protocol, handler) {
-    log('adding handler: %s', protocol)
-
+    this.log('adding handler: ' + protocol)
     assert(isFunction(handler), 'handler must be a function')
 
     if (this.handlers[protocol]) {
-      log('overwriting handler for %s', protocol)
+      this.log('overwriting handler for ' + protocol)
     }
 
     this.handlers[protocol] = handler
@@ -88,12 +86,8 @@ module.exports = class Listener {
 
     pull(
       pull.values(values),
-      lp.encode(),
+      pullLP.encode(),
       conn
     )
   }
-}
-
-function getRandomId () {
-  return ((~~(Math.random() * 1e9)).toString(36))
 }

@@ -4,21 +4,21 @@
 
 const expect = require('chai').expect
 const pull = require('pull-stream')
-const lp = require('pull-length-prefixed')
-const pair = require('pull-pair/duplex')
+const pullLP = require('pull-length-prefixed')
+const pullPair = require('pull-pair/duplex')
 const multistream = require('../src')
 const parallel = require('run-parallel')
 const series = require('run-series')
 
 describe('multistream dialer', () => {
   it('sends the multistream multicodec', (done) => {
-    const p = pair()
+    const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
 
     pull(
       listenerConn,
-      lp.decode(),
+      pullLP.decode(),
       pull.drain((data) => {
         expect(data.toString()).to.equal('/multistream/1.0.0\n')
         done()
@@ -32,13 +32,13 @@ describe('multistream dialer', () => {
 })
 describe('multistream listener', () => {
   it('sends the multistream multicodec', (done) => {
-    const p = pair()
+    const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
 
     pull(
       dialerConn,
-      lp.decode(),
+      pullLP.decode(),
       pull.drain((data) => {
         expect(data.toString()).to.equal('/multistream/1.0.0\n')
         done()
@@ -53,7 +53,7 @@ describe('multistream listener', () => {
 
 describe('multistream handshake', () => {
   it('performs the handshake handshake', (done) => {
-    const p = pair()
+    const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
 
@@ -72,7 +72,7 @@ describe('multistream handshake', () => {
   })
 
   it('handle and select a protocol', (done) => {
-    const p = pair()
+    const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
 
@@ -122,7 +122,7 @@ describe('multistream handshake', () => {
   })
 
   it('select non existing proto', (done) => {
-    const p = pair()
+    const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
 
@@ -153,7 +153,7 @@ describe('multistream handshake', () => {
   })
 
   it('select a non existing proto and then select an existing proto', (done) => {
-    const p = pair()
+    const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
 
@@ -208,7 +208,7 @@ describe('multistream handshake', () => {
   })
 
   it('ls', (done) => {
-    const p = pair()
+    const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
 
@@ -262,7 +262,7 @@ describe('multistream handshake', () => {
   })
 
   it('handler must be a function', (done) => {
-    const p = pair()
+    const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
 
@@ -295,7 +295,7 @@ describe('multistream handshake', () => {
   })
 
   it('racing condition resistent', (done) => {
-    const p = pair()
+    const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
 

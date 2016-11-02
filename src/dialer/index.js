@@ -1,76 +1,71 @@
 'use strict'
 
-const lp = require('pull-length-prefixed')
 const varint = require('varint')
 const pull = require('pull-stream')
+const pullLP = require('pull-length-prefixed')
 const Connection = require('interface-connection').Connection
-const debug = require('debug')
-const log = debug('multistream:dialer')
+const util = require('../util')
+const select = require('../select')
 
-const PROTOCOL_ID = require('./constants').PROTOCOL_ID
-const agrmt = require('./agreement')
-
-function getRandomId () {
-  return ((~~(Math.random() * 1e9)).toString(36))
-}
+const PROTOCOL_ID = require('./../constants').PROTOCOL_ID
 
 module.exports = class Dialer {
   constructor () {
     this.conn = null
-    this.msThreadId = getRandomId()
+    this.log = util.log.dialer()
   }
 
   // perform the multistream handshake
   handle (rawConn, callback) {
-    log('(%s) dialer handle conn', this.msThreadId)
-    const ms = agrmt.select(PROTOCOL_ID, (err, conn) => {
+    this.log('dialer handle conn')
+    const s = select(PROTOCOL_ID, (err, conn) => {
       if (err) {
         return callback(err)
       }
-      log('(%s) handshake success', this.msThreadId)
+      this.log('handshake success')
 
       this.conn = new Connection(conn, rawConn)
 
       callback()
-    }, this.msThreadId)
+    }, this.log)
 
     pull(
       rawConn,
-      ms,
+      s,
       rawConn
     )
   }
 
   select (protocol, callback) {
-    log('(%s) dialer select %s', this.msThreadId, protocol)
+    this.log('dialer select ' + protocol)
     if (!this.conn) {
       return callback(new Error('multistream handshake has not finalized yet'))
     }
 
-    const selectStream = agrmt.select(protocol, (err, conn) => {
+    const s = select(protocol, (err, conn) => {
       if (err) {
         this.conn = new Connection(conn, this.conn)
         return callback(err)
       }
       callback(null, new Connection(conn, this.conn))
-    }, this.msThreadId)
+    }, this.log)
 
     pull(
       this.conn,
-      selectStream,
+      s,
       this.conn
     )
   }
 
   ls (callback) {
-    const lsStream = agrmt.select('ls', (err, conn) => {
+    const lsStream = select('ls', (err, conn) => {
       if (err) {
         return callback(err)
       }
 
       pull(
         conn,
-        lp.decode(),
+        pullLP.decode(),
         collectLs(conn),
         pull.map(stringify),
         pull.collect((err, list) => {
@@ -80,7 +75,7 @@ module.exports = class Dialer {
           callback(null, list.slice(1))
         })
       )
-    })
+    }, this.log)
 
     pull(
       this.conn,
