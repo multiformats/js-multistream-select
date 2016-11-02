@@ -121,7 +121,7 @@ ms.addHandler(<protocol>, <handlerFunc>, [<matchingFunc>])
 ```
 
 - `protocol` is a string identifying the protocol.
-- `handlerFunc` is a function of type `function (conn)` that will be called if there is a handshake performed on `protocol`.
+- `handlerFunc` is a function of type `function (protocol, conn)` that will be called if there is a handshake performed on `protocol`.
 - `matchingFunc` is a function that receives a protocol and a callback and should call `callback(err, result)` where `err` is if there was a error on the matching function, and `result` is a boolean that represents if a match happened. The default `matchingFunc` is exact matching.
 
 ### Selecting a protocol

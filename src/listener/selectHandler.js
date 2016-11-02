@@ -30,7 +30,9 @@ function selectHandler (rawConn, handlersMap, log) {
       if (key) {
         log('send ack back of: ' + protocol)
         writeEncoded(shake, data, cb)
-        handlersMap[key](new Connection(shake.rest(), rawConn))
+
+        const conn = new Connection(shake.rest(), rawConn)
+        handlersMap[key](protocol, conn)
       } else {
         log('not supported protocol: ' + protocol)
         writeEncoded(shake, new Buffer('na\n'))

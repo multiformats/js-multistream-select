@@ -15,7 +15,7 @@ const PROTOCOL_ID = require('./../constants').PROTOCOL_ID
 module.exports = class Listener {
   constructor () {
     this.handlers = {
-      ls: (conn) => lsHandler(this, conn)
+      ls: (protocol, conn) => lsHandler(this, conn)
     }
     this.log = util.log.listener()
   }

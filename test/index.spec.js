@@ -94,7 +94,10 @@ describe('multistream handshake', () => {
         ], next)
       },
       (next) => {
-        msl.addHandler('/monkey/1.0.0', (conn) => {
+        const protocol = '/monkey/1.0.0'
+        msl.addHandler(protocol, (p, conn) => {
+          expect(protocol).to.equal(p)
+          console.log(protocol)
           pull(conn, conn)
         })
         next()
@@ -108,11 +111,7 @@ describe('multistream handshake', () => {
             conn,
             pull.collect((err, data) => {
               expect(err).to.not.exist
-              expect(
-                data
-              ).to.be.eql(
-                ['banana']
-              )
+              expect(data).to.be.eql(['banana'])
               next()
             })
           )
@@ -175,7 +174,9 @@ describe('multistream handshake', () => {
         ], next)
       },
       (next) => {
-        msl.addHandler('/monkey/1.0.0', (conn) => {
+        const protocol = '/monkey/1.0.0'
+        msl.addHandler(protocol, (p, conn) => {
+          expect(protocol).to.equal(p)
           pull(conn, conn)
         })
         next()
@@ -194,11 +195,7 @@ describe('multistream handshake', () => {
             conn,
             pull.collect((err, data) => {
               expect(err).to.not.exist
-              expect(
-                data
-              ).to.be.eql(
-                ['banana']
-              )
+              expect(data).to.be.eql(['banana'])
               next()
             })
           )
@@ -230,19 +227,21 @@ describe('multistream handshake', () => {
         ], next)
       },
       (next) => {
-        msl.addHandler('/monkey/1.0.0', (conn) => {
+        const protocol = '/monkey/1.0.0'
+        msl.addHandler(protocol, (p, conn) => {
+          expect(protocol).to.equal(p)
           pull(conn, conn)
         })
         next()
       },
       (next) => {
-        msl.addHandler('/giraffe/2.0.0', (conn) => {
+        msl.addHandler('/giraffe/2.0.0', (protocol, conn) => {
           pull(conn, conn)
         })
         next()
       },
       (next) => {
-        msl.addHandler('/elephant/2.5.0', (conn) => {
+        msl.addHandler('/elephant/2.5.0', (protocol, conn) => {
           pull(conn, conn)
         })
         next()
@@ -312,7 +311,7 @@ describe('multistream handshake', () => {
             }, 200)
           },
           (next) => {
-            msl.addHandler('/monkey/1.0.0', (conn) => {
+            msl.addHandler('/monkey/1.0.0', (protocol, conn) => {
               pull(conn, conn)
             })
             next()
@@ -331,11 +330,7 @@ describe('multistream handshake', () => {
               conn,
               pull.collect((err, data) => {
                 expect(err).to.not.exist
-                expect(
-                  data
-                ).to.be.eql(
-                  ['banana']
-                )
+                expect(data).to.be.eql(['banana'])
                 cb()
               })
             )
