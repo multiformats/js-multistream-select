@@ -5,9 +5,8 @@ const pullLP = require('pull-length-prefixed')
 const varint = require('varint')
 
 function lsHandler (self, conn) {
-  const protos = Object
-                    .keys(self.handlers)
-                    .filter((key) => key !== 'ls')
+  const protos = Object.keys(self.handlers)
+                       .filter((key) => key !== 'ls')
 
   const nProtos = protos.length
   // total size of the list of protocols, including varint and newline

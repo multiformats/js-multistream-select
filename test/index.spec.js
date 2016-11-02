@@ -6,12 +6,12 @@ const expect = require('chai').expect
 const pull = require('pull-stream')
 const pullLP = require('pull-length-prefixed')
 const pullPair = require('pull-pair/duplex')
-const multistream = require('../src')
+const mss = require('../src')
 const parallel = require('run-parallel')
 const series = require('run-series')
 
-describe('multistream dialer', () => {
-  it('sends the multistream multicodec', (done) => {
+describe('mss dialer', () => {
+  it('sends the mss multicodec', (done) => {
     const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
@@ -25,13 +25,13 @@ describe('multistream dialer', () => {
       })
     )
 
-    const msd = new multistream.Dialer()
+    const msd = new mss.Dialer()
     expect(msd).to.exist
     msd.handle(dialerConn, () => {})
   })
 })
-describe('multistream listener', () => {
-  it('sends the multistream multicodec', (done) => {
+describe('mss listener', () => {
+  it('sends the mss multicodec', (done) => {
     const p = pullPair()
     const dialerConn = p[0]
     const listenerConn = p[1]
@@ -45,13 +45,13 @@ describe('multistream listener', () => {
       })
     )
 
-    const msl = new multistream.Listener()
+    const msl = new mss.Listener()
     expect(msl).to.exist
     msl.handle(listenerConn, () => {})
   })
 })
 
-describe('multistream handshake', () => {
+describe('mss handshake', () => {
   it('performs the handshake handshake', (done) => {
     const p = pullPair()
     const dialerConn = p[0]
@@ -59,12 +59,12 @@ describe('multistream handshake', () => {
 
     parallel([
       (cb) => {
-        const msl = new multistream.Listener()
+        const msl = new mss.Listener()
         expect(msl).to.exist
         msl.handle(listenerConn, cb)
       },
       (cb) => {
-        const msd = new multistream.Dialer()
+        const msd = new mss.Dialer()
         expect(msd).to.exist
         msd.handle(dialerConn, cb)
       }
@@ -82,12 +82,12 @@ describe('multistream handshake', () => {
       (next) => {
         parallel([
           (cb) => {
-            msl = new multistream.Listener()
+            msl = new mss.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new multistream.Dialer()
+            msd = new mss.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -130,12 +130,12 @@ describe('multistream handshake', () => {
       (next) => {
         parallel([
           (cb) => {
-            msl = new multistream.Listener()
+            msl = new mss.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new multistream.Dialer()
+            msd = new mss.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -161,12 +161,12 @@ describe('multistream handshake', () => {
       (next) => {
         parallel([
           (cb) => {
-            msl = new multistream.Listener()
+            msl = new mss.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new multistream.Dialer()
+            msd = new mss.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -214,12 +214,12 @@ describe('multistream handshake', () => {
       (next) => {
         parallel([
           (cb) => {
-            msl = new multistream.Listener()
+            msl = new mss.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new multistream.Dialer()
+            msd = new mss.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -270,12 +270,12 @@ describe('multistream handshake', () => {
       (next) => {
         parallel([
           (cb) => {
-            msl = new multistream.Listener()
+            msl = new mss.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new multistream.Dialer()
+            msd = new mss.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -303,7 +303,7 @@ describe('multistream handshake', () => {
       (cb) => {
         series([
           (next) => {
-            msl = new multistream.Listener()
+            msl = new mss.Listener()
             expect(msl).to.exist
             setTimeout(() => {
               msl.handle(listenerConn, next)
@@ -318,7 +318,7 @@ describe('multistream handshake', () => {
         ], cb)
       },
       (cb) => {
-        msd = new multistream.Dialer()
+        msd = new mss.Dialer()
         msd.handle(dialerConn, (err) => {
           expect(err).to.not.exist
           msd.select('/monkey/1.0.0', (err, conn) => {
@@ -352,12 +352,12 @@ describe('custom matching function', () => {
       (next) => {
         parallel([
           (cb) => {
-            msl = new multistream.Listener()
+            msl = new mss.Listener()
             expect(msl).to.exist
             msl.handle(listenerConn, cb)
           },
           (cb) => {
-            msd = new multistream.Dialer()
+            msd = new mss.Dialer()
             expect(msd).to.exist
             msd.handle(dialerConn, cb)
           }
@@ -390,6 +390,87 @@ describe('custom matching function', () => {
   })
 
   describe('semver-match', () => {
+    it('should match', (done) => {
+      const p = pullPair()
+      const dialerConn = p[0]
+      const listenerConn = p[1]
 
+      let msl
+      let msd
+      series([
+        (next) => {
+          parallel([
+            (cb) => {
+              msl = new mss.Listener()
+              expect(msl).to.exist
+              msl.handle(listenerConn, cb)
+            },
+            (cb) => {
+              msd = new mss.Dialer()
+              expect(msd).to.exist
+              msd.handle(dialerConn, cb)
+            }
+          ], next)
+        },
+        (next) => {
+          msl.addHandler('/monster/1.0.0', (p, conn) => {
+            pull(conn, conn)
+          }, mss.matchSemver)
+          next()
+        },
+        (next) => {
+          msd.select('/monster/1.0.0', (err, conn) => {
+            expect(err).to.not.exist
+
+            pull(
+              pull.values(['cookie']),
+              conn,
+              pull.collect((err, data) => {
+                expect(err).to.not.exist
+                expect(data).to.be.eql(['cookie'])
+                next()
+              })
+            )
+          })
+        }
+      ], done)
+    })
+
+    it('should not match', (done) => {
+      const p = pullPair()
+      const dialerConn = p[0]
+      const listenerConn = p[1]
+
+      let msl
+      let msd
+      series([
+        (next) => {
+          parallel([
+            (cb) => {
+              msl = new mss.Listener()
+              expect(msl).to.exist
+              msl.handle(listenerConn, cb)
+            },
+            (cb) => {
+              msd = new mss.Dialer()
+              expect(msd).to.exist
+              msd.handle(dialerConn, cb)
+            }
+          ], next)
+        },
+        (next) => {
+          msl.addHandler('/monster/1.1.0', (p, conn) => {
+            pull(conn, conn)
+          }, mss.matchSemver)
+          next()
+        },
+        (next) => {
+          msd.select('/monster/2.0.0', (err, conn) => {
+            expect(err).to.exist
+            next()
+          })
+        }
+      ], done)
+    })
   })
 })

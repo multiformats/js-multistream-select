@@ -1,3 +1,5 @@
+'use strict'
+
 const pull = require('pull-stream')
 const pullLP = require('pull-length-prefixed')
 const debug = require('debug')

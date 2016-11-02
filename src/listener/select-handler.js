@@ -48,8 +48,6 @@ function selectHandler (rawConn, handlersMap, log) {
   }
 }
 
-module.exports = selectHandler
-
 function matcher (protocol, handlers, callback) {
   const supportedProtocols = Object.keys(handlers)
   let supportedProtocol = false
@@ -74,3 +72,5 @@ function matcher (protocol, handlers, callback) {
     }
   )
 }
+
+module.exports = selectHandler
