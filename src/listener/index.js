@@ -4,8 +4,9 @@ const pull = require('pull-stream')
 const isFunction = require('lodash.isfunction')
 const assert = require('assert')
 const select = require('../select')
-const selectHandler = require('./selectHandler')
-const lsHandler = require('./lsHandler')
+const selectHandler = require('./select-handler')
+const lsHandler = require('./ls-handler')
+const matchExact = require('./match-exact')
 
 const util = require('./../util')
 const Connection = require('interface-connection').Connection
@@ -15,7 +16,11 @@ const PROTOCOL_ID = require('./../constants').PROTOCOL_ID
 module.exports = class Listener {
   constructor () {
     this.handlers = {
-      ls: (protocol, conn) => lsHandler(this, conn)
+      ls: {
+        handlerFunc: (protocol, conn) => lsHandler(this, conn),
+        matchFunc: matchExact
+
+      }
     }
     this.log = util.log.listener()
   }
@@ -50,14 +55,21 @@ module.exports = class Listener {
   }
 
   // be ready for a given `protocol`
-  addHandler (protocol, handler) {
+  addHandler (protocol, handlerFunc, matchFunc) {
     this.log('adding handler: ' + protocol)
-    assert(isFunction(handler), 'handler must be a function')
+    assert(isFunction(handlerFunc), 'handler must be a function')
 
     if (this.handlers[protocol]) {
       this.log('overwriting handler for ' + protocol)
     }
 
-    this.handlers[protocol] = handler
+    if (!matchFunc) {
+      matchFunc = matchExact
+    }
+
+    this.handlers[protocol] = {
+      handlerFunc: handlerFunc,
+      matchFunc: matchFunc
+    }
   }
 }

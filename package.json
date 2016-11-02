@@ -40,6 +40,7 @@
   "author": "David Dias <daviddias@ipfs.io>",
   "license": "MIT",
   "dependencies": {
+    "async": "^2.1.2",
     "debug": "^2.2.0",
     "interface-connection": "^0.3.0",
     "lodash.isfunction": "^3.0.8",

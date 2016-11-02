@@ -97,7 +97,6 @@ describe('multistream handshake', () => {
         const protocol = '/monkey/1.0.0'
         msl.addHandler(protocol, (p, conn) => {
           expect(protocol).to.equal(p)
-          console.log(protocol)
           pull(conn, conn)
         })
         next()
@@ -338,5 +337,59 @@ describe('multistream handshake', () => {
         })
       }
     ], done)
+  })
+})
+
+describe('custom matching function', () => {
+  it('match-true always', (done) => {
+    const p = pullPair()
+    const dialerConn = p[0]
+    const listenerConn = p[1]
+
+    let msl
+    let msd
+    series([
+      (next) => {
+        parallel([
+          (cb) => {
+            msl = new multistream.Listener()
+            expect(msl).to.exist
+            msl.handle(listenerConn, cb)
+          },
+          (cb) => {
+            msd = new multistream.Dialer()
+            expect(msd).to.exist
+            msd.handle(dialerConn, cb)
+          }
+        ], next)
+      },
+      (next) => {
+        msl.addHandler('/does-not-matter/1.0.0', (p, conn) => {
+          pull(conn, conn)
+        }, (myProtocol, requestedProtocol, callback) => {
+          callback(null, true)
+        })
+        next()
+      },
+      (next) => {
+        msd.select('/it-is-gonna-match-anyway/1.0.0', (err, conn) => {
+          expect(err).to.not.exist
+
+          pull(
+            pull.values(['banana']),
+            conn,
+            pull.collect((err, data) => {
+              expect(err).to.not.exist
+              expect(data).to.be.eql(['banana'])
+              next()
+            })
+          )
+        })
+      }
+    ], done)
+  })
+
+  describe('semver-match', () => {
+
   })
 })
