@@ -41,11 +41,7 @@
 
 tl;dr: multistream-select is protocol multiplexing per connection/stream. [Full spec here](https://github.com/multiformats/multistream-select)
 
-multistream-select has currently one mode of operation:
-
-- `normal` - handshake on a protocol on a given stream
-
-#### Normal mode
+#### Select a protocol flow
 
 The caller will send "interactive" messages, expecting for some acknowledgement from the callee, which will "select" the handler for the desired and supported protocol
 
@@ -116,18 +112,17 @@ const ms = new multistream.Dialer()
 ms.handle(conn, callback)
 ```
 
-ms will be a dialer or listener multistream, depending on the `isListener` flag, which can be `true` or `false`.
-
 ### Handling a protocol
 
 This function is only available in Listener mode
 
 ```JavaScript
-ms.addHandler(<protocol>, <handlerFunc>)
+ms.addHandler(<protocol>, <handlerFunc>, [<matchingFunc>])
 ```
 
 - `protocol` is a string identifying the protocol.
-- `handlerFunc` is a function of type `function (conn)` that will be called if there is a handshake performed on `protocol`.
+- `handlerFunc` is a function of type `function (protocol, conn)` that will be called if there is a handshake performed on `protocol`.
+- `matchingFunc` is a function that receives a protocol and a callback and should call `callback(err, result)` where `err` is if there was a error on the matching function, and `result` is a boolean that represents if a match happened. The default `matchingFunc` is exact matching. The exact signature should be: `function (protocol, requestedProtocol, function (err, result)`
 
 ### Selecting a protocol
 
@@ -175,8 +170,6 @@ const nodeStreamInstance = pullToStream(pullStreamInstance)
 To learn more about this utility, visit https://pull-stream.github.io/#pull-stream-to-stream.
 
 
-
-
 ## Maintainers
 
 Captain: [@diasdavid](https://github.com/diasdavid).
@@ -188,7 +181,6 @@ Contributions welcome. Please check out [the issues](https://github.com/multifor
 Check out our [contributing document](https://github.com/multiformats/multiformats/blob/master/contributing.md) for more information on how we work, and about contributing in general. Please be aware that all interactions related to multiformats are subject to the IPFS [Code of Conduct](https://github.com/ipfs/community/blob/master/code-of-conduct.md).
 
 Small note: If editing the Readme, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
-
 ## License
 
 [MIT](LICENSE) © David Dias
