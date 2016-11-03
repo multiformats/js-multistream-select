@@ -5,9 +5,13 @@
 [![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 [![Coverage Status](https://coveralls.io/repos/github/multiformats/js-multistream-select/badge.svg?branch=master)](https://coveralls.io/github/multiformats/js-multistream-select?branch=master)
-[![Travis CI](https://travis-ci.org/multiformats/js-multistream-select.svg?branch=master)](https://travis-ci.org/diasdavid/js-multistream)
-[![Circle CI](https://circleci.com/gh/multiformats/js-multistream-select.svg?style=svg)](https://circleci.com/gh/diasdavid/js-multistream)
-[![Dependency Status](https://david-dm.org/multiformats/js-multistream-select.svg?style=flat-square)](https://david-dm.org/diasdavid/js-multistream) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+[![Travis CI](https://travis-ci.org/multiformats/js-multistream-select.svg?branch=master)](https://travis-ci.org/multiformats/js-multistream-select)
+[![Circle CI](https://circleci.com/gh/multiformats/js-multistream-select.svg?style=svg)](https://circleci.com/gh/multiformats/js-multistream-select)
+[![Dependency Status](https://david-dm.org/multiformats/js-multistream-select.svg?style=flat-square)](https://david-dm.org/multiformats/js-multistream-select) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
+![](https://img.shields.io/badge/Node.js-%3E%3D4.0.0-orange.svg?style=flat-square)
+
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/js-ms-select.svg)](https://saucelabs.com/u/js-ms-select)
 
 > JavaScript implementation of [multistream-select](https://github.com/multiformats/multistream-select).
 
@@ -105,7 +109,7 @@ the global namespace.
 const Multistream = require('multistream-select')
 
 const ms = new multistream.Listener()
-// or 
+// or
 const ms = new multistream.Dialer()
 
 // apply the multistream to the conn
@@ -134,7 +138,7 @@ ms.select(<protocol>, <callback>)
 ```
 
 - `protocol` is a string of the protocol that we want to handshake.
-- `callback` is a function of type `function (err, conn)` where `err` is an error object that gets passed if something wrong happend (e.g: if the protocol selected is not supported by the other end) and conn is the connection handshaked with the other end. 
+- `callback` is a function of type `function (err, conn)` where `err` is an error object that gets passed if something wrong happend (e.g: if the protocol selected is not supported by the other end) and conn is the connection handshaked with the other end.
 
 ### Listing the available protocols
 
@@ -179,7 +183,7 @@ Captain: [@diasdavid](https://github.com/diasdavid).
 
 ## Contribute
 
-Contributions welcome. Please check out [the issues](https://github.com/multiformats/js-multistream/issues).
+Contributions welcome. Please check out [the issues](https://github.com/multiformats/js-multistream-select/issues).
 
 Check out our [contributing document](https://github.com/multiformats/multiformats/blob/master/contributing.md) for more information on how we work, and about contributing in general. Please be aware that all interactions related to multiformats are subject to the IPFS [Code of Conduct](https://github.com/ipfs/community/blob/master/code-of-conduct.md).
 
