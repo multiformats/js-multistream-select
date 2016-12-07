@@ -9,13 +9,26 @@ const select = require('../select')
 
 const PROTOCOL_ID = require('./../constants').PROTOCOL_ID
 
-module.exports = class Dialer {
+/**
+ *
+ */
+class Dialer {
+  /**
+   * Create a new Dialer.
+   */
   constructor () {
     this.conn = null
     this.log = util.log.dialer()
   }
 
-  // perform the multistream handshake
+  /**
+   * Perform the multistream handshake.
+   *
+   * @param {Connection} rawConn - The connection on which
+   * to perform the handshake.
+   * @param {function(Error)} callback - Called when the handshake completed.
+   * @returns {undefined}
+   */
   handle (rawConn, callback) {
     this.log('dialer handle conn')
     const s = select(PROTOCOL_ID, (err, conn) => {
@@ -36,6 +49,18 @@ module.exports = class Dialer {
     )
   }
 
+  /**
+   * Select a protocol
+   *
+   * @param {string} protocol - A string of the protocol that we want to handshake.
+   * @param {function(Error, Connection)} callback - `err` is
+   * an error object that gets passed if something wrong happ
+   * end (e.g: if the protocol selected is not supported by
+   * the other end) and conn is the connection handshaked
+   * with the other end.
+   *
+   * @returns {undefined}
+   */
   select (protocol, callback) {
     this.log('dialer select ' + protocol)
     if (!this.conn) {
@@ -57,6 +82,16 @@ module.exports = class Dialer {
     )
   }
 
+  /**
+   * List all available protocols.
+   *
+   * @param {function(Error, Array<string>)} callback - If
+   * something wrong happend `Error` exists, otherwise
+   * `protocols` is a list of the supported
+   * protocols on the other end.
+   *
+   * @returns {undefined}
+   */
   ls (callback) {
     const lsStream = select('ls', (err, conn) => {
       if (err) {
@@ -103,3 +138,5 @@ function collectLs (conn) {
     return counter-- > 0
   })
 }
+
+module.exports = Dialer

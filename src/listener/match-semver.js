@@ -2,6 +2,15 @@
 
 const semver = require('semver')
 
+/**
+ * Match protocols using semver `~` matching.
+ *
+ * @param {string} myProtocol
+ * @param {string} senderProtocol
+ * @param {function(Error, boolean)} callback
+ * @returns {undefined}
+ * @type {matchHandler}
+ */
 function matchSemver (myProtocol, senderProtocol, callback) {
   const mps = myProtocol.split('/')
   const sps = senderProtocol.split('/')
