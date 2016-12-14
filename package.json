@@ -42,7 +42,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.1.4",
-    "debug": "^2.3.3",
+    "debug": "^2.4.1",
     "interface-connection": "^0.3.0",
     "lodash.isfunction": "^3.0.8",
     "lodash.range": "^3.2.0",
@@ -53,9 +53,9 @@
     "varint": "^5.0.0"
   },
   "devDependencies": {
-    "aegir": "^9.2.2",
+    "aegir": "^9.3.0",
     "chai": "^3.5.0",
-    "pre-commit": "^1.2.1",
+    "pre-commit": "^1.2.2",
     "pull-pair": "^1.1.0",
     "run-parallel": "^1.1.6",
     "run-series": "^1.1.4"
