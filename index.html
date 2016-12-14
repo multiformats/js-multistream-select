@@ -50,6 +50,24 @@ font-weight: bold;}.hljs-subst{font-weight: normal;}.hljs-type, .hljs-class .hlj
 font-weight: bold;}.hljs-tag, .hljs-name, .hljs-attribute{color: #000080;
 font-weight: normal;}.hljs-regexp, .hljs-link{color: #009926;}.hljs-symbol, .hljs-bullet{color: #990073;}.hljs-built_in, .hljs-builtin-name{color: #0086b3;}.hljs-meta{color: #999;
 font-weight: bold;}.hljs-deletion{background: #fdd;}.hljs-addition{background: #dfd;}.hljs-emphasis{font-style: italic;}.hljs-strong{font-weight: bold;}</style><div style="margin-bottom:104px;" data-radium="true"><h1 data-radium="true"><a class="anchor" name="intro"></a>Intro</h1><div><p>Installable via  <code>npm install --save multistream-select</code>, it can also be used directly in the browser.</p>
+<h2>Quick Example</h2>
+<pre class='hljs'><span class="hljs-meta">'use strict'</span>
+
+<span class="hljs-keyword">const</span> multistream = <span class="hljs-built_in">require</span>(<span class="hljs-string">'multistream-select'</span>)
+<span class="hljs-keyword">const</span> Connection = <span class="hljs-built_in">require</span>(<span class="hljs-string">'interface-connection'</span>).Connection
+
+<span class="hljs-keyword">const</span> listener = <span class="hljs-keyword">new</span> multistream.Listener()
+<span class="hljs-comment">// or</span>
+<span class="hljs-comment">// const dialer = new multistream.Dialer()</span>
+
+<span class="hljs-comment">// supply a connection</span>
+<span class="hljs-keyword">const</span> conn = <span class="hljs-keyword">new</span> Connection()
+
+<span class="hljs-comment">// apply the multistream to the conn</span>
+listener.handle(conn, () =&gt; {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'connection established'</span>)
+})</pre>
+<p>There are more available, so take a look at the docs below for a full list. This documentation aims to be comprehensive, so if you feel anything is missing please create a GitHub issue for it.</p>
 <h2>Download</h2>
 <p>The source is available for download from <a href="git+https://github.com/multiformats/js-multistream-select.git">GitHub</a>. Alternatively, you can install using npm:</p>
 <pre class='hljs'>$ npm install --save multistream-select</pre>
