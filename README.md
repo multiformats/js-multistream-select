@@ -102,7 +102,7 @@ the global namespace.
 ### Attach multistream to a connection (socket)
 
 ```JavaScript
-const Multistream = require('multistream-select')
+const multistream = require('multistream-select')
 
 const ms = new multistream.Listener()
 // or
@@ -111,39 +111,6 @@ const ms = new multistream.Dialer()
 // apply the multistream to the conn
 ms.handle(conn, callback)
 ```
-
-### Handling a protocol
-
-This function is only available in Listener mode
-
-```JavaScript
-ms.addHandler(<protocol>, <handlerFunc>, [<matchingFunc>])
-```
-
-- `protocol` is a string identifying the protocol.
-- `handlerFunc` is a function of type `function (protocol, conn)` that will be called if there is a handshake performed on `protocol`.
-- `matchingFunc` is a function that receives a protocol and a callback and should call `callback(err, result)` where `err` is if there was a error on the matching function, and `result` is a boolean that represents if a match happened. The default `matchingFunc` is exact matching. The exact signature should be: `function (protocol, requestedProtocol, function (err, result)`
-
-### Selecting a protocol
-
-This function is only available in Dialer mode
-
-```JavaScript
-ms.select(<protocol>, <callback>)
-```
-
-- `protocol` is a string of the protocol that we want to handshake.
-- `callback` is a function of type `function (err, conn)` where `err` is an error object that gets passed if something wrong happend (e.g: if the protocol selected is not supported by the other end) and conn is the connection handshaked with the other end.
-
-### Listing the available protocols
-
-This function is only available in Dialer mode
-
-```JavaScript
-ms.ls(<callback>)
-```
-
-`callback` is a function of type `function (err, protocols)` where `err` is an error object that gets passed if something wrong happend and `protocols` is an array of the supported protocols in the other end.
 
 ### This module uses `pull-streams`
 

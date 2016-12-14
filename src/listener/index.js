@@ -13,7 +13,13 @@ const Connection = require('interface-connection').Connection
 
 const PROTOCOL_ID = require('./../constants').PROTOCOL_ID
 
-module.exports = class Listener {
+/**
+ * Listener
+ */
+class Listener {
+  /**
+   * Create a new Listener.
+   */
   constructor () {
     this.handlers = {
       ls: {
@@ -25,7 +31,14 @@ module.exports = class Listener {
     this.log = util.log.listener()
   }
 
-  // perform the multistream handshake
+  /**
+   * Perform the multistream handshake.
+   *
+   * @param {Connection} rawConn - The connection on which
+   * to perform the handshake.
+   * @param {function(Error)} callback - Called when the handshake completed.
+   * @returns {undefined}
+   */
   handle (rawConn, callback) {
     this.log('listener handle conn')
 
@@ -54,7 +67,14 @@ module.exports = class Listener {
     )
   }
 
-  // be ready for a given `protocol`
+  /**
+   * Handle a given `protocol`.
+   *
+   * @param {string} protocol - A string identifying the protocol.
+   * @param {function(string, Connection)} handlerFunc - Will be called if there is a handshake performed on `protocol`.
+   * @param {matchHandler} [matchFunc=matchExact]
+   * @returns {undefined}
+   */
   addHandler (protocol, handlerFunc, matchFunc) {
     this.log('adding handler: ' + protocol)
     assert(isFunction(handlerFunc), 'handler must be a function')
@@ -72,4 +92,20 @@ module.exports = class Listener {
       matchFunc: matchFunc
     }
   }
+
+  /**
+   * Receives a protocol and a callback and should
+   * call `callback(err, result)` where `err` is if
+   * there was a error on the matching function, and
+   * `result` is a boolean that represents if a
+   * match happened.
+   *
+   * @callback matchHandler
+   * @param {string} myProtocol
+   * @param {string} senderProtocol
+   * @param {function(Error, boolean)} callback
+   * @returns {undefined}
+   */
 }
+
+module.exports = Listener
