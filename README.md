@@ -102,7 +102,7 @@ the global namespace.
 ### Attach multistream to a connection (socket)
 
 ```JavaScript
-const Multistream = require('multistream-select')
+const multistream = require('multistream-select')
 
 const ms = new multistream.Listener()
 // or
