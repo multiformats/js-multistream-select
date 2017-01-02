@@ -1,16 +1,15 @@
 # js-multistream-select
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
-[![](https://img.shields.io/badge/project-multiformats-blue.svg?style=flat-square)](http://github.com/multiformats/multiformats)
-[![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
-[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
+[![](https://img.shields.io/badge/project-multiformats-blue.svg?style=flat-square)](https://github.com/multiformats/multiformats)
+[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](https://webchat.freenode.net/?channels=%23ipfs)
 [![Coverage Status](https://coveralls.io/repos/github/multiformats/js-multistream-select/badge.svg?branch=master)](https://coveralls.io/github/multiformats/js-multistream-select?branch=master)
-[![Travis CI](https://travis-ci.org/multiformats/js-multistream-select.svg?branch=master)](https://travis-ci.org/multiformats/js-multistream-select)
+[![Travis CI](https://img.shields.io/travis/multiformats/js-multistream-select.svg?style=flat-square&branch=master)](https://travis-ci.org/multiformats/js-multistream-select)
 [![Circle CI](https://circleci.com/gh/multiformats/js-multistream-select.svg?style=svg)](https://circleci.com/gh/multiformats/js-multistream-select)
 [![Dependency Status](https://david-dm.org/multiformats/js-multistream-select.svg?style=flat-square)](https://david-dm.org/multiformats/js-multistream-select) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 ![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
 ![](https://img.shields.io/badge/Node.js-%3E%3D4.0.0-orange.svg?style=flat-square)
-
+[![](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/js-ms-select.svg)](https://saucelabs.com/u/js-ms-select)
 
 > JavaScript implementation of [multistream-select](https://github.com/multiformats/multistream-select).
@@ -125,7 +124,7 @@ You can learn more about pull-streams at:
 
 #### Converting `pull-streams` to Node.js Streams
 
-If you are a Node.js streams user, you can convert a pull-stream to a Node.js stream using the module [`pull-stream-to-stream`](https://github.com/dominictarr/pull-stream-to-stream), giving you an instance of a Node.js stream that is linked to the pull-stream. For example:
+If you are a Node.js streams user, you can convert a pull-stream to a Node.js stream using the module [`pull-stream-to-stream`](https://github.com/pull-stream/pull-stream-to-stream), giving you an instance of a Node.js stream that is linked to the pull-stream. For example:
 
 ```js
 const pullToStream = require('pull-stream-to-stream')
@@ -135,7 +134,6 @@ const nodeStreamInstance = pullToStream(pullStreamInstance)
 ```
 
 To learn more about this utility, visit https://pull-stream.github.io/#pull-stream-to-stream.
-
 
 ## Maintainers
 
@@ -147,7 +145,8 @@ Contributions welcome. Please check out [the issues](https://github.com/multifor
 
 Check out our [contributing document](https://github.com/multiformats/multiformats/blob/master/contributing.md) for more information on how we work, and about contributing in general. Please be aware that all interactions related to multiformats are subject to the IPFS [Code of Conduct](https://github.com/ipfs/community/blob/master/code-of-conduct.md).
 
-Small note: If editing the Readme, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+Small note: If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+
 ## License
 
-[MIT](LICENSE) © David Dias
+[MIT](LICENSE) © 2015 David Dias
