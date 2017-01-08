@@ -30,6 +30,7 @@
   - [Handling a protocol](#handling-a-protocol)
   - [Selecting a protocol](#selecting-a-protocol)
   - [Listing the available protocols](#listing-the-available-protocols)
+- [API](#api)
 - [Maintainers](#maintainers)
 - [Contribute](#contribute)
 - [License](#license)
@@ -134,6 +135,10 @@ const nodeStreamInstance = pullToStream(pullStreamInstance)
 ```
 
 To learn more about this utility, visit https://pull-stream.github.io/#pull-stream-to-stream.
+
+## API
+
+https://multiformats.github.io/js-multistream-select/
 
 ## Maintainers
 
