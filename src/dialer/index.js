@@ -65,6 +65,7 @@ class Dialer {
    */
   select (protocol, callback) {
     this.log('dialer select ' + protocol)
+    callback = once(callback)
     if (!this.conn) {
       return callback(new Error('multistream handshake has not finalized yet'))
     }
@@ -95,6 +96,8 @@ class Dialer {
    * @returns {undefined}
    */
   ls (callback) {
+    callback = once(callback)
+
     const lsStream = select('ls', (err, conn) => {
       if (err) {
         return callback(err)
