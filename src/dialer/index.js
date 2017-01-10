@@ -6,6 +6,7 @@ const pullLP = require('pull-length-prefixed')
 const Connection = require('interface-connection').Connection
 const util = require('../util')
 const select = require('../select')
+const once = require('once')
 
 const PROTOCOL_ID = require('./../constants').PROTOCOL_ID
 
@@ -31,6 +32,7 @@ class Dialer {
    */
   handle (rawConn, callback) {
     this.log('dialer handle conn')
+    callback = once(callback)
     const s = select(PROTOCOL_ID, (err, conn) => {
       if (err) {
         return callback(err)
