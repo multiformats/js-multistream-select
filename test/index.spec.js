@@ -56,7 +56,9 @@ const muxers = [
 ]
 
 describe('mss handshake', () => {
-  muxers.forEach(({name, module}) => {
+  muxers.forEach((muxer) => {
+    const name = muxer.name
+    const module = muxer.module
     describe(name, () => {
       it('performs the handshake handshake', (done) => {
         const p = createPair(module)
