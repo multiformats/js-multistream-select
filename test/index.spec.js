@@ -113,14 +113,11 @@ describe('mss handshake', () => {
                 expect(err).to.not.exist
 
                 pull(
-                  pull.values(['banana']),
+                  pull.values([new Buffer('banana')]),
                   conn,
                   pull.collect((err, data) => {
                     expect(err).to.not.exist
-                    // passing all tests
-                    expect(data[0].toString()).to.be.eql('banana')
-                    // only passing with muxer, original assertion
-                    // expect(data).to.be.eql(['banana'])
+                    expect(data).to.be.eql([new Buffer('banana')])
                     next()
                   })
                 )
@@ -200,11 +197,11 @@ describe('mss handshake', () => {
               msd.select('/monkey/1.0.0', (err, conn) => {
                 expect(err).to.not.exist
                 pull(
-                  pull.values(['banana']),
+                  pull.values([new Buffer('banana')]),
                   conn,
                   pull.collect((err, data) => {
                     expect(err).to.not.exist
-                    expect(data[0].toString()).to.be.eql('banana')
+                    expect(data).to.be.eql([new Buffer('banana')])
                     next()
                   })
                 )
@@ -335,11 +332,11 @@ describe('mss handshake', () => {
                   expect(err).to.not.exist
 
                   pull(
-                    pull.values(['banana']),
+                    pull.values([new Buffer('banana')]),
                     conn,
                     pull.collect((err, data) => {
                       expect(err).to.not.exist
-                      expect(data[0].toString()).to.be.eql('banana')
+                      expect(data).to.be.eql([new Buffer('banana')])
                       cb()
                     })
                   )
@@ -385,11 +382,11 @@ describe('mss handshake', () => {
                   expect(err).to.not.exist
 
                   pull(
-                    pull.values(['banana']),
+                    pull.values([new Buffer('banana')]),
                     conn,
                     pull.collect((err, data) => {
                       expect(err).to.not.exist
-                      expect(data[0].toString()).to.be.eql('banana')
+                      expect(data).to.be.eql([new Buffer('banana')])
                       next()
                     })
                   )
