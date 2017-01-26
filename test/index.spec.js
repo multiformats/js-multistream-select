@@ -12,37 +12,36 @@ const series = require('run-series')
 const spdy = require('libp2p-spdy')
 const multiplex = require('libp2p-multiplex')
 
-const createPair = (muxer) => {
+const createPair = (muxer, callback) => {
   const pair = pullPair()
+  let listener = null
+  let dialer = null
   if (muxer === false) {
-    return {
-      dialer: pair[0],
-      listener: pair[1]
-    }
+    dialer = pair[0]
+    listener = pair[1]
   } else {
     if (muxer.dialer === undefined || muxer.listener === undefined) {
       throw new Error('Passed in muxer needs to have dialer and listener')
     } else {
-      return {
-        dialer: muxer.dialer(pair[0]),
-        listener: muxer.listener(pair[1])
-      }
+      dialer = muxer.dialer(pair[0])
+      listener = muxer.listener(pair[1])
     }
   }
+  getDialerAndListenerConn(dialer, listener, muxer, callback)
 }
 
-const getDialerAndListenerConn = (pair, isWithMuxer, callback) => {
+const getDialerAndListenerConn = (dialer, listener, isWithMuxer, callback) => {
   if (isWithMuxer === false) {
     callback({
-      listener: pair.listener,
-      dialer: pair.dialer
+      dialer: dialer,
+      listener: listener
     })
   } else {
-    const dialerConn = pair.dialer.newStream()
-    pair.listener.once('stream', (listenerConn) => {
+    const dialerConn = dialer.newStream()
+    listener.once('stream', (listenerConn) => {
       callback({
-        listener: listenerConn,
-        dialer: dialerConn
+        dialer: dialerConn,
+        listener: listenerConn
       })
     })
   }
@@ -61,8 +60,7 @@ describe('mss handshake', () => {
     const module = muxer.module
     describe(name, () => {
       it('performs the handshake handshake', (done) => {
-        const p = createPair(module)
-        getDialerAndListenerConn(p, module, doHandle)
+        createPair(module, doHandle)
         function doHandle (conns) {
           parallel([
             (cb) => {
@@ -79,9 +77,7 @@ describe('mss handshake', () => {
         }
       })
       it('handle and select a protocol', (done) => {
-        const p = createPair(module)
-        getDialerAndListenerConn(p, module, doSelect)
-
+        createPair(module, doSelect)
         function doSelect (conns) {
           let msl
           let msd
@@ -127,9 +123,7 @@ describe('mss handshake', () => {
         }
       })
       it('select non existing proto', (done) => {
-        const p = createPair(module)
-        getDialerAndListenerConn(p, module, doSelect)
-
+        createPair(module, doSelect)
         function doSelect (conns) {
           let msl
           let msd
@@ -158,9 +152,7 @@ describe('mss handshake', () => {
         }
       })
       it('select a non existing proto and then select an existing proto', (done) => {
-        const p = createPair(module)
-        getDialerAndListenerConn(p, module, doSelect)
-
+        createPair(module, doSelect)
         function doSelect (conns) {
           let msl
           let msd
@@ -211,9 +203,7 @@ describe('mss handshake', () => {
         }
       })
       it('ls', (done) => {
-        const p = createPair(module)
-        getDialerAndListenerConn(p, module, doSelect)
-
+        createPair(module, doSelect)
         function doSelect (conns) {
           let msl
           let msd
@@ -267,9 +257,7 @@ describe('mss handshake', () => {
         }
       })
       it('handler must be a function', (done) => {
-        const p = createPair(module)
-        getDialerAndListenerConn(p, module, doSelect)
-
+        createPair(module, doSelect)
         function doSelect (conns) {
           let msl
           let msd
@@ -300,9 +288,7 @@ describe('mss handshake', () => {
         }
       })
       it('racing condition resistent', (done) => {
-        const p = createPair(module)
-        getDialerAndListenerConn(p, module, doSelect)
-
+        createPair(module, doSelect)
         function doSelect (conns) {
           let msl
           let msd
@@ -348,9 +334,7 @@ describe('mss handshake', () => {
       })
       describe('custom matching function', () => {
         it('match-true always', (done) => {
-          const p = createPair(module)
-          getDialerAndListenerConn(p, module, doSelect)
-
+          createPair(module, doSelect)
           function doSelect (conns) {
             let msl
             let msd
@@ -398,9 +382,7 @@ describe('mss handshake', () => {
 
         describe('semver-match', () => {
           it('should match', (done) => {
-            const p = createPair(module)
-            getDialerAndListenerConn(p, module, doSelect)
-
+            createPair(module, doSelect)
             function doSelect (conns) {
               let msl
               let msd
@@ -445,9 +427,7 @@ describe('mss handshake', () => {
           })
 
           it('should not match', (done) => {
-            const p = createPair(module)
-            getDialerAndListenerConn(p, module, doSelect)
-
+            createPair(module, doSelect)
             function doSelect (conns) {
               let msl
               let msd
