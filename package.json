@@ -56,6 +56,8 @@
   "devDependencies": {
     "aegir": "^9.3.0",
     "chai": "^3.5.0",
+    "libp2p-multiplex": "^0.3.1",
+    "libp2p-spdy": "^0.10.3",
     "pre-commit": "^1.2.2",
     "pull-pair": "^1.1.0",
     "run-parallel": "^1.1.6",
