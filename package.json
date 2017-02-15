@@ -55,7 +55,7 @@
     "varint": "^5.0.0"
   },
   "devDependencies": {
-    "libp2p-multiplex": "~0.3.5",
+    "libp2p-multiplex": "~0.4.0",
     "libp2p-spdy": "~0.10.3",
     "aegir": "^10.0.0",
     "chai": "^3.5.0",
