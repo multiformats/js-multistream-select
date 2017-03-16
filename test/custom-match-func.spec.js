@@ -18,7 +18,7 @@ describe('custom matching function', () => {
     createPair(false, gotConns)
 
     function gotConns (err, _conns) {
-      expect(err).to.not.exist
+      expect(err).to.not.exist // eslint-disable-line
       conns = _conns
       done()
     }
@@ -32,12 +32,12 @@ describe('custom matching function', () => {
         parallel([
           (cb) => {
             msl = new mss.Listener()
-            expect(msl).to.exist
+            expect(msl).to.exist // eslint-disable-line
             msl.handle(conns[0], cb)
           },
           (cb) => {
             msd = new mss.Dialer()
-            expect(msd).to.exist
+            expect(msd).to.exist // eslint-disable-line
             msd.handle(conns[1], cb)
           }
         ], next)
@@ -52,13 +52,13 @@ describe('custom matching function', () => {
       },
       (next) => {
         msd.select('/it-is-gonna-match-anyway/1.0.0', (err, conn) => {
-          expect(err).to.not.exist
+          expect(err).to.not.exist // eslint-disable-line
 
           pull(
             pull.values([new Buffer('banana')]),
             conn,
             pull.collect((err, data) => {
-              expect(err).to.not.exist
+              expect(err).to.not.exist // eslint-disable-line
               expect(data).to.be.eql([new Buffer('banana')])
               next()
             })

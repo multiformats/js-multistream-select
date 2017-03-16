@@ -17,7 +17,7 @@ describe('half-handshake', () => {
     createPair(false, gotConns)
 
     function gotConns (err, _conns) {
-      expect(err).to.not.exist
+      expect(err).to.not.exist // eslint-disable-line
       conns = _conns
       done()
     }
@@ -37,7 +37,7 @@ describe('half-handshake', () => {
     )
 
     const msd = new mss.Dialer()
-    expect(msd).to.exist
+    expect(msd).to.exist // eslint-disable-line
     msd.handle(dialerConn, () => {})
   })
 
@@ -55,7 +55,7 @@ describe('half-handshake', () => {
     )
 
     const msl = new mss.Listener()
-    expect(msl).to.exist
+    expect(msl).to.exist // eslint-disable-line
     msl.handle(listenerConn, () => {})
   })
 })
