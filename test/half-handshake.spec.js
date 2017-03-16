@@ -2,7 +2,10 @@
 
 'use strict'
 
-const expect = require('chai').expect
+const chai = require('chai')
+const dirtyChai = require('dirty-chai')
+const expect = chai.expect
+chai.use(dirtyChai)
 const pull = require('pull-stream')
 const mss = require('../src')
 const pullLP = require('pull-length-prefixed')
@@ -17,7 +20,7 @@ describe('half-handshake', () => {
     createPair(false, gotConns)
 
     function gotConns (err, _conns) {
-      expect(err).to.not.exist // eslint-disable-line
+      expect(err).to.not.exist()
       conns = _conns
       done()
     }
@@ -37,7 +40,7 @@ describe('half-handshake', () => {
     )
 
     const msd = new mss.Dialer()
-    expect(msd).to.exist // eslint-disable-line
+    expect(msd).to.exist()
     msd.handle(dialerConn, () => {})
   })
 
@@ -55,7 +58,7 @@ describe('half-handshake', () => {
     )
 
     const msl = new mss.Listener()
-    expect(msl).to.exist // eslint-disable-line
+    expect(msl).to.exist()
     msl.handle(listenerConn, () => {})
   })
 })

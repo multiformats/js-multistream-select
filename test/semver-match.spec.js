@@ -2,7 +2,10 @@
 
 'use strict'
 
-const expect = require('chai').expect
+const chai = require('chai')
+const dirtyChai = require('dirty-chai')
+const expect = chai.expect
+chai.use(dirtyChai)
 const pull = require('pull-stream')
 const mss = require('../src')
 const parallel = require('run-parallel')
@@ -18,7 +21,7 @@ describe('semver-match', () => {
     createPair(false, gotConns)
 
     function gotConns (err, _conns) {
-      expect(err).to.not.exist // eslint-disable-line
+      expect(err).to.not.exist()
       conns = _conns
       done()
     }
@@ -32,12 +35,12 @@ describe('semver-match', () => {
         parallel([
           (cb) => {
             msl = new mss.Listener()
-            expect(msl).to.exist // eslint-disable-line
+            expect(msl).to.exist()
             msl.handle(conns[0], cb)
           },
           (cb) => {
             msd = new mss.Dialer()
-            expect(msd).to.exist // eslint-disable-line
+            expect(msd).to.exist()
             msd.handle(conns[1], cb)
           }
         ], next)
@@ -50,13 +53,13 @@ describe('semver-match', () => {
       },
       (next) => {
         msd.select('/monster/1.0.0', (err, conn) => {
-          expect(err).to.not.exist // eslint-disable-line
+          expect(err).to.not.exist()
 
           pull(
             pull.values(['cookie']),
             conn,
             pull.collect((err, data) => {
-              expect(err).to.not.exist // eslint-disable-line
+              expect(err).to.not.exist()
               expect(data[0].toString()).to.be.eql('cookie')
               next()
             })
@@ -74,12 +77,12 @@ describe('semver-match', () => {
         parallel([
           (cb) => {
             msl = new mss.Listener()
-            expect(msl).to.exist // eslint-disable-line
+            expect(msl).to.exist()
             msl.handle(conns[0], cb)
           },
           (cb) => {
             msd = new mss.Dialer()
-            expect(msd).to.exist // eslint-disable-line
+            expect(msd).to.exist()
             msd.handle(conns[1], cb)
           }
         ], next)
@@ -92,7 +95,7 @@ describe('semver-match', () => {
       },
       (next) => {
         msd.select('/monster/2.0.0', (err, conn) => {
-          expect(err).to.exist // eslint-disable-line
+          expect(err).to.exist()
           next()
         })
       }

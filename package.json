@@ -55,10 +55,11 @@
     "varint": "^5.0.0"
   },
   "devDependencies": {
-    "libp2p-multiplex": "~0.4.1",
-    "libp2p-spdy": "~0.10.4",
     "aegir": "^11.0.0",
     "chai": "^3.5.0",
+    "dirty-chai": "^1.2.2",
+    "libp2p-multiplex": "~0.4.1",
+    "libp2p-spdy": "~0.10.4",
     "pre-commit": "^1.2.2",
     "pull-pair": "^1.1.0",
     "run-parallel": "^1.1.6",

@@ -2,7 +2,10 @@
 
 'use strict'
 
-const expect = require('chai').expect
+const chai = require('chai')
+const dirtyChai = require('dirty-chai')
+const expect = chai.expect
+chai.use(dirtyChai)
 const pull = require('pull-stream')
 const mss = require('../src')
 const parallel = require('run-parallel')
@@ -18,7 +21,7 @@ describe('custom matching function', () => {
     createPair(false, gotConns)
 
     function gotConns (err, _conns) {
-      expect(err).to.not.exist // eslint-disable-line
+      expect(err).to.not.exist()
       conns = _conns
       done()
     }
@@ -32,12 +35,12 @@ describe('custom matching function', () => {
         parallel([
           (cb) => {
             msl = new mss.Listener()
-            expect(msl).to.exist // eslint-disable-line
+            expect(msl).to.exist()
             msl.handle(conns[0], cb)
           },
           (cb) => {
             msd = new mss.Dialer()
-            expect(msd).to.exist // eslint-disable-line
+            expect(msd).to.exist()
             msd.handle(conns[1], cb)
           }
         ], next)
@@ -52,13 +55,13 @@ describe('custom matching function', () => {
       },
       (next) => {
         msd.select('/it-is-gonna-match-anyway/1.0.0', (err, conn) => {
-          expect(err).to.not.exist // eslint-disable-line
+          expect(err).to.not.exist()
 
           pull(
             pull.values([new Buffer('banana')]),
             conn,
             pull.collect((err, data) => {
-              expect(err).to.not.exist // eslint-disable-line
+              expect(err).to.not.exist()
               expect(data).to.be.eql([new Buffer('banana')])
               next()
             })
