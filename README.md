@@ -6,11 +6,11 @@
 [![Coverage Status](https://coveralls.io/repos/github/multiformats/js-multistream-select/badge.svg?branch=master)](https://coveralls.io/github/multiformats/js-multistream-select?branch=master)
 [![Travis CI](https://img.shields.io/travis/multiformats/js-multistream-select.svg?style=flat-square&branch=master)](https://travis-ci.org/multiformats/js-multistream-select)
 [![Circle CI](https://circleci.com/gh/multiformats/js-multistream-select.svg?style=svg)](https://circleci.com/gh/multiformats/js-multistream-select)
-[![Dependency Status](https://david-dm.org/multiformats/js-multistream-select.svg?style=flat-square)](https://david-dm.org/multiformats/js-multistream-select) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+[![Dependency Status](https://david-dm.org/multiformats/js-multistream-select.svg?style=flat-square)](https://david-dm.org/multiformats/js-multistream-select)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 ![](https://img.shields.io/badge/npm-%3E%3D3.0.0-orange.svg?style=flat-square)
 ![](https://img.shields.io/badge/Node.js-%3E%3D4.0.0-orange.svg?style=flat-square)
 [![](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/js-ms-select.svg)](https://saucelabs.com/u/js-ms-select)
 
 > JavaScript implementation of [multistream-select](https://github.com/multiformats/multistream-select).
 
