@@ -58,11 +58,11 @@ describe('custom matching function', () => {
           expect(err).to.not.exist()
 
           pull(
-            pull.values([new Buffer('banana')]),
+            pull.values([Buffer.from('banana')]),
             conn,
             pull.collect((err, data) => {
               expect(err).to.not.exist()
-              expect(data).to.be.eql([new Buffer('banana')])
+              expect(data).to.be.eql([Buffer.from('banana')])
               next()
             })
           )

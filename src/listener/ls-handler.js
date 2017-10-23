@@ -5,25 +5,24 @@ const pullLP = require('pull-length-prefixed')
 const varint = require('varint')
 
 function lsHandler (self, conn) {
-  const protos = Object.keys(self.handlers)
-                       .filter((key) => key !== 'ls')
+  const protos = Object.keys(self.handlers).filter((key) => key !== 'ls')
 
   const nProtos = protos.length
   // total size of the list of protocols, including varint and newline
   const size = protos.reduce((size, proto) => {
-    const p = new Buffer(proto + '\n')
+    const p = Buffer.from(proto + '\n')
     const el = varint.encodingLength(p.length)
     return size + el
   }, 0)
 
   const buf = Buffer.concat([
-    new Buffer(varint.encode(nProtos)),
-    new Buffer(varint.encode(size)),
-    new Buffer('\n')
+    Buffer.from(varint.encode(nProtos)),
+    Buffer.from(varint.encode(size)),
+    Buffer.from('\n')
   ])
 
   const encodedProtos = protos.map((proto) => {
-    return new Buffer(proto + '\n')
+    return Buffer.from(proto + '\n')
   })
   const values = [buf].concat(encodedProtos)
 
