@@ -13,7 +13,7 @@ function select (multicodec, callback, log) {
   const shake = stream.handshake
 
   log('writing multicodec: ' + multicodec)
-  writeEncoded(shake, new Buffer(multicodec + '\n'), callback)
+  writeEncoded(shake, Buffer.from(multicodec + '\n'), callback)
 
   pullLP.decodeFromReader(shake, (err, data) => {
     if (err) {

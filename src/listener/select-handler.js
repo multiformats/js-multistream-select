@@ -40,7 +40,7 @@ function selectHandler (rawConn, handlersMap, log) {
           handlersMap[key].handlerFunc(protocol, conn)
         } else {
           log('not supported protocol: ' + protocol)
-          writeEncoded(shake, new Buffer('na\n'))
+          writeEncoded(shake, Buffer.from('na\n'))
           next()
         }
       })

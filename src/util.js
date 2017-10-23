@@ -13,7 +13,7 @@ function randomId () {
 // prefixes a message with a varint
 // TODO this is a pull-stream 'creep' (pull stream to add a byte?')
 function encode (msg, callback) {
-  const values = Buffer.isBuffer(msg) ? [msg] : [new Buffer(msg)]
+  const values = Buffer.isBuffer(msg) ? [msg] : [Buffer.from(msg)]
 
   pull(
     pull.values(values),
