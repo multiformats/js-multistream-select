@@ -1,3 +1,8 @@
+<a name="0.14.2"></a>
+## [0.14.2](https://github.com/multiformats/js-multistream-select/compare/v0.14.1...v0.14.2) (2018-04-30)
+
+
+
 <a name="0.14.1"></a>
 ## [0.14.1](https://github.com/multiformats/js-multistream-select/compare/v0.14.0...v0.14.1) (2017-11-12)
 
