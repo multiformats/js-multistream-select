@@ -1,6 +1,7 @@
 {
   "name": "multistream-select",
   "version": "0.14.2",
+  "leadMaintainer": "Jacob Heun <jacobheun@gmail.com>",
   "description": "JavaScript implementation of the multistream spec",
   "main": "src/index.js",
   "scripts": {
@@ -20,7 +21,7 @@
     "type": "git",
     "url": "git+https://github.com/multiformats/js-multistream-select.git"
   },
-  "pre-commit": [
+  "pre-push": [
     "lint",
     "test"
   ],
@@ -39,7 +40,6 @@
     "node": ">=4.0.0",
     "npm": ">=3.0.0"
   },
-  "author": "David Dias <daviddias@ipfs.io>",
   "license": "MIT",
   "dependencies": {
     "interface-connection": "~0.3.2",
@@ -60,7 +60,6 @@
     "dirty-chai": "^2.0.1",
     "libp2p-multiplex": "~0.5.1",
     "libp2p-spdy": "~0.12.1",
-    "pre-commit": "^1.2.2",
     "pull-pair": "^1.1.0",
     "pump": "^3.0.0",
     "run-parallel": "^1.1.9",

@@ -14,6 +14,10 @@
 
 > JavaScript implementation of [multistream-select](https://github.com/multiformats/multistream-select).
 
+## Lead Maintainer
+
+[Jacob Heun](https://github.com/jacobheun)
+
 ## Table of Contents
 
 - [Background](#background)
