@@ -44,11 +44,17 @@ class Dialer {
       callback()
     }, this.log)
 
-    pull(
-      rawConn,
-      s,
-      rawConn
-    )
+    // Handle unexpected errors from pull, like 'already piped'
+    try {
+      pull(
+        rawConn,
+        s,
+        rawConn
+      )
+    } catch (err) {
+      this.log.error(err)
+      callback(err)
+    }
   }
 
   /**
