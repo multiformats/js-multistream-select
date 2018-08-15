@@ -1,3 +1,13 @@
+<a name="0.14.3"></a>
+## [0.14.3](https://github.com/multiformats/js-multistream-select/compare/v0.14.2...v0.14.3) (2018-08-15)
+
+
+### Bug Fixes
+
+* catch uncaught exceptions from pull in dialer.handle ([d3cd2e5](https://github.com/multiformats/js-multistream-select/commit/d3cd2e5))
+
+
+
 <a name="0.14.2"></a>
 ## [0.14.2](https://github.com/multiformats/js-multistream-select/compare/v0.14.1...v0.14.2) (2018-04-30)
 
