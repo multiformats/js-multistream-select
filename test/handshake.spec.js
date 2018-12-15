@@ -17,9 +17,9 @@ const util = require('./util')
 const createPair = util.createPair
 
 const options = [
-  {name: 'over pull-pair'},
-  {name: 'over spdy', muxer: spdy},
-  {name: 'over multiplex', muxer: multiplex}
+  { name: 'over pull-pair' },
+  { name: 'over spdy', muxer: spdy },
+  { name: 'over multiplex', muxer: multiplex }
 ]
 
 options.forEach((option) => {
