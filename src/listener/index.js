@@ -1,7 +1,6 @@
 'use strict'
 
-const pull = require('pull-stream')
-const isFunction = require('lodash.isfunction')
+const pull = require('pull-stream/pull')
 const assert = require('assert')
 const select = require('../select')
 const selectHandler = require('./select-handler')
@@ -77,7 +76,7 @@ class Listener {
    */
   addHandler (protocol, handlerFunc, matchFunc) {
     this.log('adding handler: ' + protocol)
-    assert(isFunction(handlerFunc), 'handler must be a function')
+    assert(typeof handlerFunc === 'function', 'handler must be a function')
 
     if (this.handlers[protocol]) {
       this.log('overwriting handler for ' + protocol)

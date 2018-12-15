@@ -1,6 +1,8 @@
 'use strict'
 
-const pull = require('pull-stream')
+const pull = require('pull-stream/pull')
+const values = require('pull-stream/sources/values')
+const collect = require('pull-stream/sinks/collect')
 const pullLP = require('pull-length-prefixed')
 const debug = require('debug')
 
@@ -13,12 +15,10 @@ function randomId () {
 // prefixes a message with a varint
 // TODO this is a pull-stream 'creep' (pull stream to add a byte?')
 function encode (msg, callback) {
-  const values = Buffer.isBuffer(msg) ? [msg] : [Buffer.from(msg)]
-
   pull(
-    pull.values(values),
+    values(Buffer.isBuffer(msg) ? [msg] : [Buffer.from(msg)]),
     pullLP.encode(),
-    pull.collect((err, encoded) => {
+    collect((err, encoded) => {
       if (err) {
         return callback(err)
       }

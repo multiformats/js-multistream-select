@@ -1,6 +1,7 @@
 'use strict'
 
-const pull = require('pull-stream')
+const pull = require('pull-stream/pull')
+const values = require('pull-stream/sources/values')
 const pullLP = require('pull-length-prefixed')
 const varint = require('varint')
 
@@ -24,10 +25,9 @@ function lsHandler (self, conn) {
   const encodedProtos = protos.map((proto) => {
     return Buffer.from(proto + '\n')
   })
-  const values = [buf].concat(encodedProtos)
 
   pull(
-    pull.values(values),
+    values([buf].concat(encodedProtos)),
     pullLP.encode(),
     conn
   )
