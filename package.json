@@ -53,7 +53,7 @@
     "varint": "^5.0.0"
   },
   "devDependencies": {
-    "aegir": "github:ipfs/aegir#feat/make-exp-build-test-default",
+    "aegir": "^18.0.3",
     "chai": "^4.1.2",
     "dirty-chai": "^2.0.1",
     "libp2p-multiplex": "~0.5.1",
