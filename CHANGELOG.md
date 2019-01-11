@@ -1,3 +1,13 @@
+<a name="0.14.4"></a>
+## [0.14.4](https://github.com/multiformats/js-multistream-select/compare/v0.14.3...v0.14.4) (2019-01-11)
+
+
+### Bug Fixes
+
+* bundle size ([#46](https://github.com/multiformats/js-multistream-select/issues/46)) ([e63d985](https://github.com/multiformats/js-multistream-select/commit/e63d985))
+
+
+
 <a name="0.14.3"></a>
 ## [0.14.3](https://github.com/multiformats/js-multistream-select/compare/v0.14.2...v0.14.3) (2018-08-15)
 
