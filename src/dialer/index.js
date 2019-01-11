@@ -1,7 +1,10 @@
 'use strict'
 
 const varint = require('varint')
-const pull = require('pull-stream')
+const pull = require('pull-stream/pull')
+const map = require('pull-stream/throughs/map')
+const collect = require('pull-stream/sinks/collect')
+const take = require('pull-stream/throughs/take')
 const pullLP = require('pull-length-prefixed')
 const Connection = require('interface-connection').Connection
 const util = require('../util')
@@ -113,8 +116,8 @@ class Dialer {
         conn,
         pullLP.decode(),
         collectLs(conn),
-        pull.map(stringify),
-        pull.collect((err, list) => {
+        map(stringify),
+        collect((err, list) => {
           if (err) {
             return callback(err)
           }
@@ -139,7 +142,7 @@ function collectLs (conn) {
   let first = true
   let counter = 0
 
-  return pull.take((msg) => {
+  return take((msg) => {
     if (first) {
       varint.decode(msg)
       counter = varint.decode(msg, varint.decode.bytes)
