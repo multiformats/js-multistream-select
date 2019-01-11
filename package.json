@@ -1,6 +1,6 @@
 {
   "name": "multistream-select",
-  "version": "0.14.3",
+  "version": "0.14.4",
   "leadMaintainer": "Jacob Heun <jacobheun@gmail.com>",
   "description": "JavaScript implementation of the multistream spec",
   "main": "src/index.js",
@@ -67,7 +67,9 @@
     "David Dias <daviddias.p@gmail.com>",
     "David Dias <mail@daviddias.me>",
     "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
+    "Hugo Dias <mail@hugodias.me>",
     "Jacob Heun <jacobheun@gmail.com>",
+    "Projjol Banerji <probaner23@gmail.com>",
     "Richard Littauer <richard.littauer@gmail.com>",
     "Victor Bjelkholm <victorbjelkholm@gmail.com>",
     "greenkeeper[bot] <greenkeeper[bot]@users.noreply.github.com>",
