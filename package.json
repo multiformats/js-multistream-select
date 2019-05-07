@@ -1,79 +1,23 @@
 {
-  "name": "multistream-select",
-  "version": "0.14.6",
-  "leadMaintainer": "Jacob Heun <jacobheun@gmail.com>",
-  "description": "JavaScript implementation of the multistream spec",
+  "name": "it-multistream-select",
+  "version": "0.0.0",
+  "description": "JavaScript implementation of multistream-select",
   "main": "src/index.js",
   "scripts": {
-    "lint": "aegir lint",
-    "test": "aegir test",
-    "build": "aegir build",
-    "docs": "aegir docs",
-    "release": "aegir release --docs",
-    "release-minor": "aegir release --type minor --docs",
-    "release-major": "aegir release --type major --docs",
-    "test:node": "aegir test --target node",
-    "test:browser": "aegir test --target browser",
-    "coverage": "aegir coverage",
-    "coverage-publish": "aegir coverage --provider coveralls"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/multiformats/js-multistream-select.git"
+    "url": "git+https://github.com/alanshaw/it-multistream-select.git"
   },
-  "pre-push": [
-    "lint"
-  ],
-  "keywords": [
-    "node",
-    "stream",
-    "multistream",
-    "protocol",
-    "ipfs",
-    "ipn",
-    "protocol",
-    "protocol",
-    "labs"
-  ],
-  "engines": {
-    "node": ">=10.0.0",
-    "npm": ">=6.0.0"
-  },
+  "author": "Alan Shaw",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alanshaw/it-multistream-select/issues"
+  },
+  "homepage": "https://github.com/alanshaw/it-multistream-select#readme",
   "dependencies": {
-    "async": "^2.6.3",
     "debug": "^4.1.1",
-    "err-code": "^1.1.2",
-    "interface-connection": "~0.3.3",
-    "once": "^1.4.0",
-    "pull-handshake": "^1.1.4",
-    "pull-length-prefixed": "^1.3.3",
-    "pull-stream": "^3.6.13",
-    "semver": "^6.2.0",
-    "varint": "^5.0.0"
-  },
-  "devDependencies": {
-    "aegir": "^19.0.5",
-    "chai": "^4.2.0",
-    "dirty-chai": "^2.0.1",
-    "libp2p-spdy": "~0.13.1",
-    "pull-mplex": "~0.1.2",
-    "pull-pair": "^1.1.0",
-    "pump": "^3.0.0",
-    "run-parallel": "^1.1.9",
-    "run-series": "^1.1.8"
-  },
-  "contributors": [
-    "David Dias <daviddias.p@gmail.com>",
-    "David Dias <mail@daviddias.me>",
-    "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
-    "Hugo Dias <mail@hugodias.me>",
-    "Jacob Heun <jacobheun@gmail.com>",
-    "Projjol Banerji <probaner23@gmail.com>",
-    "Richard Littauer <richard.littauer@gmail.com>",
-    "Vasco Santos <vasco.santos@ua.pt>",
-    "Victor Bjelkholm <victorbjelkholm@gmail.com>",
-    "greenkeeper[bot] <greenkeeper[bot]@users.noreply.github.com>",
-    "npm-to-cdn-bot (by Forbes Lindesay) <npmcdn-to-unpkg-bot@users.noreply.github.com>"
-  ]
+    "it-length-prefixed": "^1.0.0"
+  }
 }
