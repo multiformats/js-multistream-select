@@ -22,8 +22,7 @@
     "url": "git+https://github.com/multiformats/js-multistream-select.git"
   },
   "pre-push": [
-    "lint",
-    "test"
+    "lint"
   ],
   "keywords": [
     "node",
