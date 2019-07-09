@@ -12,5 +12,6 @@ const conn = new Connection()
 
 // apply the multistream to the conn
 listener.handle(conn, () => {
+  // eslint-disable-next-line
   console.log('connection established')
 })
