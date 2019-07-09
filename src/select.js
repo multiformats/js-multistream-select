@@ -6,6 +6,7 @@ const util = require('./util')
 const writeEncoded = util.writeEncoded
 
 const errCode = require('err-code')
+const { errors } = require('./constants')
 
 function select (multicodec, callback, log) {
   const stream = handshake({
@@ -24,7 +25,7 @@ function select (multicodec, callback, log) {
     const protocol = data.toString().slice(0, -1)
 
     if (protocol !== multicodec) {
-      const err = errCode(new Error(`"${multicodec}" not supported`), 'ERR_MULTICODEC_NOT_SUPPORTED')
+      const err = errCode(new Error(`"${multicodec}" not supported`), errors.MULTICODEC_NOT_SUPPORTED)
 
       return callback(err, shake.rest())
     }

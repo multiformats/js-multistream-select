@@ -16,6 +16,8 @@ const multiplex = require('pull-mplex')
 const util = require('./util')
 const createPair = util.createPair
 
+const { errors } = require('../src/constants')
+
 const options = [
   { name: 'over pull-pair' },
   { name: 'over spdy', muxer: spdy },
@@ -114,7 +116,7 @@ options.forEach((option) => {
         (next) => {
           msd.select('/panda/1.0.0', (err) => {
             expect(err).to.exist()
-            expect(err.code).to.eql('ERR_MULTICODEC_NOT_SUPPORTED')
+            expect(err.code).to.eql(errors.MULTICODEC_NOT_SUPPORTED)
             next()
           })
         }
@@ -151,7 +153,7 @@ options.forEach((option) => {
         (next) => {
           msd.select('/sadpanda/1.0.0', (err) => {
             expect(err).to.exist()
-            expect(err.code).to.eql('ERR_MULTICODEC_NOT_SUPPORTED')
+            expect(err.code).to.eql(errors.MULTICODEC_NOT_SUPPORTED)
             next()
           })
         },
