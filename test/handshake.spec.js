@@ -12,14 +12,14 @@ const parallel = require('run-parallel')
 const series = require('run-series')
 
 const spdy = require('libp2p-spdy')
-const multiplex = require('libp2p-multiplex')
+const multiplex = require('pull-mplex')
 const util = require('./util')
 const createPair = util.createPair
 
 const options = [
   { name: 'over pull-pair' },
   { name: 'over spdy', muxer: spdy },
-  { name: 'over multiplex', muxer: multiplex }
+  { name: 'over mplex', muxer: multiplex }
 ]
 
 options.forEach((option) => {
