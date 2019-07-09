@@ -114,6 +114,7 @@ options.forEach((option) => {
         (next) => {
           msd.select('/panda/1.0.0', (err) => {
             expect(err).to.exist()
+            expect(err.code).to.eql('ERR_MULTICODEC_NOT_SUPPORTED')
             next()
           })
         }
@@ -150,6 +151,7 @@ options.forEach((option) => {
         (next) => {
           msd.select('/sadpanda/1.0.0', (err) => {
             expect(err).to.exist()
+            expect(err.code).to.eql('ERR_MULTICODEC_NOT_SUPPORTED')
             next()
           })
         },
