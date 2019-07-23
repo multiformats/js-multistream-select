@@ -1,3 +1,13 @@
+<a name="0.14.6"></a>
+## [0.14.6](https://github.com/multiformats/js-multistream-select/compare/v0.14.5...v0.14.6) (2019-07-23)
+
+
+### Reverts
+
+* **dep:** use async 2.6 instead of 3 ([#51](https://github.com/multiformats/js-multistream-select/issues/51)) ([068d9fd](https://github.com/multiformats/js-multistream-select/commit/068d9fd)), closes [/github.com/libp2p/js-peer-id/issues/96#issuecomment-514123124](https://github.com//github.com/libp2p/js-peer-id/issues/96/issues/issuecomment-514123124)
+
+
+
 <a name="0.14.5"></a>
 ## [0.14.5](https://github.com/multiformats/js-multistream-select/compare/v0.14.4...v0.14.5) (2019-07-09)
 
