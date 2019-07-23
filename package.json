@@ -41,7 +41,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "async": "^3.1.0",
+    "async": "^2.6.2",
     "debug": "^4.1.1",
     "err-code": "^1.1.2",
     "interface-connection": "~0.3.3",
