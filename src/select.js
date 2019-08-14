@@ -1,40 +1,26 @@
 'use strict'
 
-const handshake = require('pull-handshake')
-const pullLP = require('pull-length-prefixed')
-const util = require('./util')
-const writeEncoded = util.writeEncoded
-
+const log = require('debug')('it-multistream-select:select')
 const errCode = require('err-code')
-const { errors } = require('./constants')
+const Multistream = require('./multistream')
+const toReaderWriter = require('./to-reader-writer')
 
-function select (multicodec, callback, log) {
-  const stream = handshake({
-    timeout: 60 * 1000
-  }, callback)
+module.exports = async (stream, protocols) => {
+  protocols = Array.isArray(protocols) ? protocols : [protocols]
+  const { reader, writer, rest } = toReaderWriter(stream)
 
-  const shake = stream.handshake
+  for (const protocol of protocols) {
+    log('write "%s"', protocol)
+    Multistream.write(writer, protocol)
+    const response = (await Multistream.read(reader)).toString()
+    log('read "%s" "%s"', protocol, response)
 
-  log('writing multicodec: ' + multicodec)
-  writeEncoded(shake, Buffer.from(multicodec + '\n'), callback)
-
-  pullLP.decodeFromReader(shake, (err, data) => {
-    if (err) {
-      return callback(err)
+    if (response === protocol) {
+      writer.end() // End our writer so others can start writing to stream
+      return { stream: rest, protocol }
     }
-    const protocol = data.toString().slice(0, -1)
+  }
 
-    if (protocol !== multicodec) {
-      const err = errCode(new Error(`"${multicodec}" not supported`), errors.MULTICODEC_NOT_SUPPORTED)
-
-      return callback(err, shake.rest())
-    }
-
-    log('received ack: ' + protocol)
-    callback(null, shake.rest())
-  })
-
-  return stream
+  writer.end()
+  throw errCode(new Error(`protocol selection failed`), 'ERR_UNSUPPORTED_PROTOCOL')
 }
-
-module.exports = select
