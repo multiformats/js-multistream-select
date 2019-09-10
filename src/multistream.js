@@ -2,7 +2,7 @@
 
 const { Buffer } = require('buffer')
 const BufferList = require('bl')
-const Lp = require('it-length-prefixed')
+const lp = require('it-length-prefixed')
 const pipe = require('it-pipe')
 const errCode = require('err-code')
 
@@ -12,7 +12,7 @@ async function oneChunk (source) {
   for await (const chunk of source) return chunk // We only need one!
 }
 
-exports.encode = buffer => Lp.encode.single(new BufferList([buffer, NewLine]))
+exports.encode = buffer => lp.encode.single(new BufferList([buffer, NewLine]))
 
 exports.write = (writer, buffer) => writer.push(exports.encode(buffer))
 
@@ -25,7 +25,7 @@ exports.read = async reader => {
 
   // Once the length has been parsed, read chunk for that length
   const onLength = l => { byteLength = l }
-  const buf = await pipe(varByteSource, Lp.decode({ onLength }), oneChunk)
+  const buf = await pipe(varByteSource, lp.decode({ onLength }), oneChunk)
 
   if (buf.get(buf.length - 1) !== NewLine[0]) {
     throw errCode(new Error('missing newline'), 'ERR_INVALID_MULTISTREAM_SELECT_MESSAGE')

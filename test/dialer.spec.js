@@ -10,7 +10,6 @@ const Crypto = require('crypto')
 const BufferList = require('bl')
 const Pair = require('it-pair')
 const Reader = require('it-reader')
-const Varint = require('varint')
 const throwsAsync = require('./helpers/throws-async')
 const Multistream = require('../src/multistream')
 const MSS = require('../')
@@ -127,10 +126,9 @@ describe('Dialer', () => {
           expect(msg.toString()).to.eql('ls')
 
           // Respond with protocols
-          yield Multistream.encode(new BufferList([
-            Buffer.from(Varint.encode(protocols.length)),
-            ...protocols.map(p => Multistream.encode(p))
-          ]).shallowSlice(0, -1))
+          yield Multistream.encode(new BufferList(
+            protocols.map(p => Multistream.encode(p))
+          ))
 
           // Third message will be selectedProtocol
           msg = await Multistream.read(reader)

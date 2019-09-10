@@ -33,8 +33,7 @@
     "it-pipe": "^1.0.1",
     "it-pushable": "^1.2.1",
     "it-reader": "^1.0.0",
-    "p-defer": "^3.0.0",
-    "varint": "^5.0.0"
+    "p-defer": "^3.0.0"
   },
   "devDependencies": {
     "aegir": "^20.0.0",
@@ -42,6 +41,7 @@
     "dirty-chai": "^2.0.1",
     "it-pair": "^1.0.0",
     "mocha": "^6.2.0",
-    "streaming-iterables": "^4.1.0"
+    "streaming-iterables": "^4.1.0",
+    "varint": "^5.0.0"
   }
 }

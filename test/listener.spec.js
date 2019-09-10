@@ -9,7 +9,7 @@ const Crypto = require('crypto')
 const BufferList = require('bl')
 const Reader = require('it-reader')
 const { collect } = require('streaming-iterables')
-const Varint = require('varint')
+const Lp = require('it-length-prefixed')
 const Multistream = require('../src/multistream')
 const MSS = require('../')
 
@@ -111,14 +111,20 @@ describe('Listener', () => {
           // Second message will be ls response
           msg = await Multistream.read(reader)
 
-          const totalProtocols = Varint.decode(msg.slice())
-          const lsProtocolsReader = Reader([msg.shallowSlice(Varint.decode.bytes).append('\n')])
+          const protocolsReader = Reader([msg])
           const lsProtocols = []
 
-          for (let i = 0; i < totalProtocols; i++) {
-            const protocol = await Multistream.read(lsProtocolsReader)
-            lsProtocols.push(protocol.toString())
-          }
+          // Decode each of the protocols from the reader
+          await pipe(
+            protocolsReader,
+            Lp.decode(),
+            async source => {
+              for await (const protocol of source) {
+                // Remove the newline
+                lsProtocols.push(protocol.shallowSlice(0, -1).toString())
+              }
+            }
+          )
 
           expect(lsProtocols).to.eql(handledProtocols)
 
