@@ -1,4 +1,4 @@
-# it-multistream-select
+# js-multistream-select
 
 > JavaScript implementation of [multistream-select](https://github.com/multiformats/multistream-select)
 
@@ -43,13 +43,13 @@ This mode also packs a `ls` option, so that the callee can list the protocols it
 ## Install
 
 ```sh
-npm i it-multistream-select
+npm i multistream-select
 ```
 
 ## Usage
 
 ```js
-const MSS = require('it-multistream-select')
+const MSS = require('multistream-select')
 // You can now use
 // MSS.Dialer - actively select a protocol with a remote
 // MSS.Listener - handle a protocol with a remote
@@ -59,8 +59,8 @@ const MSS = require('it-multistream-select')
 
 ```js
 const pipe = require('it-pipe')
-const MSS = require('it-multistream-select')
-const Mplex = require('it-mplex') // https://github.com/alanshaw/it-mplex
+const MSS = require('multistream-select')
+const Mplex = require('libp2p-mplex')
 
 const muxer = new Mplex()
 const muxedStream = muxer.newStream()
@@ -97,8 +97,8 @@ const { stream: dhtStream, protocol } = await mss.select([
 
 ```js
 const pipe = require('it-pipe')
-const MSS = require('it-multistream-select')
-const Mplex = require('it-mplex') // https://github.com/alanshaw/it-mplex
+const MSS = require('multistream-select')
+const Mplex = require('libp2p-mplex')
 
 const muxer = new Mplex({
   async onStream (muxedStream) {
@@ -242,7 +242,7 @@ const { stream, protocol } = await listener.handle([
 
 ## Contribute
 
-Contributions welcome. Please check out [the issues](https://github.com/alanshaw/it-multistream-select/issues).
+Contributions welcome. Please check out [the issues](https://github.com/multiformats/js-multistream-select/issues).
 
 Check out our [contributing document](https://github.com/multiformats/multiformats/blob/master/contributing.md) for more information on how we work, and about contributing in general. Please be aware that all interactions related to multiformats are subject to the IPFS [Code of Conduct](https://github.com/ipfs/community/blob/master/code-of-conduct.md).
 
