@@ -35,7 +35,7 @@ describe('Listener', () => {
           // Rest is data
           return collect(reader)
         },
-        source: (async function * () {
+        source: (function * () {
           yield Multistream.encode(MSS.PROTOCOL_ID)
           yield Multistream.encode(protocol)
           yield * input
@@ -76,7 +76,7 @@ describe('Listener', () => {
           // Rest is data
           return collect(reader)
         },
-        source: (async function * () {
+        source: (function * () {
           yield Multistream.encode(MSS.PROTOCOL_ID)
           for (const protocol of protocols) {
             yield Multistream.encode(protocol)
@@ -135,7 +135,7 @@ describe('Listener', () => {
           // Rest is data
           return collect(reader)
         },
-        source: (async function * () {
+        source: (function * () {
           yield Multistream.encode(MSS.PROTOCOL_ID)
           yield Multistream.encode('ls')
           yield Multistream.encode(handledProtocol)

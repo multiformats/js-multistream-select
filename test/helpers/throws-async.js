@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = async promise => {
   promise = typeof promise === 'function' ? promise() : promise
   try {

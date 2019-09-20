@@ -1,5 +1,6 @@
 'use strict'
 /* eslint-env mocha */
+/* eslint max-nested-callbacks: ["error", 5] */
 
 const chai = require('chai')
 chai.use(require('dirty-chai'))

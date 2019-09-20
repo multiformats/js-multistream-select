@@ -12,7 +12,7 @@ const Multistream = require('../src/multistream')
 
 describe('Multistream', () => {
   describe('Multistream.encode', () => {
-    it('should encode data Buffer as a multistream-select message', async () => {
+    it('should encode data Buffer as a multistream-select message', () => {
       const input = Buffer.from(`TEST${Date.now()}`)
       const output = Multistream.encode(input)
 
@@ -25,7 +25,7 @@ describe('Multistream', () => {
       expect(output.slice()).to.eql(expected)
     })
 
-    it('should encode data BufferList as a multistream-select message', async () => {
+    it('should encode data BufferList as a multistream-select message', () => {
       const input = new BufferList([Buffer.from('TEST'), Buffer.from(`${Date.now()}`)])
       const output = Multistream.encode(input)
 
@@ -40,9 +40,9 @@ describe('Multistream', () => {
   })
 
   describe('Multistream.write', () => {
-    it('should encode and write a multistream-select message', async () => {
+    it('should encode and write a multistream-select message', () => {
       const input = Buffer.from(`TEST${Date.now()}`)
-      let output = []
+      const output = []
       const mockWriter = { push: d => output.push(d) }
 
       Multistream.write(mockWriter, input)

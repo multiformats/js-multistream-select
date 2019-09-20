@@ -22,5 +22,5 @@ module.exports = async (stream, protocols) => {
   }
 
   writer.end()
-  throw errCode(new Error(`protocol selection failed`), 'ERR_UNSUPPORTED_PROTOCOL')
+  throw errCode(new Error('protocol selection failed'), 'ERR_UNSUPPORTED_PROTOCOL')
 }
