@@ -1,6 +1,6 @@
 'use strict'
 
-const log = require('debug')('it-multistream-select:select')
+const log = require('debug')('mss:select')
 const errCode = require('err-code')
 const multistream = require('./multistream')
 const toReaderWriter = require('./to-reader-writer')

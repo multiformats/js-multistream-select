@@ -1,6 +1,6 @@
 'use strict'
 
-const log = require('debug')('it-multistream-select:handle')
+const log = require('debug')('mss:handle')
 const BufferList = require('bl')
 const multistream = require('./multistream')
 const toReaderWriter = require('./to-reader-writer')
