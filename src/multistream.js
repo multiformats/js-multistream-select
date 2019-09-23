@@ -1,7 +1,7 @@
 'use strict'
 
 const { Buffer } = require('buffer')
-const BufferList = require('bl')
+const { BufferList } = require('bl')
 const lp = require('it-length-prefixed')
 const pipe = require('it-pipe')
 const errCode = require('err-code')
