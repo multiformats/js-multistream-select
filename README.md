@@ -1,5 +1,13 @@
 # js-multistream-select
 
+[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](https://protocol.ai)
+[![](https://img.shields.io/badge/project-multiformats-blue.svg?style=flat-square)](https://github.com/multiformats/multiformats)
+[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](https://webchat.freenode.net/?channels=%23ipfs)
+[![](https://img.shields.io/codecov/c/github/multiformats/js-multistream-select.svg?style=flat-square)](https://codecov.io/gh/multiformats/js-multistream-select)
+[![](https://img.shields.io/travis/multiformats/js-multistream-select.svg?style=flat-square)](https://travis-ci.com/multiformats/js-multistream-select)
+[![Dependency Status](https://david-dm.org/multiformats/js-multistream-select.svg?style=flat-square)](https://david-dm.org/multiformats/js-multistream-select)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
+
 > JavaScript implementation of [multistream-select](https://github.com/multiformats/multistream-select)
 
 ## Lead Maintainer
