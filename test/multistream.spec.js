@@ -5,7 +5,7 @@ const chai = require('chai')
 chai.use(require('dirty-chai'))
 const { expect } = chai
 const Varint = require('varint')
-const BufferList = require('bl')
+const BufferList = require('bl/BufferList')
 const Reader = require('it-reader')
 const throwsAsync = require('./helpers/throws-async')
 const Multistream = require('../src/multistream')

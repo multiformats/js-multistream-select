@@ -7,7 +7,7 @@ const { expect } = chai
 const pipe = require('it-pipe')
 const { collect } = require('streaming-iterables')
 const Crypto = require('crypto')
-const BufferList = require('bl')
+const BufferList = require('bl/BufferList')
 const DuplexPair = require('it-pair/duplex')
 const MSS = require('../')
 

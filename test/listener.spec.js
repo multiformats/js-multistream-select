@@ -6,7 +6,7 @@ chai.use(require('dirty-chai'))
 const { expect } = chai
 const pipe = require('it-pipe')
 const Crypto = require('crypto')
-const BufferList = require('bl')
+const BufferList = require('bl/BufferList')
 const Reader = require('it-reader')
 const { collect } = require('streaming-iterables')
 const Lp = require('it-length-prefixed')
