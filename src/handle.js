@@ -3,21 +3,28 @@
 const log = require('debug')('mss:handle')
 const BufferList = require('bl/BufferList')
 const multistream = require('./multistream')
-const toReaderWriter = require('./to-reader-writer')
+const handshake = require('it-handshake')
+const { PROTOCOL_ID } = require('./constants')
 
 module.exports = async (stream, protocols) => {
   protocols = Array.isArray(protocols) ? protocols : [protocols]
-  const { reader, writer, rest } = toReaderWriter(stream)
+  const { writer, reader, rest, stream: shakeStream } = handshake(stream)
 
   while (true) {
     const protocol = (await multistream.read(reader)).toString()
     log('read "%s"', protocol)
 
+    if (protocol === PROTOCOL_ID) {
+      log('respond with "%s" for "%s"', PROTOCOL_ID, protocol)
+      multistream.write(writer, PROTOCOL_ID)
+      continue
+    }
+
     if (protocols.includes(protocol)) {
       multistream.write(writer, protocol)
-      log('write "%s" "%s"', protocol, protocol)
-      writer.end()
-      return { stream: rest, protocol }
+      log('respond with "%s" for "%s"', protocol, protocol)
+      rest()
+      return { stream: shakeStream, protocol }
     }
 
     if (protocol === 'ls') {
@@ -25,11 +32,11 @@ module.exports = async (stream, protocols) => {
       multistream.write(writer, new BufferList(
         protocols.map(p => multistream.encode(p))
       ))
-      log('write "%s" %s', protocol, protocols)
+      log('respond with "%s" for %s', protocols, protocol)
       continue
     }
 
     multistream.write(writer, 'na')
-    log('write "%s" "na"', protocol)
+    log('respond with "na" for "%s"', protocol)
   }
 }

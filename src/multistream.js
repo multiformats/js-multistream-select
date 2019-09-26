@@ -14,7 +14,13 @@ async function oneChunk (source) {
 
 exports.encode = buffer => lp.encode.single(new BufferList([buffer, NewLine]))
 
+// `write` encodes and writes a single buffer
 exports.write = (writer, buffer) => writer.push(exports.encode(buffer))
+
+// `writeAll` behaves like `write`, except it encodes an array of items as a single write
+exports.writeAll = (writer, buffers) => {
+  writer.push(buffers.reduce((bl, buffer) => bl.append(exports.encode(buffer)), new BufferList()))
+}
 
 exports.read = async reader => {
   let byteLength = 1 // Read single byte chunks until the length is known

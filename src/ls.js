@@ -3,16 +3,16 @@
 const Reader = require('it-reader')
 const log = require('debug')('it-multistream-select:ls')
 const multistream = require('./multistream')
-const toReaderWriter = require('./to-reader-writer')
+const handshake = require('it-handshake')
 const lp = require('it-length-prefixed')
 const pipe = require('it-pipe')
 
 module.exports = async stream => {
-  const { reader, writer, rest } = toReaderWriter(stream)
+  const { reader, writer, rest, stream: shakeStream } = handshake(stream)
 
   log('write "ls"')
   multistream.write(writer, 'ls')
-  writer.end()
+  rest()
 
   // Next message from remote will be (e.g. for 2 protocols):
   // <varint-msg-len><varint-proto-name-len><proto-name>\n<varint-proto-name-len><proto-name>\n
@@ -35,5 +35,5 @@ module.exports = async stream => {
     }
   )
 
-  return { stream: rest, protocols }
+  return { stream: shakeStream, protocols }
 }

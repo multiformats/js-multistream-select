@@ -3,8 +3,7 @@
 const select = require('./select')
 const handle = require('./handle')
 const ls = require('./ls')
-
-const PROTOCOL_ID = '/multistream/1.0.0'
+const { PROTOCOL_ID } = require('./constants')
 
 exports.PROTOCOL_ID = PROTOCOL_ID
 
@@ -24,9 +23,8 @@ class MultistreamSelect {
 }
 
 class Dialer extends MultistreamSelect {
-  async select (protocols) {
-    await this._handshake()
-    return select(this._stream, protocols)
+  select (protocols) {
+    return select(this._stream, protocols, this._shaken ? null : PROTOCOL_ID)
   }
 
   async ls () {
@@ -40,8 +38,7 @@ class Dialer extends MultistreamSelect {
 exports.Dialer = Dialer
 
 class Listener extends MultistreamSelect {
-  async handle (protocols) {
-    await this._handshake()
+  handle (protocols) {
     return handle(this._stream, protocols)
   }
 }
