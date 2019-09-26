@@ -148,7 +148,7 @@ const muxer = new Mplex({
 
 ### `new MSS.Dialer(duplex)`
 
-Construct a new multistream select "dialer" instance which can be used to negotiate a protocol to use or list all available protocols the remote supports (or both).
+Create a new multistream select "dialer" instance which can be used to negotiate a protocol to use, list all available protocols the remote supports, or do both.
 
 #### Parameters
 

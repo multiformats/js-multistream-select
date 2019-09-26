@@ -11,6 +11,7 @@ const Crypto = require('crypto')
 const BufferList = require('bl/BufferList')
 const Pair = require('it-pair')
 const Reader = require('it-reader')
+const pTimeout = require('p-timeout')
 const throwsAsync = require('./helpers/throws-async')
 const Multistream = require('../src/multistream')
 const MSS = require('../')
@@ -29,6 +30,22 @@ describe('Dialer', () => {
       const input = [Crypto.randomBytes(10), Crypto.randomBytes(64), Crypto.randomBytes(3)]
       const output = await pipe(input, selection.stream, collect)
       expect(BufferList(output).slice()).to.eql(BufferList(input).slice())
+    })
+
+    it('should fail to select twice', async () => {
+      const protocol = '/echo/1.0.0'
+      const protocol2 = '/echo/2.0.0'
+      const duplex = Pair()
+
+      const mss = new MSS.Dialer(duplex)
+      const selection = await mss.select(protocol)
+      expect(selection.protocol).to.equal(protocol)
+
+      // A second select will timeout
+      await pTimeout(mss.select(protocol2), 1e3)
+        .then(() => expect.fail('should have timed out'), (err) => {
+          expect(err).to.exist()
+        })
     })
 
     it('should select from multiple protocols', async () => {
