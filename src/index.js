@@ -16,7 +16,7 @@ class MultistreamSelect {
   // Perform the multistream-select handshake
   async _handshake () {
     if (this._shaken) return
-    const { stream } = await select(this._stream, null, PROTOCOL_ID)
+    const { stream } = await select(this._stream, PROTOCOL_ID)
     this._stream = stream
     this._shaken = true
   }
@@ -24,11 +24,7 @@ class MultistreamSelect {
 
 class Dialer extends MultistreamSelect {
   select (protocols) {
-    if (this._shaken) {
-      return select(this._stream, null, protocols)
-    } else {
-      return select(this._stream, PROTOCOL_ID, protocols)
-    }
+    return select(this._stream, protocols, this._shaken ? null : PROTOCOL_ID)
   }
 
   async ls () {

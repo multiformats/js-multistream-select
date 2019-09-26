@@ -5,7 +5,7 @@ const errCode = require('err-code')
 const multistream = require('./multistream')
 const handshake = require('it-handshake')
 
-module.exports = async (stream, protocolId, protocols) => {
+module.exports = async (stream, protocols, protocolId) => {
   protocols = Array.isArray(protocols) ? protocols : [protocols]
   const { reader, writer, rest, stream: shakeStream } = handshake(stream)
 
