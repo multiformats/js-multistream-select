@@ -1,6 +1,6 @@
 {
   "name": "multistream-select",
-  "version": "0.14.6",
+  "version": "0.15.0",
   "leadMaintainer": "Jacob Heun <jacobheun@gmail.com>",
   "description": "JavaScript implementation of multistream-select",
   "main": "src/index.js",
@@ -62,7 +62,6 @@
     "varint": "^5.0.0"
   },
   "contributors": [
-    "Alan Shaw <alan.shaw@protocol.ai>",
     "David Dias <daviddias.p@gmail.com>",
     "David Dias <mail@daviddias.me>",
     "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
