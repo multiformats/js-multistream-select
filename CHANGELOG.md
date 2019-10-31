@@ -1,3 +1,28 @@
+<a name="0.15.1"></a>
+## [0.15.1](https://github.com/multiformats/js-multistream-select/compare/v0.15.0...v0.15.1) (2019-10-31)
+
+
+### Bug Fixes
+
+* dont mutate select protocols ([#55](https://github.com/multiformats/js-multistream-select/issues/55)) ([662b5fd](https://github.com/multiformats/js-multistream-select/commit/662b5fd))
+
+
+### Code Refactoring
+
+* use async / await ([#52](https://github.com/multiformats/js-multistream-select/issues/52)) ([aba918b](https://github.com/multiformats/js-multistream-select/commit/aba918b))
+
+
+### Features
+
+* consolidate select write ([#53](https://github.com/multiformats/js-multistream-select/issues/53)) ([77483f9](https://github.com/multiformats/js-multistream-select/commit/77483f9))
+
+
+### BREAKING CHANGES
+
+* The API has changed from callbacks to async/await. Additionally, the use has changed. See the README for usage guidance.
+
+
+
 <a name="0.15.0"></a>
 # [0.15.0](https://github.com/multiformats/js-multistream-select/compare/v0.14.6...v0.15.0) (2019-09-27)
 
