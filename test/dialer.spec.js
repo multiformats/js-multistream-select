@@ -83,6 +83,7 @@ describe('Dialer', () => {
 
       const mss = new MSS.Dialer(duplex)
       const selection = await mss.select(protocols)
+      expect(protocols).to.have.length(2)
       expect(selection.protocol).to.equal(selectedProtocol)
 
       // Ensure stream is usable after selection
