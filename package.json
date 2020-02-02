@@ -1,6 +1,6 @@
 {
   "name": "multistream-select",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "leadMaintainer": "Jacob Heun <jacobheun@gmail.com>",
   "description": "JavaScript implementation of multistream-select",
   "main": "src/index.js",
