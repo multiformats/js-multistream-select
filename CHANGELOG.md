@@ -1,3 +1,13 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/multiformats/js-multistream-select/compare/v0.15.2...v1.0.0) (2020-08-12)
+
+
+### Bug Fixes
+
+* replace node buffers with uint8arrays ([#90](https://github.com/multiformats/js-multistream-select/issues/90)) ([543aabb](https://github.com/multiformats/js-multistream-select/commit/543aabb))
+
+
+
 <a name="0.15.2"></a>
 ## [0.15.2](https://github.com/multiformats/js-multistream-select/compare/v0.15.1...v0.15.2) (2020-02-02)
 
