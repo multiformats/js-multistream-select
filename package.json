@@ -43,7 +43,7 @@
     "bl": "^4.0.0",
     "debug": "^4.1.1",
     "err-code": "^2.0.0",
-    "it-handshake": "achingbrain/it-handshake#fix/unhandled-promise-rejection",
+    "it-handshake": "^1.0.2",
     "it-length-prefixed": "^3.0.0",
     "it-pipe": "^1.0.1",
     "it-reader": "^2.0.0",
