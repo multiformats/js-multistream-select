@@ -2,12 +2,9 @@
 /* eslint-env mocha */
 /* eslint max-nested-callbacks: ["error", 5] */
 
-const chai = require('chai')
-chai.use(require('dirty-chai'))
-const { expect } = chai
+const { expect } = require('aegir/utils/chai')
 const pipe = require('it-pipe')
 const { collect } = require('streaming-iterables')
-const Crypto = require('crypto')
 const BufferList = require('bl/BufferList')
 const Pair = require('it-pair')
 const Reader = require('it-reader')
@@ -15,6 +12,7 @@ const pTimeout = require('p-timeout')
 const throwsAsync = require('./helpers/throws-async')
 const Multistream = require('../src/multistream')
 const MSS = require('../')
+const randomBytes = require('./helpers/random-bytes')
 
 describe('Dialer', () => {
   describe('dialer.select', () => {
@@ -27,7 +25,7 @@ describe('Dialer', () => {
       expect(selection.protocol).to.equal(protocol)
 
       // Ensure stream is usable after selection
-      const input = [Crypto.randomBytes(10), Crypto.randomBytes(64), Crypto.randomBytes(3)]
+      const input = [randomBytes(10), randomBytes(64), randomBytes(3)]
       const output = await pipe(input, selection.stream, collect)
       expect(BufferList(output).slice()).to.eql(BufferList(input).slice())
     })
@@ -87,7 +85,7 @@ describe('Dialer', () => {
       expect(selection.protocol).to.equal(selectedProtocol)
 
       // Ensure stream is usable after selection
-      const input = [Crypto.randomBytes(10), Crypto.randomBytes(64), Crypto.randomBytes(3)]
+      const input = [randomBytes(10), randomBytes(64), randomBytes(3)]
       const output = await pipe(input, selection.stream, collect)
       expect(BufferList(output).slice()).to.eql(BufferList(input).slice())
     })
@@ -169,7 +167,7 @@ describe('Dialer', () => {
       expect(selection.protocol).to.equal(selectedProtocol)
 
       // Ensure stream is usable after selection
-      const input = [Crypto.randomBytes(10), Crypto.randomBytes(64), Crypto.randomBytes(3)]
+      const input = [randomBytes(10), randomBytes(64), randomBytes(3)]
       const output = await pipe(input, selection.stream, collect)
       expect(BufferList(output).slice()).to.eql(BufferList(input).slice())
     })

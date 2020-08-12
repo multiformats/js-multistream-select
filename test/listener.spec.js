@@ -5,19 +5,19 @@ const chai = require('chai')
 chai.use(require('dirty-chai'))
 const { expect } = chai
 const pipe = require('it-pipe')
-const Crypto = require('crypto')
 const BufferList = require('bl/BufferList')
 const Reader = require('it-reader')
 const { collect } = require('streaming-iterables')
 const Lp = require('it-length-prefixed')
 const Multistream = require('../src/multistream')
+const randomBytes = require('./helpers/random-bytes')
 const MSS = require('../')
 
 describe('Listener', () => {
   describe('listener.handle', () => {
     it('should handle a protocol', async () => {
       const protocol = '/echo/1.0.0'
-      const input = [Crypto.randomBytes(10), Crypto.randomBytes(64), Crypto.randomBytes(3)]
+      const input = [randomBytes(10), randomBytes(64), randomBytes(3)]
 
       const duplex = {
         sink: async source => {
@@ -54,7 +54,7 @@ describe('Listener', () => {
       const protocols = ['/echo/2.0.0', '/echo/1.0.0']
       const handledProtocols = ['/test/1.0.0', protocols[protocols.length - 1]]
       const handledProtocol = protocols[protocols.length - 1]
-      const input = [Crypto.randomBytes(10), Crypto.randomBytes(64), Crypto.randomBytes(3)]
+      const input = [randomBytes(10), randomBytes(64), randomBytes(3)]
 
       const duplex = {
         sink: async source => {
@@ -97,7 +97,7 @@ describe('Listener', () => {
       const protocols = ['/echo/2.0.0', '/echo/1.0.0']
       const handledProtocols = ['/test/1.0.0', protocols[protocols.length - 1]]
       const handledProtocol = protocols[protocols.length - 1]
-      const input = [Crypto.randomBytes(10), Crypto.randomBytes(64), Crypto.randomBytes(3)]
+      const input = [randomBytes(10), randomBytes(64), randomBytes(3)]
 
       const duplex = {
         sink: async source => {

@@ -1,12 +1,12 @@
 'use strict'
 
-const { Buffer } = require('buffer')
 const BufferList = require('bl/BufferList')
 const lp = require('it-length-prefixed')
 const pipe = require('it-pipe')
 const errCode = require('err-code')
+const uint8ArrayFromString = require('uint8arrays/from-string')
 
-const NewLine = Buffer.from('\n')
+const NewLine = uint8ArrayFromString('\n')
 
 async function oneChunk (source) {
   for await (const chunk of source) return chunk // We only need one!
