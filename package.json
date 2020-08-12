@@ -1,6 +1,6 @@
 {
   "name": "multistream-select",
-  "version": "0.15.2",
+  "version": "1.0.0",
   "leadMaintainer": "Jacob Heun <jacobheun@gmail.com>",
   "description": "JavaScript implementation of multistream-select",
   "main": "src/index.js",
@@ -61,17 +61,16 @@
     "varint": "^5.0.0"
   },
   "contributors": [
-    "Alan Shaw <alan.shaw@protocol.ai>",
     "David Dias <daviddias.p@gmail.com>",
-    "David Dias <mail@daviddias.me>",
-    "Friedel Ziegelmayer <dignifiedquire@gmail.com>",
-    "Hugo Dias <mail@hugodias.me>",
     "Jacob Heun <jacobheun@gmail.com>",
-    "Projjol Banerji <probaner23@gmail.com>",
-    "Richard Littauer <richard.littauer@gmail.com>",
-    "Vasco Santos <vasco.santos@ua.pt>",
+    "dignifiedquire <dignifiedquire@gmail.com>",
     "Victor Bjelkholm <victorbjelkholm@gmail.com>",
-    "greenkeeper[bot] <greenkeeper[bot]@users.noreply.github.com>",
-    "npm-to-cdn-bot (by Forbes Lindesay) <npmcdn-to-unpkg-bot@users.noreply.github.com>"
+    "Richard Littauer <richard.littauer@gmail.com>",
+    "Alan Shaw <alan.shaw@protocol.ai>",
+    "Hugo Dias <mail@hugodias.me>",
+    "Didrik Nordström <didrik.nordstrom@gmail.com>",
+    "Vasco Santos <vasco.santos@ua.pt>",
+    "Alex Potsides <alex@achingbrain.net>",
+    "Projjol Banerji <probaner23@gmail.com>"
   ]
 }
