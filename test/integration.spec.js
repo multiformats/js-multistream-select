@@ -6,9 +6,9 @@ chai.use(require('dirty-chai'))
 const { expect } = chai
 const pipe = require('it-pipe')
 const { collect } = require('streaming-iterables')
-const Crypto = require('crypto')
 const BufferList = require('bl/BufferList')
 const DuplexPair = require('it-pair/duplex')
+const randomBytes = require('./helpers/random-bytes')
 const MSS = require('../')
 
 describe('Dialer and Listener integration', () => {
@@ -29,7 +29,7 @@ describe('Dialer and Listener integration', () => {
     expect(listenerSelection.protocol).to.equal(selectedProtocol)
 
     // Ensure stream is usable after selection
-    const input = [Crypto.randomBytes(10), Crypto.randomBytes(64), Crypto.randomBytes(3)]
+    const input = [randomBytes(10), randomBytes(64), randomBytes(3)]
     const output = await Promise.all([
       pipe(input, dialerSelection.stream, collect),
       pipe(listenerSelection.stream, listenerSelection.stream)
@@ -58,7 +58,7 @@ describe('Dialer and Listener integration', () => {
     expect(listenerSelection.protocol).to.equal(selectedProtocol)
 
     // Ensure stream is usable after selection
-    const input = [Crypto.randomBytes(10), Crypto.randomBytes(64), Crypto.randomBytes(3)]
+    const input = [randomBytes(10), randomBytes(64), randomBytes(3)]
     const output = await Promise.all([
       pipe(input, dialerSelection.stream, collect),
       pipe(listenerSelection.stream, listenerSelection.stream)

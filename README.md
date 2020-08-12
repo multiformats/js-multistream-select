@@ -93,7 +93,7 @@ const { stream: dhtStream, protocol } = await mss.select([
 // ...it might then do something like this:
 // try {
 //   await pipe(
-//     [Buffer.from('Some DHT data')]
+//     [uint8ArrayFromString('Some DHT data')]
 //     dhtStream,
 //     async source => {
 //       for await (const chunk of source)
