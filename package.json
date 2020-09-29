@@ -58,7 +58,7 @@
     "mocha": "^8.1.1",
     "p-timeout": "^3.2.0",
     "streaming-iterables": "^5.0.2",
-    "varint": "^5.0.0"
+    "varint": "^6.0.0"
   },
   "contributors": [
     "David Dias <daviddias.p@gmail.com>",
