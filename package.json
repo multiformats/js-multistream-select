@@ -48,7 +48,7 @@
     "it-pipe": "^1.0.1",
     "it-reader": "^2.0.0",
     "p-defer": "^3.0.0",
-    "uint8arrays": "^1.1.0"
+    "uint8arrays": "^2.1.0"
   },
   "devDependencies": {
     "aegir": "^25.1.0",
