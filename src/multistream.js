@@ -5,12 +5,9 @@ const lp = require('it-length-prefixed')
 const pipe = require('it-pipe')
 const errCode = require('err-code')
 const uint8ArrayFromString = require('uint8arrays/from-string')
+const first = require('it-first')
 
 const NewLine = uint8ArrayFromString('\n')
-
-async function oneChunk (source) {
-  for await (const chunk of source) return chunk // We only need one!
-}
 
 exports.encode = buffer => lp.encode.single(new BufferList([buffer, NewLine]))
 
@@ -31,7 +28,7 @@ exports.read = async reader => {
 
   // Once the length has been parsed, read chunk for that length
   const onLength = l => { byteLength = l }
-  const buf = await pipe(varByteSource, lp.decode({ onLength }), oneChunk)
+  const buf = await pipe(varByteSource, lp.decode({ onLength }), first)
 
   if (buf.get(buf.length - 1) !== NewLine[0]) {
     throw errCode(new Error('missing newline'), 'ERR_INVALID_MULTISTREAM_SELECT_MESSAGE')

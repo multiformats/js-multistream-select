@@ -40,25 +40,27 @@
   },
   "homepage": "https://github.com/multiformats/js-multistream-select#readme",
   "dependencies": {
-    "bl": "^4.0.0",
+    "bl": "^5.0.0",
     "debug": "^4.1.1",
-    "err-code": "^2.0.0",
-    "it-handshake": "^1.0.2",
-    "it-length-prefixed": "^3.0.0",
+    "err-code": "^3.0.1",
+    "it-first": "^1.0.6",
+    "it-handshake": "^2.0.0",
+    "it-length-prefixed": "^5.0.0",
     "it-pipe": "^1.0.1",
-    "it-reader": "^2.0.0",
+    "it-reader": "^3.0.0",
     "p-defer": "^3.0.0",
-    "uint8arrays": "^1.1.0"
+    "uint8arrays": "^2.1.4"
   },
   "devDependencies": {
-    "aegir": "^25.1.0",
+    "@types/bl": "^4.1.0",
+    "aegir": "^33.0.0",
     "chai": "^4.2.0",
     "dirty-chai": "^2.0.1",
     "it-pair": "^1.0.0",
     "mocha": "^8.1.1",
-    "p-timeout": "^3.2.0",
+    "p-timeout": "^4.0.0",
     "streaming-iterables": "^5.0.2",
-    "varint": "^5.0.0"
+    "varint": "^6.0.0"
   },
   "contributors": [
     "David Dias <daviddias.p@gmail.com>",
