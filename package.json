@@ -1,6 +1,6 @@
 {
   "name": "multistream-select",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "leadMaintainer": "Jacob Heun <jacobheun@gmail.com>",
   "description": "JavaScript implementation of multistream-select",
   "main": "src/index.js",
@@ -69,10 +69,10 @@
     "Victor Bjelkholm <victorbjelkholm@gmail.com>",
     "Richard Littauer <richard.littauer@gmail.com>",
     "Alan Shaw <alan.shaw@protocol.ai>",
-    "Hugo Dias <mail@hugodias.me>",
-    "Didrik Nordström <didrik.nordstrom@gmail.com>",
-    "Vasco Santos <vasco.santos@ua.pt>",
     "Alex Potsides <alex@achingbrain.net>",
+    "Hugo Dias <mail@hugodias.me>",
+    "Vasco Santos <vasco.santos@ua.pt>",
+    "Didrik Nordström <didrik.nordstrom@gmail.com>",
     "Projjol Banerji <probaner23@gmail.com>"
   ]
 }
