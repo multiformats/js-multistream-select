@@ -1,3 +1,7 @@
+# [2.0.0](https://github.com/multiformats/js-multistream-select/compare/v1.0.0...v2.0.0) (2021-04-08)
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/multiformats/js-multistream-select/compare/v0.15.2...v1.0.0) (2020-08-12)
 
