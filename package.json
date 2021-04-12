@@ -52,7 +52,7 @@
     "uint8arrays": "^2.1.4"
   },
   "devDependencies": {
-    "@types/bl": "^4.1.0",
+    "@types/bl": "^5.0.0",
     "aegir": "^33.0.0",
     "chai": "^4.2.0",
     "dirty-chai": "^2.0.1",
