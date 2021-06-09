@@ -59,7 +59,7 @@
     "it-pair": "^1.0.0",
     "mocha": "^8.1.1",
     "p-timeout": "^4.0.0",
-    "streaming-iterables": "^5.0.2",
+    "streaming-iterables": "^6.0.0",
     "varint": "^6.0.0"
   },
   "contributors": [
