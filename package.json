@@ -57,7 +57,7 @@
     "chai": "^4.2.0",
     "dirty-chai": "^2.0.1",
     "it-pair": "^1.0.0",
-    "mocha": "^8.1.1",
+    "mocha": "^9.0.2",
     "p-timeout": "^4.0.0",
     "streaming-iterables": "^5.0.2",
     "varint": "^6.0.0"
