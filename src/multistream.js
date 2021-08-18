@@ -4,7 +4,7 @@ const BufferList = require('bl/BufferList')
 const lp = require('it-length-prefixed')
 const pipe = require('it-pipe')
 const errCode = require('err-code')
-const uint8ArrayFromString = require('uint8arrays/from-string')
+const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
 const first = require('it-first')
 
 const NewLine = uint8ArrayFromString('\n')
