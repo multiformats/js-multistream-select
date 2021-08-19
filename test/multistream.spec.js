@@ -9,8 +9,8 @@ const BufferList = require('bl/BufferList')
 const Reader = require('it-reader')
 const throwsAsync = require('./helpers/throws-async')
 const Multistream = require('../src/multistream')
-const uint8ArrayFromString = require('uint8arrays/from-string')
-const uint8ArrayConcat = require('uint8arrays/concat')
+const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
+const { concat: uint8ArrayConcat } = require('uint8arrays/concat')
 
 describe('Multistream', () => {
   describe('Multistream.encode', () => {

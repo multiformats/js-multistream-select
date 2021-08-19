@@ -49,17 +49,18 @@
     "it-pipe": "^1.0.1",
     "it-reader": "^3.0.0",
     "p-defer": "^3.0.0",
-    "uint8arrays": "^2.1.4"
+    "uint8arrays": "^3.0.0"
   },
   "devDependencies": {
-    "@types/bl": "^4.1.0",
-    "aegir": "^33.0.0",
-    "chai": "^4.2.0",
+    "@types/bl": "^5.0.1",
+    "aegir": "^35.0.1",
+    "chai": "^4.3.4",
     "dirty-chai": "^2.0.1",
     "it-pair": "^1.0.0",
     "mocha": "^8.1.1",
     "p-timeout": "^4.0.0",
     "streaming-iterables": "^5.0.2",
+    "util": "^0.12.4",
     "varint": "^6.0.0"
   },
   "contributors": [
