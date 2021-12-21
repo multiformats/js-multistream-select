@@ -1,3 +1,12 @@
+## [3.0.2](https://github.com/multiformats/js-multistream-select/compare/v3.0.1...v3.0.2) (2021-12-21)
+
+
+### Bug Fixes
+
+* types again ([#145](https://github.com/multiformats/js-multistream-select/issues/145)) ([f90537c](https://github.com/multiformats/js-multistream-select/commit/f90537cbd6dccb635af4ecd3472d0e60733be8b6))
+
+
+
 ## [3.0.1](https://github.com/multiformats/js-multistream-select/compare/v3.0.0...v3.0.1) (2021-12-21)
 
 
