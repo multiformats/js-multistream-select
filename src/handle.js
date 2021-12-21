@@ -12,7 +12,7 @@ const log = Object.assign(debug('mss:handle'), {
 })
 
 /**
- * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
+ * @typedef {import('./types').DuplexStream<Uint8Array | BufferList>} DuplexStream
  * @typedef {import('./types').AbortOptions} AbortOptions
  */
 

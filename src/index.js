@@ -8,7 +8,8 @@ const { PROTOCOL_ID } = require('./constants')
 exports.PROTOCOL_ID = PROTOCOL_ID
 
 /**
- * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
+ * @typedef {import('bl/BufferList')} BufferList
+ * @typedef {import('./types').DuplexStream<Uint8Array | BufferList>} DuplexStream
  * @typedef {import('./types').AbortOptions} AbortOptions
  */
 
@@ -24,8 +25,7 @@ class MultistreamSelect {
   /**
    * Perform the multistream-select handshake
    *
-   * @param {object} [options]
-   * @param {AbortSignal} options.signal
+   * @param {AbortOptions} [options]
    */
   async _handshake (options) {
     if (this._shaken) return
@@ -38,16 +38,14 @@ class MultistreamSelect {
 class Dialer extends MultistreamSelect {
   /**
    * @param {string | string[]} protocols
-   * @param {object} [options]
-   * @param {AbortSignal} options.signal
+   * @param {AbortOptions} [options]
    */
   select (protocols, options) {
     return select(this._stream, protocols, this._shaken ? undefined : PROTOCOL_ID, options)
   }
 
   /**
-   * @param {object} [options]
-   * @param {AbortSignal} options.signal
+   * @param {AbortOptions} [options]
    */
   async ls (options) {
     await this._handshake(options)
