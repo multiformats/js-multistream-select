@@ -4,12 +4,13 @@
   "leadMaintainer": "Jacob Heun <jacobheun@gmail.com>",
   "description": "JavaScript implementation of multistream-select",
   "main": "src/index.js",
+  "types": "dist/src/index.d.ts",
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
-    "lint": "aegir lint",
+    "lint": "aegir ts -p check && aegir lint",
     "build": "aegir build",
     "test": "aegir test",
     "test:node": "aegir test -t node",
@@ -40,6 +41,7 @@
   },
   "homepage": "https://github.com/multiformats/js-multistream-select#readme",
   "dependencies": {
+    "abortable-iterator": "^3.0.0",
     "bl": "^5.0.0",
     "debug": "^4.1.1",
     "err-code": "^3.0.1",
@@ -53,13 +55,12 @@
   },
   "devDependencies": {
     "@types/bl": "^5.0.1",
-    "aegir": "^35.0.1",
-    "chai": "^4.3.4",
-    "dirty-chai": "^2.0.1",
+    "@types/debug": "^4.1.7",
+    "aegir": "^36.1.1",
     "it-pair": "^1.0.0",
-    "mocha": "^8.1.1",
     "p-timeout": "^4.0.0",
     "streaming-iterables": "^5.0.2",
+    "timeout-abort-controller": "^2.0.0",
     "util": "^0.12.4",
     "varint": "^6.0.0"
   },

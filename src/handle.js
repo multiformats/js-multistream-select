@@ -1,17 +1,32 @@
 'use strict'
 
-const log = require('debug')('mss:handle')
+const debug = require('debug')
 const BufferList = require('bl/BufferList')
 const multistream = require('./multistream')
+// @ts-expect-error no types
 const handshake = require('it-handshake')
 const { PROTOCOL_ID } = require('./constants')
 
-module.exports = async (stream, protocols) => {
+const log = Object.assign(debug('mss:handle'), {
+  error: debug('mss:handle:error')
+})
+
+/**
+ * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
+ */
+
+/**
+ * @param {DuplexStream} stream
+ * @param {string | string[]} protocols
+ * @param {object} [options]
+ * @param {AbortSignal} options.signal
+ */
+module.exports = async function handle (stream, protocols, options) {
   protocols = Array.isArray(protocols) ? protocols : [protocols]
   const { writer, reader, rest, stream: shakeStream } = handshake(stream)
 
   while (true) {
-    const protocol = (await multistream.read(reader)).toString()
+    const protocol = (await multistream.read(reader, options)).toString()
     log('read "%s"', protocol)
 
     if (protocol === PROTOCOL_ID) {
@@ -30,6 +45,7 @@ module.exports = async (stream, protocols) => {
     if (protocol === 'ls') {
       // <varint-msg-len><varint-proto-name-len><proto-name>\n<varint-proto-name-len><proto-name>\n\n
       multistream.write(writer, new BufferList(
+        // @ts-expect-error BufferList does not accept Uint8Array[] as a constructor arg
         protocols.map(p => multistream.encode(p))
       ))
       log('respond with "%s" for %s', protocols, protocol)

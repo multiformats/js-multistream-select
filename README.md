@@ -164,13 +164,14 @@ A new multistream select dialer instance.
 const dialer = new MSS.Dialer(duplex)
 ```
 
-### `dialer.select(protocols)`
+### `dialer.select(protocols, [options])`
 
 Negotiate a protocol to use from a list of protocols.
 
 #### Parameters
 
 * `protocols` (`String[]`/`String`) - A list of protocols (or single protocol) to negotiate with. Protocols are attempted in order until a match is made.
+* `options` (`{ signal: AbortSignal }`) - an options object containing an AbortSignal
 
 #### Returns
 

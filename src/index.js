@@ -7,29 +7,52 @@ const { PROTOCOL_ID } = require('./constants')
 
 exports.PROTOCOL_ID = PROTOCOL_ID
 
+/**
+ * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
+ */
+
 class MultistreamSelect {
+  /**
+   * @param {DuplexStream} stream
+   */
   constructor (stream) {
     this._stream = stream
     this._shaken = false
   }
 
-  // Perform the multistream-select handshake
-  async _handshake () {
+  /**
+   * Perform the multistream-select handshake
+   *
+   * @param {object} [options]
+   * @param {AbortSignal} options.signal
+   */
+  async _handshake (options) {
     if (this._shaken) return
-    const { stream } = await select(this._stream, PROTOCOL_ID)
+    const { stream } = await select(this._stream, PROTOCOL_ID, undefined, options)
     this._stream = stream
     this._shaken = true
   }
 }
 
 class Dialer extends MultistreamSelect {
-  select (protocols) {
-    return select(this._stream, protocols, this._shaken ? null : PROTOCOL_ID)
+  /**
+   * @param {string | string[]} protocols
+   * @param {object} [options]
+   * @param {AbortSignal} options.signal
+   */
+  select (protocols, options) {
+    return select(this._stream, protocols, this._shaken ? undefined : PROTOCOL_ID, options)
   }
 
-  async ls () {
-    await this._handshake()
-    const { stream, protocols } = await ls(this._stream)
+  /**
+   * @param {object} [options]
+   * @param {AbortSignal} options.signal
+   */
+  async ls (options) {
+    await this._handshake(options)
+    /** @type {{ stream: DuplexStream, protocols: string[] }} */
+    const res = await ls(this._stream, options)
+    const { stream, protocols } = res
     this._stream = stream
     return protocols
   }
@@ -38,8 +61,13 @@ class Dialer extends MultistreamSelect {
 exports.Dialer = Dialer
 
 class Listener extends MultistreamSelect {
-  handle (protocols) {
-    return handle(this._stream, protocols)
+  /**
+   * @param {string | string[]} protocols
+   * @param {object} [options]
+   * @param {AbortSignal} options.signal
+   */
+  handle (protocols, options) {
+    return handle(this._stream, protocols, options)
   }
 }
 
