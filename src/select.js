@@ -13,14 +13,14 @@ const log = Object.assign(debug('mss:select'), {
 /**
  * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
  * @typedef {import('bl/BufferList')} BufferList
+ * @typedef {import('./types').AbortOptions} AbortOptions
  */
 
 /**
  * @param {DuplexStream} stream
  * @param {string | string[]} protocols
  * @param {string} [protocolId]
- * @param {object} [options]
- * @param {AbortSignal} options.signal
+ * @param {AbortOptions} [options]
  */
 module.exports = async function select (stream, protocols, protocolId, options) {
   protocols = Array.isArray(protocols) ? [...protocols] : [protocols]
