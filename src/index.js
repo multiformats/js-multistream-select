@@ -9,6 +9,7 @@ exports.PROTOCOL_ID = PROTOCOL_ID
 
 /**
  * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
+ * @typedef {import('./types').AbortOptions} AbortOptions
  */
 
 class MultistreamSelect {
@@ -63,8 +64,7 @@ exports.Dialer = Dialer
 class Listener extends MultistreamSelect {
   /**
    * @param {string | string[]} protocols
-   * @param {object} [options]
-   * @param {AbortSignal} options.signal
+   * @param {AbortOptions} [options]
    */
   handle (protocols, options) {
     return handle(this._stream, protocols, options)

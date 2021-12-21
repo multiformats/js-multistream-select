@@ -13,13 +13,13 @@ const log = Object.assign(debug('mss:handle'), {
 
 /**
  * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
+ * @typedef {import('./types').AbortOptions} AbortOptions
  */
 
 /**
  * @param {DuplexStream} stream
  * @param {string | string[]} protocols
- * @param {object} [options]
- * @param {AbortSignal} options.signal
+ * @param {AbortOptions} [options]
  */
 module.exports = async function handle (stream, protocols, options) {
   protocols = Array.isArray(protocols) ? protocols : [protocols]

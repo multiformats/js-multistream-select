@@ -10,6 +10,7 @@ const { source } = require('abortable-iterator')
 
 /**
  * @typedef {import('it-pushable').Pushable<Uint8Array | BufferList>} Pushable
+ * @typedef {import('./types').AbortOptions} AbortOptions
  */
 
 const NewLine = uint8ArrayFromString('\n')
@@ -46,8 +47,7 @@ async function writeAll (writer, buffers) {
 
 /**
  * @param {AsyncGenerator<Uint8Array | BufferList, void, number>} reader
- * @param {object} [options]
- * @param {AbortSignal} options.signal
+ * @param {AbortOptions} [options]
  */
 async function read (reader, options) {
   let byteLength = 1 // Read single byte chunks until the length is known

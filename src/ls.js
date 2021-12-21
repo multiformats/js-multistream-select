@@ -16,12 +16,12 @@ const log = Object.assign(debug('mss:ls'), {
 /**
  * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
  * @typedef {import('bl/BufferList')} BufferList
+ * @typedef {import('./types').AbortOptions} AbortOptions
  */
 
 /**
  * @param {DuplexStream} stream
- * @param {object} [options]
- * @param {AbortSignal} options.signal
+ * @param {AbortOptions} [options]
  */
 module.exports = async function ls (stream, options) {
   const { reader, writer, rest, stream: shakeStream } = handshake(stream)
