@@ -19,7 +19,8 @@
     "coverage": "nyc --reporter=text --reporter=lcov npm run test:node",
     "release": "aegir release -t node -t browser",
     "release-minor": "aegir release --type minor -t node -t browser",
-    "release-major": "aegir release --type major -t node -t browser"
+    "release-major": "aegir release --type major -t node -t browser",
+    "dep-check": "aegir dep-check"
   },
   "repository": {
     "type": "git",
