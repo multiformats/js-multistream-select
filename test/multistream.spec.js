@@ -1,9 +1,7 @@
 'use strict'
 /* eslint-env mocha */
 
-const chai = require('chai')
-chai.use(require('dirty-chai'))
-const { expect } = chai
+const { expect } = require('aegir/utils/chai')
 const Varint = require('varint')
 const BufferList = require('bl/BufferList')
 const Reader = require('it-reader')
@@ -84,6 +82,23 @@ describe('Multistream', () => {
 
       const err = await throwsAsync(Multistream.read(reader))
       expect(err.code).to.equal('ERR_INVALID_MULTISTREAM_SELECT_MESSAGE')
+    })
+
+    it('should be abortable', async () => {
+      const input = uint8ArrayFromString(`TEST${Date.now()}`)
+
+      const reader = Reader([uint8ArrayConcat([
+        Uint8Array.from(Varint.encode(input.length + 1)), // +1 to include newline
+        input,
+        uint8ArrayFromString('\n')
+      ])])
+
+      const controller = new AbortController()
+      controller.abort()
+
+      await expect(Multistream.read(reader, {
+        signal: controller.signal
+      })).to.eventually.be.rejected().with.property('code', 'ABORT_ERR')
     })
   })
 })

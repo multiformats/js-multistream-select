@@ -1,4 +1,4 @@
-# js-multistream-select
+# js-multistream-select <!-- omit in toc -->
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](https://protocol.ai)
 [![](https://img.shields.io/badge/project-multiformats-blue.svg?style=flat-square)](https://github.com/multiformats/multiformats)
@@ -10,21 +10,40 @@
 
 > JavaScript implementation of [multistream-select](https://github.com/multiformats/multistream-select)
 
-## Lead Maintainer
+## Lead Maintainer <!-- omit in toc -->
 
 [Jacob Heun](https://github.com/jacobheun)
 
-## Table of Contents
+## Table of Contents <!-- omit in toc -->
 
 - [Background](#background)
-  - [What is multistream-select?](#what-is-multistream-select)
+  - [What is `multistream-select`?](#what-is-multistream-select)
     - [Select a protocol flow](#select-a-protocol-flow)
 - [Install](#install)
 - [Usage](#usage)
-    - [Dialer](#dialer)
-    - [Listener](#listener)
+  - [Dialer](#dialer)
+  - [Listener](#listener)
 - [API](#api)
-- [Maintainers](#maintainers)
+  - [`new MSS.Dialer(duplex)`](#new-mssdialerduplex)
+    - [Parameters](#parameters)
+    - [Returns](#returns)
+    - [Examples](#examples)
+  - [`dialer.select(protocols, [options])`](#dialerselectprotocols-options)
+    - [Parameters](#parameters-1)
+    - [Returns](#returns-1)
+    - [Examples](#examples-1)
+  - [`dialer.ls([options])`](#dialerlsoptions)
+    - [Parameters](#parameters-2)
+    - [Returns](#returns-2)
+    - [Examples](#examples-2)
+  - [`new MSS.Listener(duplex)`](#new-msslistenerduplex)
+    - [Parameters](#parameters-3)
+    - [Returns](#returns-3)
+    - [Examples](#examples-3)
+  - [`listener.handle(protocols, [options])`](#listenerhandleprotocols-options)
+    - [Parameters](#parameters-4)
+    - [Returns](#returns-4)
+    - [Examples](#examples-4)
 - [Contribute](#contribute)
 - [License](#license)
 
@@ -164,13 +183,14 @@ A new multistream select dialer instance.
 const dialer = new MSS.Dialer(duplex)
 ```
 
-### `dialer.select(protocols)`
+### `dialer.select(protocols, [options])`
 
 Negotiate a protocol to use from a list of protocols.
 
 #### Parameters
 
 * `protocols` (`String[]`/`String`) - A list of protocols (or single protocol) to negotiate with. Protocols are attempted in order until a match is made.
+* `options` (`{ signal: AbortSignal }`) - an options object containing an AbortSignal
 
 #### Returns
 
@@ -189,9 +209,13 @@ const { stream, protocol } = await dialer.select([
 // Now talk `protocol` on `stream`
 ```
 
-### `dialer.ls()`
+### `dialer.ls([options])`
 
 List protocols that the remote supports.
+
+#### Parameters
+
+* `options` (`{ signal: AbortSignal }`) - an options object containing an AbortSignal
 
 #### Returns
 
@@ -228,13 +252,14 @@ A new multistream select listener instance.
 const listener = new MSS.Listener(duplex)
 ```
 
-### `listener.handle(protocols)`
+### `listener.handle(protocols, [options])`
 
 Handle multistream protocol selections for the given list of protocols.
 
 #### Parameters
 
 * `protocols` (`String[]`/`String`) - A list of protocols (or single protocol) that this listener is able to speak.
+* `options` (`{ signal: AbortSignal }`) - an options object containing an AbortSignal
 
 #### Returns
 

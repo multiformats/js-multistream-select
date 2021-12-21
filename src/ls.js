@@ -1,13 +1,29 @@
 'use strict'
 
+// @ts-expect-error no types
 const Reader = require('it-reader')
-const log = require('debug')('it-multistream-select:ls')
+const debug = require('debug')
 const multistream = require('./multistream')
+// @ts-expect-error no types
 const handshake = require('it-handshake')
 const lp = require('it-length-prefixed')
-const pipe = require('it-pipe')
+const { pipe } = require('it-pipe')
 
-module.exports = async stream => {
+const log = Object.assign(debug('mss:ls'), {
+  error: debug('mss:ls:error')
+})
+
+/**
+ * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
+ * @typedef {import('bl/BufferList')} BufferList
+ */
+
+/**
+ * @param {DuplexStream} stream
+ * @param {object} [options]
+ * @param {AbortSignal} options.signal
+ */
+module.exports = async function ls (stream, options) {
   const { reader, writer, rest, stream: shakeStream } = handshake(stream)
 
   log('write "ls"')
@@ -16,18 +32,22 @@ module.exports = async stream => {
 
   // Next message from remote will be (e.g. for 2 protocols):
   // <varint-msg-len><varint-proto-name-len><proto-name>\n<varint-proto-name-len><proto-name>\n
-  const res = await multistream.read(reader)
+  const res = await multistream.read(reader, options)
 
   // After reading response we have:
   // <varint-proto-name-len><proto-name>\n<varint-proto-name-len><proto-name>\n
   const protocolsReader = Reader([res])
+
+  /**
+   * @type {string[]}
+   */
   const protocols = []
 
   // Decode each of the protocols from the reader
   await pipe(
     protocolsReader,
     lp.decode(),
-    async source => {
+    async (/** @type {AsyncIterable<BufferList>} */ source) => {
       for await (const protocol of source) {
         // Remove the newline
         protocols.push(protocol.shallowSlice(0, -1).toString())
@@ -35,5 +55,8 @@ module.exports = async stream => {
     }
   )
 
-  return { stream: shakeStream, protocols }
+  /** @type {{ stream: DuplexStream, protocols: string[] }} */
+  const output = { stream: shakeStream, protocols }
+
+  return output
 }

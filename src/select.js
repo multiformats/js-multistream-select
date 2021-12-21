@@ -1,15 +1,37 @@
 'use strict'
 
-const log = require('debug')('mss:select')
+const debug = require('debug')
 const errCode = require('err-code')
 const multistream = require('./multistream')
+// @ts-expect-error no types
 const handshake = require('it-handshake')
 
-module.exports = async (stream, protocols, protocolId) => {
+const log = Object.assign(debug('mss:select'), {
+  error: debug('mss:select:error')
+})
+
+/**
+ * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
+ * @typedef {import('bl/BufferList')} BufferList
+ */
+
+/**
+ * @param {DuplexStream} stream
+ * @param {string | string[]} protocols
+ * @param {string} [protocolId]
+ * @param {object} [options]
+ * @param {AbortSignal} options.signal
+ */
+module.exports = async function select (stream, protocols, protocolId, options) {
   protocols = Array.isArray(protocols) ? [...protocols] : [protocols]
   const { reader, writer, rest, stream: shakeStream } = handshake(stream)
 
   const protocol = protocols.shift()
+
+  if (!protocol) {
+    throw new Error('At least one protocol must be specified')
+  }
+
   if (protocolId) {
     log('select: write ["%s", "%s"]', protocolId, protocol)
     multistream.writeAll(writer, [protocolId, protocol])
@@ -18,12 +40,12 @@ module.exports = async (stream, protocols, protocolId) => {
     multistream.write(writer, protocol)
   }
 
-  let response = (await multistream.read(reader)).toString()
+  let response = (await multistream.read(reader, options)).toString()
   log('select: read "%s"', response)
 
   // Read the protocol response if we got the protocolId in return
   if (response === protocolId) {
-    response = (await multistream.read(reader)).toString()
+    response = (await multistream.read(reader, options)).toString()
     log('select: read "%s"', response)
   }
 
@@ -37,7 +59,7 @@ module.exports = async (stream, protocols, protocolId) => {
   for (const protocol of protocols) {
     log('select: write "%s"', protocol)
     multistream.write(writer, protocol)
-    const response = (await multistream.read(reader)).toString()
+    const response = (await multistream.read(reader, options)).toString()
     log('select: read "%s" for "%s"', response, protocol)
 
     if (response === protocol) {
