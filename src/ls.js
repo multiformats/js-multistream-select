@@ -14,8 +14,8 @@ const log = Object.assign(debug('mss:ls'), {
 })
 
 /**
- * @typedef {import('./types').DuplexStream<Uint8Array>} DuplexStream
  * @typedef {import('bl/BufferList')} BufferList
+ * @typedef {import('./types').DuplexStream<Uint8Array | BufferList>} DuplexStream
  * @typedef {import('./types').AbortOptions} AbortOptions
  */
 
