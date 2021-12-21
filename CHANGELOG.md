@@ -1,3 +1,17 @@
+# [3.0.0](https://github.com/multiformats/js-multistream-select/compare/v2.0.1...v3.0.0) (2021-12-21)
+
+
+### Bug Fixes
+
+* make mss abortable ([#142](https://github.com/multiformats/js-multistream-select/issues/142)) ([2165038](https://github.com/multiformats/js-multistream-select/commit/216503873712f08aef644ae6b4c7ff4a30108943))
+
+
+### BREAKING CHANGES
+
+* This module now has types
+
+
+
 ## [2.0.1](https://github.com/multiformats/js-multistream-select/compare/v2.0.0...v2.0.1) (2021-08-19)
 
 
