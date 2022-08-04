@@ -49,7 +49,7 @@
     "debug": "^4.1.1",
     "err-code": "^3.0.1",
     "it-first": "^1.0.6",
-    "it-handshake": "^2.0.0",
+    "it-handshake": "^4.1.0",
     "it-length-prefixed": "^5.0.0",
     "it-pipe": "^1.0.1",
     "it-reader": "^3.0.0",
