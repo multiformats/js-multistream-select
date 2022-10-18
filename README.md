@@ -1,3 +1,6 @@
+⛔️ ARCHIVED: multistream-select can now be found at [@libp2p/multistream-select](https://github.com/libp2p/js-libp2p-multistream-select)
+=====
+
 # js-multistream-select <!-- omit in toc -->
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](https://protocol.ai)
