@@ -61,7 +61,7 @@
     "@types/debug": "^4.1.7",
     "aegir": "^36.1.1",
     "it-pair": "^1.0.0",
-    "p-timeout": "^4.0.0",
+    "p-timeout": "^6.0.0",
     "streaming-iterables": "^5.0.2",
     "timeout-abort-controller": "^2.0.0",
     "util": "^0.12.4",
